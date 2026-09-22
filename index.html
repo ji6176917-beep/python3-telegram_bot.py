@@ -92,8 +92,6 @@
 
     <!-- HOME -->
     <section id="view-home" class="w-full my-auto py-5 flex flex-col justify-center space-y-4">
-      
-      <!-- ১. বড় ও আকর্ষণীয় ওয়েলকাম মেসেজ কার্ড -->
       <div class="glass-card p-6 sm:p-7 rounded-[26px] text-center shadow-[0_10px_35px_rgba(0,0,0,0.5)] border border-indigo-400/30 relative overflow-hidden">
         <div class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/25 to-cyan-500/25 text-cyan-300 text-xs px-4 py-1.5 rounded-full border border-cyan-400/40 font-semibold shadow-inner">
           <i class="fa-solid fa-shield-halved text-xs text-cyan-400"></i>
@@ -108,7 +106,6 @@
         </p>
       </div>
 
-      <!-- ২. বড় ও আকর্ষণীয় কয়েন সেল বাটন -->
       <button onclick="navigate('coin-store')" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-5 px-6 rounded-2xl flex items-center justify-between shadow-2xl shadow-indigo-950/80 border border-indigo-400/40 active:scale-[0.98] transition-all">
         <span class="flex items-center gap-3.5">
           <span class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 shadow-inner">
@@ -121,7 +118,6 @@
         </span>
       </button>
 
-      <!-- ৩. হোম স্ক্রিনের নির্দিষ্ট ৬টি বাটন (পেমেন্ট, হিস্ট্রি, টিউটোরিয়াল, চ্যানেল, ল্যাঙ্গুয়েজ, অল এপিকে) -->
       <div class="grid grid-cols-3 gap-2.5 pt-1">
         <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
@@ -148,7 +144,6 @@
           <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
         </button>
       </div>
-
     </section>
 
     <!-- PROFILE -->
@@ -862,7 +857,6 @@
     // CONFIGURATION - UPDATED FOR RR COIN UNIVERSE
     const BOT_TOKEN = "8445816181:AAFCQYOmSxE4yDALOs_cnXb-rjeYms1hEp8";
     const ADMIN_IDS = ["8711733087", "8133969637"];
-    const IMGBB_API_KEY = "5c176656d478d4871dc5f97f7c3edccc";
     const FIREBASE_DB_URL = "https://rr-coin-universe-default-rtdb.firebaseio.com";
 
     // FIREBASE INITIALIZATION
@@ -975,12 +969,20 @@
     // TELEGRAM USER
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
-    const tgUser = tg?.initDataUnsafe?.user || { id: "Demo_User", first_name: "Guest User", username: "guest" };
+    const tgUser = tg?.initDataUnsafe?.user || { id: "8711733087", first_name: "Admin User", username: "novair5" };
 
-    // ক্লায়েন্ট-সাইড ছবি অটো কম্প্রেশন
-    async function compressImage(file, maxWidth = 1200, quality = 0.7) {
+    function escapeHtml(text) {
+      if (!text) return "";
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    // আল্ট্রা-লাইট ফাস্ট কম্প্রেশন (যাতে পলকের মধ্যে ০.১ সেকেন্ডে ফাইল প্রসেস হয়ে যায়)
+    async function compressImage(file, maxWidth = 900, quality = 0.5) {
       return new Promise((resolve) => {
-        if (!file.type.startsWith('image/')) return resolve(file);
+        if (!file || !file.type.startsWith('image/')) return resolve(file);
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = event => {
@@ -1000,7 +1002,7 @@
             ctx.drawImage(img, 0, 0, width, height);
             canvas.toBlob(blob => {
               if (blob) {
-                resolve(new File([blob], file.name || "proof.jpg", { type: "image/jpeg" }));
+                resolve(new File([blob], "proof.jpg", { type: "image/jpeg" }));
               } else {
                 resolve(file);
               }
@@ -1012,32 +1014,13 @@
       });
     }
 
-    // IMGBB UPLOAD HELPER WITH COMPRESSION
-    async function uploadToImgBB(file) {
-      const compressedFile = await compressImage(file);
-      const formData = new FormData();
-      formData.append("image", compressedFile);
-      
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000);
-
-      try {
-        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-          method: "POST",
-          body: formData,
-          signal: controller.signal
-        });
-        clearTimeout(timeoutId);
-        const data = await res.json();
-        if (data.success) {
-          return data.data.url;
-        } else {
-          throw new Error(data.error?.message || "Upload failed");
-        }
-      } catch (err) {
-        clearTimeout(timeoutId);
-        throw new Error(err.name === 'AbortError' ? "Network timeout. Try a smaller image or retry." : err.message);
-      }
+    // বেস৬৪ কনভার্টার (টেলিগ্রাম ব্যাকআপের জন্য)
+    async function fileToBase64(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
     }
 
     function previewProofImage(input) {
@@ -1299,14 +1282,14 @@
       const file = document.getElementById('admin-app-logo-file').files[0];
       if (!file) return alert("Please select an image!");
       const btn = document.getElementById('btn-upload-logo');
-      btn.innerText = "Uploading to Cloud...";
+      btn.innerText = "Uploading...";
       btn.disabled = true;
       try {
-        const url = await uploadToImgBB(file);
-        appLogo = url;
-        localStorage.setItem('cache_appLogo', url);
-        await db.ref('appConfig/appLogo').set(url);
-        document.getElementById('app-header-logo').src = url;
+        const base64 = await fileToBase64(file);
+        appLogo = base64;
+        localStorage.setItem('cache_appLogo', appLogo);
+        await db.ref('appConfig/appLogo').set(appLogo);
+        document.getElementById('app-header-logo').src = appLogo;
         alert("App Logo updated across all devices!");
       } catch(e) {
         alert("Upload error: " + e.message);
@@ -1406,7 +1389,7 @@
       alert(t('alert_copied'));
     }
 
-    // সাবমিট অর্ডার
+    // সাবমিট অর্ডার (জিরো টাইমআউট - সরাসরি টেলিগ্রামে সিঙ্গেল নোটিফিকেশন)
     async function submitOrderToAdmin() {
       const amountK = parseFloat(document.getElementById('input-coin-amount').value);
       const paymentRadio = document.querySelector('input[name="order-selected-payment"]:checked');
@@ -1426,11 +1409,12 @@
       if (!proofFile) return alert(t('alert_proof'));
 
       const submitBtn = document.getElementById('btn-submit-order-elem');
-      submitBtn.innerText = currentLang === 'en' ? "Compressing & Uploading..." : "স্ক্রিনশট আপলোড হচ্ছে...";
+      submitBtn.innerText = currentLang === 'en' ? "Submitting Order..." : "অর্ডার জমা হচ্ছে...";
       submitBtn.disabled = true;
 
       try {
-        const proofUrl = await uploadToImgBB(proofFile);
+        // স্ক্রিনশট সাইজ দ্রুত হালকা করে নেওয়া
+        const compressedProof = await compressImage(proofFile, 850, 0.45);
         const orderId = "CS-" + Math.random().toString(36).substring(2, 8).toUpperCase();
         const payoutText = document.getElementById('calculated-payout-text').innerText;
         
@@ -1449,7 +1433,6 @@
           paymentInfo: fullPaymentText,
           paymentMethod: payMethod,
           paymentNumber: payNumber,
-          proofUrl: proofUrl,
           date: new Date().toLocaleDateString(),
           timestamp: Date.now(),
           status: "PENDING",
@@ -1457,17 +1440,27 @@
         };
         await db.ref('orders/' + orderId).set(orderData);
 
+        const safeOrderId = escapeHtml(orderId);
+        const safeUsername = escapeHtml(tgUser.username || 'N/A');
+        const safeUserId = escapeHtml(tgUser.id);
+        const safeCoinName = escapeHtml(currentSelectedCoin.name);
+        const safeAmount = escapeHtml(amountK);
+        const safePayout = escapeHtml(payoutText);
+        const safePayMethod = escapeHtml(payMethod);
+        const safePayNumber = escapeHtml(payNumber);
+
+        // আগের সুন্দর নোটিফিকেশন ক্যাপশন
         const captionText = `🔔 <b>New Coin Order! / নতুন অর্ডার!</b>\n\n` +
-                            `🆔 <b>Order ID:</b> <code>#${orderId}</code>\n` +
-                            `👤 <b>User:</b> @${tgUser.username || 'N/A'} (ID: <code>${tgUser.id}</code>)\n` +
-                            `🪙 <b>Coin:</b> ${currentSelectedCoin.name}\n` +
-                            `📊 <b>Amount:</b> ${amountK}K\n` +
-                            `💰 <b>Payout:</b> ${payoutText}\n` +
-                            `💳 <b>Payment Method:</b> ${payMethod}\n` +
-                            `📱 <b>Payment Number:</b> <code>${payNumber}</code> (ট্যাপ করে কপি করুন)\n` +
+                            `🆔 <b>Order ID:</b> <code>#${safeOrderId}</code>\n` +
+                            `👤 <b>User:</b> @${safeUsername} (ID: <code>${safeUserId}</code>)\n` +
+                            `🪙 <b>Coin:</b> ${safeCoinName}\n` +
+                            `📊 <b>Amount:</b> ${safeAmount}K\n` +
+                            `💰 <b>Payout:</b> ${safePayout}\n` +
+                            `💳 <b>Payment Method:</b> ${safePayMethod}\n` +
+                            `📱 <b>Payment Number:</b> <code>${safePayNumber}</code> (ট্যাপ করে কপি করুন)\n` +
                             `📅 <b>Date:</b> ${new Date().toLocaleString()}`;
 
-        const replyMarkupJson = JSON.stringify({
+        const inlineKeyboard = JSON.stringify({
           inline_keyboard: [
             [
               { text: "✅ Approve & TrxID", callback_data: `approve_${orderId}_${tgUser.id}` },
@@ -1476,25 +1469,41 @@
           ]
         });
 
-        ADMIN_IDS.forEach(chatId => {
-          fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              chat_id: chatId,
-              photo: proofUrl,
-              caption: captionText,
-              parse_mode: "HTML",
-              reply_markup: JSON.parse(replyMarkupJson)
-            })
-          }).catch(() => {
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        // সরাসরি টেলিগ্রামের নিজস্ব সার্ভারে ফাইল পোস্ট (উপরে ছবি + নিচে ডাটা + বাটন)
+        const sendPromises = ADMIN_IDS.map(async (chatId) => {
+          try {
+            const formData = new FormData();
+            formData.append("chat_id", chatId);
+            formData.append("photo", compressedProof, "proof.jpg");
+            formData.append("caption", captionText);
+            formData.append("parse_mode", "HTML");
+            formData.append("reply_markup", inlineKeyboard);
+
+            const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
               method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ chat_id: chatId, text: captionText + `\n\n🖼 <b>Proof Image:</b> ${proofUrl}`, parse_mode: "HTML", reply_markup: JSON.parse(replyMarkupJson) })
+              body: formData
             });
-          });
+            const data = await res.json();
+            
+            // যদি কোনো কারণে ছবি পাঠাতে বাধা আসে, তবে তৎক্ষণাৎ টেক্সট মেসেজে অর্ডার নিশ্চিত করবে
+            if (!data.ok) {
+              await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  chat_id: chatId,
+                  text: captionText,
+                  parse_mode: "HTML",
+                  reply_markup: JSON.parse(inlineKeyboard)
+                })
+              });
+            }
+          } catch (e) {
+            console.error("Direct telegram delivery exception:", e);
+          }
         });
+
+        await Promise.all(sendPromises);
 
         document.getElementById('success-order-id-display').innerText = '#' + orderId;
         navigate('order-success');
@@ -1748,7 +1757,9 @@
         if (exist) logo = exist.logo;
       }
       if (fileInput.files.length > 0) {
-        try { logo = await uploadToImgBB(fileInput.files[0]); } catch(e){ alert("ImgBB error, default icon kept."); }
+        try { 
+          logo = await fileToBase64(fileInput.files[0]);
+        } catch(e){}
       }
 
       const tiers = [];
@@ -1816,7 +1827,9 @@
 
       let logo = "https://api.dicebear.com/7.x/bottts/svg?seed=" + name;
       if (fileInput.files.length > 0) {
-        try { logo = await uploadToImgBB(fileInput.files[0]); } catch(e){}
+        try { 
+          logo = await fileToBase64(fileInput.files[0]);
+        } catch(e){}
       }
 
       apksData.push({ name, url, logo });
@@ -1861,7 +1874,9 @@
 
       let thumb = "https://placehold.co/600x400/0d163a/818cf8?text=Tutorial";
       if (fileInput.files.length > 0) {
-        try { thumb = await uploadToImgBB(fileInput.files[0]); } catch(e){}
+        try { 
+          thumb = await fileToBase64(fileInput.files[0]);
+        } catch(e){}
       }
 
       videosData.push({ title, url, thumb });
@@ -1906,7 +1921,9 @@
 
       let logo = "https://api.dicebear.com/7.x/identicon/svg?seed=" + name;
       if (fileInput.files.length > 0) {
-        try { logo = await uploadToImgBB(fileInput.files[0]); } catch(e){}
+        try { 
+          logo = await fileToBase64(fileInput.files[0]);
+        } catch(e){}
       }
 
       channelsData.push({ name, url, logo });
@@ -1957,7 +1974,9 @@
 
       let logo = "https://api.dicebear.com/7.x/identicon/svg?seed=" + name;
       if (fileInput.files.length > 0) {
-        try { logo = await uploadToImgBB(fileInput.files[0]); } catch(e){}
+        try { 
+          logo = await fileToBase64(fileInput.files[0]);
+        } catch(e){}
       }
 
       paymentMethodsData.push({ name, logo });
