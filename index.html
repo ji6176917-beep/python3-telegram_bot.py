@@ -13,63 +13,75 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
   <style>
-    body { background-color: #031553; color: #fdf2f2; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; }
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-thumb { background: #b847fa; border-radius: 4px; }
-    .modal-overlay { background: rgba(3, 21, 83, 0.9); backdrop-filter: blur(8px); }
+    /* প্রিমিয়াম রয়্যাল মিডনাইট ডার্ক থিম */
+    body { 
+      background: radial-gradient(circle at top center, #111d4a 0%, #090e24 50%, #050816 100%);
+      background-attachment: fixed;
+      color: #f8fafc; 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      -webkit-tap-highlight-color: transparent; 
+    }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 6px; }
+    .modal-overlay { background: rgba(5, 8, 22, 0.88); backdrop-filter: blur(12px); }
     @keyframes pulse-dot {
-      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #b847fa; }
-      50% { opacity: 0.3; transform: scale(0.85); box-shadow: 0 0 2px #b847fa; }
+      0%, 100% { opacity: 1; transform: scale(1); box-shadow: 0 0 10px #38bdf8; }
+      50% { opacity: 0.35; transform: scale(0.85); box-shadow: 0 0 2px #38bdf8; }
     }
     .live-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
+    .glass-card {
+      background: rgba(17, 27, 65, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(99, 102, 241, 0.25);
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-fuchsia-500 selection:text-white">
+<body class="min-h-screen flex flex-col justify-between selection:bg-indigo-600 selection:text-white">
 
   <!-- TOP HEADER -->
-  <header class="sticky top-0 z-40 bg-[#042078] border-b border-blue-600/40 px-4 py-3 flex items-center justify-between shadow-lg">
+  <header class="sticky top-0 z-40 bg-[#0d163a]/90 backdrop-blur-md border-b border-indigo-500/20 px-4 py-3 flex items-center justify-between shadow-lg">
     <div class="flex items-center gap-3 cursor-pointer select-none" onclick="handleAdminTrigger()" title="Click 5 times for Admin Panel">
-      <img id="app-header-logo" src="https://api.dicebear.com/7.x/identicon/svg?seed=rrcoinuniverse" class="w-9 h-9 rounded-full object-cover border border-[#b847fa] bg-[#031553] shadow">
+      <img id="app-header-logo" src="https://api.dicebear.com/7.x/identicon/svg?seed=rrcoinuniverse" class="w-9 h-9 rounded-full object-cover border border-indigo-400/50 bg-[#090e24] shadow-md">
       <div>
         <h1 class="font-black text-sm text-white tracking-wide">RR COIN UNIVERSE</h1>
         <div class="flex items-center gap-1.5 mt-0.5">
           <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 live-dot inline-block shadow"></span>
-          <span class="text-[10px] font-bold text-cyan-300 uppercase tracking-widest">LIVE</span>
+          <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">LIVE</span>
         </div>
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <button onclick="navigate('home')" class="p-2 text-blue-200 hover:text-white transition"><i class="fa-solid fa-house"></i></button>
-      <button onclick="toggleMenu()" class="p-2 rounded-lg bg-[#b847fa]/20 text-[#b847fa] hover:text-white border border-[#b847fa]/40 shadow">
+      <button onclick="navigate('home')" class="p-2 text-indigo-200 hover:text-white transition"><i class="fa-solid fa-house"></i></button>
+      <button onclick="toggleMenu()" class="p-2 rounded-xl bg-indigo-600/20 text-indigo-300 hover:text-white border border-indigo-500/40 shadow transition active:scale-95">
         <i class="fa-solid fa-bars text-lg"></i>
       </button>
     </div>
   </header>
 
   <!-- SIDEBAR MENU DRAWER -->
-  <div id="drawer-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-[#020b2b]/80 z-50 hidden backdrop-blur-sm transition-opacity"></div>
-  <div id="side-drawer" class="fixed top-0 right-0 w-72 h-full bg-[#042078] border-l border-blue-500/40 z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto">
+  <div id="drawer-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-[#040612]/80 z-50 hidden backdrop-blur-sm transition-opacity"></div>
+  <div id="side-drawer" class="fixed top-0 right-0 w-72 h-full bg-[#0d163a] border-l border-indigo-500/30 z-50 transform translate-x-full transition-transform duration-300 flex flex-col justify-between p-4 overflow-y-auto shadow-2xl">
     <div>
-      <div class="flex justify-between items-center pb-3 border-b border-blue-500/30">
-        <span class="font-extrabold text-[#b847fa] text-base" data-i18n="menu">Menu</span>
-        <button onclick="toggleMenu()" class="text-blue-200 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+      <div class="flex justify-between items-center pb-3 border-b border-indigo-500/20">
+        <span class="font-extrabold text-indigo-300 text-base" data-i18n="menu">Menu</span>
+        <button onclick="toggleMenu()" class="text-indigo-200 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
       </div>
       <nav class="mt-4 space-y-1 text-sm font-medium">
-        <button onclick="navigate('home')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-solid fa-house text-[#b847fa]"></i> <span data-i18n="nav_home">Home</span></button>
-        <button onclick="openLanguageModal()" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center justify-between text-gray-100"><span class="flex items-center gap-3"><i class="fa-solid fa-globe text-[#b847fa]"></i> <span data-i18n="nav_lang">Language</span></span> <span id="current-lang-badge" class="text-[10px] bg-[#b847fa]/20 text-[#d48bff] px-2 py-0.5 rounded font-bold border border-[#b847fa]/30">English</span></button>
-        <button onclick="navigate('profile')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-solid fa-user text-[#b847fa]"></i> <span data-i18n="nav_profile">Profile</span></button>
-        <button onclick="navigate('coin-store')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-solid fa-coins text-[#b847fa]"></i> <span data-i18n="nav_store">Coin Store</span></button>
-        <button onclick="navigate('history')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-solid fa-clock-rotate-left text-[#b847fa]"></i> <span data-i18n="nav_history">Order History</span></button>
-        <button onclick="navigate('payment-settings')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-solid fa-wallet text-[#b847fa]"></i> <span data-i18n="nav_payment">Payment Settings</span></button>
-        <button onclick="navigate('methods')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-solid fa-play text-[#b847fa]"></i> <span data-i18n="nav_tutorials">Video Tutorials</span></button>
-        <button onclick="navigate('apks')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-solid fa-download text-[#b847fa]"></i> <span data-i18n="nav_apks">All APKs</span></button>
-        <button onclick="navigate('channels')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-brands fa-telegram text-[#b847fa]"></i> <span data-i18n="nav_channels">Channels</span></button>
-        <button onclick="openAboutModal()" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-blue-900/50 flex items-center gap-3 text-gray-100"><i class="fa-solid fa-circle-info text-[#b847fa]"></i> <span>About Us</span></button>
+        <button onclick="navigate('home')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-house text-indigo-400"></i> <span data-i18n="nav_home">Home</span></button>
+        <button onclick="openLanguageModal()" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center justify-between text-slate-100"><span class="flex items-center gap-3"><i class="fa-solid fa-globe text-indigo-400"></i> <span data-i18n="nav_lang">Language</span></span> <span id="current-lang-badge" class="text-[10px] bg-indigo-500/20 text-indigo-200 px-2 py-0.5 rounded font-bold border border-indigo-500/30">English</span></button>
+        <button onclick="navigate('profile')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-user text-indigo-400"></i> <span data-i18n="nav_profile">Profile</span></button>
+        <button onclick="navigate('coin-store')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-coins text-indigo-400"></i> <span data-i18n="nav_store">Coin Store</span></button>
+        <button onclick="navigate('history')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> <span data-i18n="nav_history">Order History</span></button>
+        <button onclick="navigate('payment-settings')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-wallet text-indigo-400"></i> <span data-i18n="nav_payment">Payment Settings</span></button>
+        <button onclick="navigate('methods')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-play text-indigo-400"></i> <span data-i18n="nav_tutorials">Video Tutorials</span></button>
+        <button onclick="navigate('apks')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-download text-indigo-400"></i> <span data-i18n="nav_apks">All APKs</span></button>
+        <button onclick="navigate('channels')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-brands fa-telegram text-indigo-400"></i> <span data-i18n="nav_channels">Channels</span></button>
+        <button onclick="openAboutModal()" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-circle-info text-indigo-400"></i> <span>About Us</span></button>
       </nav>
     </div>
 
-    <div class="pt-4 border-t border-blue-500/30">
-      <button onclick="contactSupportAdmin()" class="w-full bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow-lg text-xs transition">
+    <div class="pt-4 border-t border-indigo-500/20">
+      <button onclick="contactSupportAdmin()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow-lg text-xs transition active:scale-95">
         <i class="fa-brands fa-telegram text-base"></i>
         <span>Support And admin</span>
       </button>
@@ -77,118 +89,190 @@
   </div>
 
   <!-- MAIN APP CONTAINER -->
-  <main class="max-w-md mx-auto p-4 w-full flex-grow">
+  <main class="max-w-md mx-auto p-4 w-full flex-grow flex flex-col justify-center items-center">
 
-    <!-- HOME -->
-    <section id="view-home" class="space-y-4">
-      <div class="bg-gradient-to-br from-[#0632a8] via-[#042078] to-[#031553] border border-[#b847fa]/40 p-6 rounded-2xl text-center shadow-2xl relative overflow-hidden">
-        <div class="inline-flex items-center gap-1.5 bg-[#b847fa]/15 text-[#d48bff] text-xs px-3 py-1 rounded-full border border-[#b847fa]/30 font-semibold shadow">
-          <i class="fa-solid fa-shield-halved text-[11px]"></i>
+    <!-- HOME (সেন্টার্ড ও আধুনিক রয়্যাল ডার্ক লুক) -->
+    <section id="view-home" class="w-full my-auto py-6 flex flex-col justify-center space-y-4">
+      <div class="glass-card p-6 rounded-3xl text-center shadow-2xl relative overflow-hidden">
+        <div class="inline-flex items-center gap-1.5 bg-indigo-500/20 text-indigo-200 text-xs px-3.5 py-1 rounded-full border border-indigo-400/30 font-semibold shadow">
+          <i class="fa-solid fa-shield-halved text-[11px] text-cyan-400"></i>
           <span>100% safe & trusted buyer in Bangladesh</span>
         </div>
-        <h2 class="text-2xl font-black mt-3 text-white tracking-tight">
+        <h2 class="text-2xl font-black mt-4 text-white tracking-tight">
           <span data-i18n="welcome_title">Welcome to</span> <br>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-[#d48bff]">RR COIN UNIVERSE</span>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-indigo-300 font-extrabold">RR COIN UNIVERSE</span>
         </h2>
-        <p class="text-xs text-blue-100/80 mt-2 font-normal leading-relaxed">
+        <p class="text-xs text-indigo-100/80 mt-2 font-normal leading-relaxed">
           Sell your coins at the best rates and receive instant payments via bKash, Nagad, Rocket or Binance.
         </p>
       </div>
 
-      <button onclick="navigate('coin-store')" class="w-full bg-gradient-to-r from-[#b847fa] via-[#a834f7] to-[#8619d4] hover:brightness-110 text-white font-black py-3.5 px-4 rounded-xl flex items-center justify-between shadow-lg shadow-purple-900/40 active:scale-[0.99] transition">
-        <span class="flex items-center gap-2.5"><i class="fa-solid fa-coins text-lg text-yellow-300"></i> <span data-i18n="btn_coin_sell">Coins Sell</span></span>
-        <i class="fa-solid fa-arrow-right"></i>
+      <button onclick="navigate('coin-store')" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-4 px-5 rounded-2xl flex items-center justify-between shadow-xl shadow-indigo-950/60 active:scale-[0.98] transition">
+        <span class="flex items-center gap-3"><i class="fa-solid fa-coins text-xl text-yellow-300"></i> <span data-i18n="btn_coin_sell" class="text-base tracking-wide">Coins Sell</span></span>
+        <i class="fa-solid fa-arrow-right text-base"></i>
       </button>
 
-      <div class="grid grid-cols-3 gap-2 pt-1">
-        <button onclick="navigate('payment-settings')" class="bg-[#042078] hover:bg-[#062b9e] border border-blue-500/30 p-3 rounded-xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-[#b847fa] text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-gray-200" data-i18n="btn_payment">Payment</span>
+      <!-- শর্টকাট নেভিগেশন গ্রিড (৬টি বাটন) -->
+      <div class="grid grid-cols-3 gap-2.5 pt-1">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
         </button>
-        <button onclick="navigate('history')" class="bg-[#042078] hover:bg-[#062b9e] border border-blue-500/30 p-3 rounded-xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-clock-rotate-left text-[#b847fa] text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-gray-200" data-i18n="btn_history">History</span>
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('methods')" class="bg-[#042078] hover:bg-[#062b9e] border border-blue-500/30 p-3 rounded-xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-[#b847fa] text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-gray-200" data-i18n="btn_tutorials">Tutorials</span>
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+        </button>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
+        </button>
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
         </button>
       </div>
     </section>
 
     <!-- PROFILE -->
-    <section id="view-profile" class="hidden space-y-4">
+    <section id="view-profile" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between mb-2">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-user text-[#b847fa]"></i> <span data-i18n="profile_heading">My Profile</span></h2>
-        <button onclick="navigate('home')" class="text-xs text-blue-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-user text-indigo-400"></i> <span data-i18n="profile_heading">My Profile</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
-      <div class="bg-[#042078] border border-blue-500/30 rounded-2xl p-5 text-center relative overflow-hidden shadow-xl">
-        <div class="w-20 h-20 mx-auto rounded-full border-2 border-[#b847fa] overflow-hidden bg-[#031553] shadow-md">
+      <div class="glass-card rounded-3xl p-5 text-center relative overflow-hidden shadow-xl">
+        <div class="w-20 h-20 mx-auto rounded-full border-2 border-indigo-400 overflow-hidden bg-[#090e24] shadow-md">
           <img id="profile-user-avatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=User" class="w-full h-full object-cover">
         </div>
         <h3 id="profile-user-name" class="font-bold text-base text-white mt-3">Telegram User</h3>
-        <p id="profile-user-handle" class="text-xs text-[#d48bff] font-mono mt-0.5">@username</p>
-        <p id="profile-user-id" class="text-[11px] text-blue-200 mt-1 font-mono">ID: 123456789</p>
+        <p id="profile-user-handle" class="text-xs text-indigo-300 font-mono mt-0.5">@username</p>
+        <p id="profile-user-id" class="text-[11px] text-indigo-200 mt-1 font-mono">ID: 123456789</p>
       </div>
-      <div class="grid grid-cols-3 gap-2 text-center text-xs">
-        <div class="bg-[#042078] border border-blue-500/30 p-3 rounded-xl">
-          <span class="text-blue-200 text-[11px] block" data-i18n="stat_total">Total Orders</span>
+      <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
+        <div class="glass-card p-3.5 rounded-2xl">
+          <span class="text-indigo-200 text-[11px] block" data-i18n="stat_total">Total Orders</span>
           <span id="stat-total-orders" class="font-bold text-base text-white mt-1 block">0</span>
         </div>
-        <div class="bg-[#042078] border border-blue-500/30 p-3 rounded-xl">
+        <div class="glass-card p-3.5 rounded-2xl">
           <span class="text-emerald-400 text-[11px] block" data-i18n="stat_approved">Approved</span>
           <span id="stat-approved-orders" class="font-bold text-base text-emerald-300 mt-1 block">0</span>
         </div>
-        <div class="bg-[#042078] border border-blue-500/30 p-3 rounded-xl">
+        <div class="glass-card p-3.5 rounded-2xl">
           <span class="text-rose-400 text-[11px] block" data-i18n="stat_cancelled">Cancelled</span>
           <span id="stat-rejected-orders" class="font-bold text-base text-rose-300 mt-1 block">0</span>
         </div>
       </div>
+
+      <!-- প্রোফাইলের নিচে শর্টকাট বাটনসমূহ -->
+      <div class="grid grid-cols-3 gap-2.5 pt-2">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+        </button>
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+        </button>
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+        </button>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
+        </button>
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+      </div>
     </section>
 
     <!-- COIN STORE -->
-    <section id="view-coin-store" class="hidden space-y-4">
+    <section id="view-coin-store" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between mb-2">
-        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-store text-[#b847fa]"></i> <span data-i18n="store_heading">Select Coin to Sell</span></h2>
-        <button onclick="navigate('home')" class="text-xs text-blue-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-store text-indigo-400"></i> <span data-i18n="store_heading">Select Coin to Sell</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
       <div id="coins-list" class="space-y-3"></div>
+
+      <!-- কয়েন স্টোর তালিকার নিচে শর্টকাট বাটন -->
+      <div class="grid grid-cols-3 gap-2.5 pt-2">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+        </button>
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+        </button>
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+        </button>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
+        </button>
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+      </div>
     </section>
 
-    <!-- COIN SUBMIT -->
-    <section id="view-coin-submit" class="hidden space-y-4">
+    <!-- COIN SUBMIT (এখানে কোনো শর্টকাট থাকবে না যেন পেজটি ক্লিন থাকে) -->
+    <section id="view-coin-submit" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-white" id="submit-coin-title">Submit Coin</h2>
-        <button onclick="navigate('coin-store')" class="text-xs text-blue-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+        <button onclick="navigate('coin-store')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
-      <div class="bg-[#042078] border border-blue-500/30 rounded-xl p-4 space-y-3 shadow-md">
-        <div class="flex justify-between items-center bg-[#03185f] p-3 rounded-lg border border-blue-500/30">
+      <div class="glass-card rounded-2xl p-4 space-y-3 shadow-md">
+        <div class="flex justify-between items-center bg-[#090e24]/70 p-3 rounded-xl border border-indigo-500/20">
           <div>
-            <p class="text-[11px] text-blue-200" data-i18n="send_coins_to">Send coins to this Username:</p>
-            <p id="submit-coin-receiver" class="font-bold text-[#d48bff] text-sm font-mono">@TR_coinuniverse</p>
+            <p class="text-[11px] text-indigo-200" data-i18n="send_coins_to">Send coins to this Username:</p>
+            <p id="submit-coin-receiver" class="font-bold text-indigo-300 text-sm font-mono">@TR_coinuniverse</p>
           </div>
-          <button onclick="copyReceiverUsername()" class="bg-[#b847fa]/20 text-[#d48bff] text-xs px-3 py-1.5 rounded-lg border border-[#b847fa]/40 active:scale-95 transition" data-i18n="btn_copy">Copy</button>
+          <button onclick="copyReceiverUsername()" class="bg-indigo-600/30 text-indigo-200 text-xs px-3 py-1.5 rounded-lg border border-indigo-400/40 active:scale-95 transition" data-i18n="btn_copy">Copy</button>
         </div>
         <div>
-          <p class="text-xs font-semibold text-gray-200 mb-1.5" data-i18n="live_pricing_tiers">Live Pricing Tiers:</p>
-          <div id="submit-coin-tiers-table" class="space-y-1 text-xs"></div>
+          <p class="text-xs font-semibold text-slate-200 mb-1.5" data-i18n="live_pricing_tiers">Live Pricing Tiers:</p>
+          <div id="submit-coin-tiers-table" class="space-y-1.5 text-xs"></div>
         </div>
       </div>
 
-      <div class="bg-[#042078] border border-blue-500/30 rounded-xl p-4 space-y-4 shadow-md">
+      <div class="glass-card rounded-2xl p-4 space-y-4 shadow-md">
         <div>
-          <label class="block text-xs text-gray-200 font-medium mb-1" data-i18n="label_coin_amount">Coin Amount (in K)</label>
-          <input type="number" id="input-coin-amount" oninput="calculatePayout()" placeholder="Example: 20" class="w-full bg-[#03185f] border border-blue-500/40 rounded-xl px-3 py-2.5 text-white text-sm focus:border-[#b847fa] focus:outline-none">
+          <div class="flex justify-between items-center mb-1">
+            <label class="block text-xs text-slate-200 font-medium" data-i18n="label_coin_amount">Coin Amount (in K)</label>
+            <span id="coin-min-max-indicator" class="text-[10px] text-cyan-400 font-bold"></span>
+          </div>
+          <input type="number" id="input-coin-amount" oninput="calculatePayout()" placeholder="Example: 20" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm focus:border-indigo-400 focus:outline-none transition">
+          <p id="coin-limit-error" class="hidden text-[11px] text-rose-400 mt-1 font-semibold"></p>
         </div>
-        <div class="bg-gradient-to-r from-[#052b9c] to-[#042078] border border-[#b847fa]/40 p-3.5 rounded-xl flex justify-between items-center shadow">
-          <span class="text-xs text-blue-100" data-i18n="label_total_payout">Total Amount:</span>
+        <div class="bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-500/30 p-3.5 rounded-xl flex justify-between items-center shadow">
+          <span class="text-xs text-indigo-100" data-i18n="label_total_payout">Total Amount:</span>
           <span id="calculated-payout-text" class="text-xl font-black text-cyan-300">৳ 0.00</span>
         </div>
         <div>
           <div class="flex justify-between items-center mb-1.5">
-            <label class="block text-xs text-gray-200 font-medium" data-i18n="label_select_payment">Select Payment Method</label>
-            <!-- বড় এবং স্পষ্ট ম্যানেজ নাম্বার বাটন (Purple Gradient) -->
-            <button onclick="navigate('payment-settings')" class="bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-[#b847fa]/40 shadow flex items-center gap-1.5 active:scale-95 transition">
+            <label class="block text-xs text-slate-200 font-medium" data-i18n="label_select_payment">Select Payment Method</label>
+            <button onclick="navigate('payment-settings')" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-indigo-400/40 shadow flex items-center gap-1.5 active:scale-95 transition">
               <i class="fa-solid fa-gear text-[10px]"></i>
               <span data-i18n="btn_manage_numbers">Manage Numbers</span>
             </button>
@@ -198,189 +282,335 @@
 
         <!-- ফাইল চয়েস বক্স এবং ইমেজ প্রিভিউ -->
         <div>
-          <label class="block text-xs text-gray-200 font-medium mb-1.5" data-i18n="label_screenshot_proof">Screenshot Proof (Required)</label>
-          <div onclick="document.getElementById('order-proof-file').click()" class="border-2 border-dashed border-[#b847fa]/60 hover:border-[#b847fa] bg-[#03185f] hover:bg-[#052585] rounded-xl p-5 text-center cursor-pointer transition shadow">
-            <i class="fa-solid fa-cloud-arrow-up text-2xl text-[#b847fa] mb-1.5 block"></i>
-            <p class="text-xs font-bold text-gray-100">Tap to upload Screenshot / স্ক্রিনশট সিলেক্ট করুন</p>
-            <p class="text-[10px] text-blue-200 mt-0.5">Supports PNG, JPG, JPEG</p>
+          <label class="block text-xs text-slate-200 font-medium mb-1.5" data-i18n="label_screenshot_proof">Screenshot Proof (Required)</label>
+          <div onclick="document.getElementById('order-proof-file').click()" class="border-2 border-dashed border-indigo-500/40 hover:border-indigo-400 bg-[#090e24]/70 hover:bg-[#090e24] rounded-2xl p-5 text-center cursor-pointer transition shadow">
+            <i class="fa-solid fa-cloud-arrow-up text-2xl text-indigo-400 mb-1.5 block"></i>
+            <p class="text-xs font-bold text-slate-100">Tap to upload Screenshot / স্ক্রিনশট সিলেক্ট করুন</p>
+            <p class="text-[10px] text-indigo-300 mt-0.5">Supports PNG, JPG, JPEG (Auto Compressed)</p>
           </div>
           <input type="file" id="order-proof-file" accept="image/*" onchange="previewProofImage(this)" class="hidden">
           
-          <!-- প্রিভিউ এরিয়া -->
-          <div id="proof-preview-container" class="hidden mt-3 p-2 bg-[#03185f] border border-[#b847fa]/50 rounded-xl relative">
-            <p class="text-[10px] text-[#d48bff] font-bold mb-1">Selected Proof Preview:</p>
-            <img id="proof-preview-img" src="" class="w-full max-h-48 object-contain rounded-lg border border-blue-500/40 bg-black/40">
+          <div id="proof-preview-container" class="hidden mt-3 p-2 bg-[#090e24] border border-indigo-500/40 rounded-xl relative">
+            <p class="text-[10px] text-indigo-300 font-bold mb-1">Selected Proof Preview:</p>
+            <img id="proof-preview-img" src="" class="w-full max-h-48 object-contain rounded-lg border border-indigo-500/20 bg-black/40">
             <button onclick="removeSelectedFile()" class="absolute top-3 right-3 bg-red-600 hover:bg-red-700 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs shadow">
               <i class="fa-solid fa-xmark"></i>
             </button>
           </div>
         </div>
 
-        <button id="btn-submit-order-elem" onclick="submitOrderToAdmin()" class="w-full bg-gradient-to-r from-[#b847fa] via-[#a834f7] to-[#8619d4] hover:brightness-110 text-white font-black py-3 rounded-xl shadow-lg shadow-purple-900/40 active:scale-[0.99] transition" data-i18n="btn_submit_order">Submit Order</button>
+        <button id="btn-submit-order-elem" onclick="submitOrderToAdmin()" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-3.5 rounded-xl shadow-lg shadow-indigo-950/50 active:scale-[0.99] transition" data-i18n="btn_submit_order">Submit Order</button>
       </div>
     </section>
 
     <!-- ORDER SUCCESS -->
-    <section id="view-order-success" class="hidden text-center py-10 space-y-5">
-      <div class="w-16 h-16 bg-[#b847fa]/20 text-[#d48bff] rounded-full flex items-center justify-center mx-auto text-3xl border border-[#b847fa]/50 shadow-lg">
+    <section id="view-order-success" class="w-full hidden text-center py-10 space-y-5 my-auto">
+      <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-emerald-500/40 shadow-lg">
         <i class="fa-solid fa-check"></i>
       </div>
       <h2 class="text-2xl font-black text-white" data-i18n="order_success_title">Order Submitted!</h2>
-      <div class="bg-[#042078] border border-blue-500/40 p-4 rounded-xl max-w-xs mx-auto shadow-md">
-        <p class="text-[11px] text-blue-200" data-i18n="label_order_id">Your Order ID:</p>
-        <p id="success-order-id-display" class="font-mono font-bold text-cyan-300 text-base mt-0.5">#CS-0000</p>
+      
+      <!-- অর্ডার আইডি বক্স (ক্লিক করলে অটো কপি) -->
+      <div onclick="copySuccessOrderId()" class="glass-card hover:border-cyan-400 p-4 rounded-2xl max-w-xs mx-auto shadow-md cursor-pointer transition active:scale-95 group">
+        <p class="text-[11px] text-indigo-200" data-i18n="label_order_id">Your Order ID:</p>
+        <div class="flex items-center justify-center gap-2 mt-1">
+          <p id="success-order-id-display" class="font-mono font-bold text-cyan-300 text-lg">#CS-0000</p>
+          <i class="fa-regular fa-copy text-xs text-indigo-300 group-hover:text-cyan-300"></i>
+        </div>
+        <p class="text-[9px] text-indigo-300/80 mt-1">ট্যাপ করে অর্ডার আইডি কপি করুন</p>
       </div>
-      <button onclick="navigate('home')" class="bg-gradient-to-r from-[#b847fa] to-[#9326e6] text-white font-semibold text-xs py-2.5 px-6 rounded-lg hover:brightness-110 shadow" data-i18n="btn_back_home">Back to Home</button>
+
+      <button onclick="navigate('home')" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold text-xs py-3 px-8 rounded-xl hover:brightness-110 shadow-lg transition active:scale-95" data-i18n="btn_back_home">Back to Home</button>
     </section>
 
     <!-- PAYMENT SETTINGS -->
-    <section id="view-payment-settings" class="hidden space-y-4">
+    <section id="view-payment-settings" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-wallet text-[#b847fa]"></i> <span data-i18n="payment_settings_title">Payment Numbers</span></h2>
-        <button onclick="navigate('home')" class="text-xs text-blue-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-wallet text-indigo-400"></i> <span data-i18n="payment_settings_title">Payment Numbers</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
-      <div class="bg-[#042078] border border-blue-500/30 rounded-xl p-4 space-y-3 shadow-md">
-        <input type="text" id="new-account-number" placeholder="Number or Wallet Address" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg px-3 py-2 text-white text-xs focus:border-[#b847fa] focus:outline-none">
+      <div class="glass-card rounded-2xl p-4 space-y-3 shadow-md">
+        <input type="text" id="new-account-number" placeholder="Number or Wallet Address" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
         <div class="grid grid-cols-2 gap-2 text-xs" id="payment-method-radios"></div>
-        <button onclick="savePaymentNumber()" class="w-full bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold py-2 rounded-lg text-xs shadow" data-i18n="btn_save_number">Save Number</button>
+        <button onclick="savePaymentNumber()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2.5 rounded-xl text-xs shadow transition active:scale-95" data-i18n="btn_save_number">Save Number</button>
       </div>
       <div id="saved-numbers-container" class="space-y-2"></div>
+
+      <!-- পেমেন্ট সেটিংসের নিচে শর্টকাট বাটন -->
+      <div class="grid grid-cols-3 gap-2.5 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+        </button>
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+        </button>
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+        </button>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
+        </button>
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+      </div>
     </section>
 
     <!-- APKS -->
-    <section id="view-apks" class="hidden space-y-4">
+    <section id="view-apks" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-download text-[#b847fa]"></i> <span data-i18n="apks_heading">Download APKs</span></h2>
-        <button onclick="navigate('home')" class="text-xs text-blue-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-download text-indigo-400"></i> <span data-i18n="apks_heading">Download APKs</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
       <div id="apk-cards-list" class="space-y-2.5"></div>
+
+      <!-- APKs তালিকার নিচে শর্টকাট বাটন -->
+      <div class="grid grid-cols-3 gap-2.5 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+        </button>
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+        </button>
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+        </button>
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+        </button>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+        </button>
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+      </div>
     </section>
     
     <!-- VIDEOS -->
-    <section id="view-methods" class="hidden space-y-4">
+    <section id="view-methods" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-play text-[#b847fa]"></i> <span data-i18n="tutorials_heading">Video Tutorials</span></h2>
-        <button onclick="navigate('home')" class="text-xs text-blue-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-play text-indigo-400"></i> <span data-i18n="tutorials_heading">Video Tutorials</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
       <div id="methods-video-list" class="space-y-3"></div>
+
+      <!-- টিউটোরিয়াল পেজের নিচে শর্টকাট বাটন -->
+      <div class="grid grid-cols-3 gap-2.5 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+        </button>
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+        </button>
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+        </button>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
+        </button>
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+      </div>
     </section>
 
     <!-- CHANNELS -->
-    <section id="view-channels" class="hidden space-y-4">
+    <section id="view-channels" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-brands fa-telegram text-[#b847fa]"></i> <span data-i18n="channels_heading">Channels</span></h2>
-        <button onclick="navigate('home')" class="text-xs text-blue-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-brands fa-telegram text-indigo-400"></i> <span data-i18n="channels_heading">Channels</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
       <div id="channels-list" class="space-y-2.5"></div>
+
+      <!-- চ্যানেল পেজের নিচে শর্টকাট বাটন -->
+      <div class="grid grid-cols-3 gap-2.5 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+        </button>
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+        </button>
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+        </button>
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
+        </button>
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+      </div>
     </section>
 
     <!-- ORDER HISTORY -->
-    <section id="view-history" class="hidden space-y-4">
+    <section id="view-history" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-[#b847fa]"></i> <span data-i18n="history_heading">Order History</span></h2>
-        <button onclick="navigate('home')" class="text-xs text-blue-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> <span data-i18n="history_heading">Order History</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
 
       <div>
-        <input type="text" id="history-search-input" oninput="filterHistory()" placeholder="Search Order ID (#CS-...)" class="w-full bg-[#042078] border border-blue-500/30 rounded-xl px-3 py-2 text-white text-xs focus:border-[#b847fa] focus:outline-none">
+        <input type="text" id="history-search-input" oninput="filterHistory()" placeholder="Search Order ID (#CS-...)" class="w-full glass-card rounded-xl px-3 py-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
       </div>
 
-      <div class="flex border-b border-blue-500/40 text-xs">
-        <button id="tab-btn-all" onclick="switchHistoryTab('all')" class="flex-1 py-2 font-bold text-[#d48bff] border-b-2 border-[#b847fa]" data-i18n="tab_all_orders">All Orders</button>
-        <button id="tab-btn-approved" onclick="switchHistoryTab('approved')" class="flex-1 py-2 font-bold text-blue-200 hover:text-white" data-i18n="tab_approved_orders">Approved Orders</button>
+      <div class="flex border-b border-indigo-500/20 text-xs">
+        <button id="tab-btn-all" onclick="switchHistoryTab('all')" class="flex-1 py-2 font-bold text-indigo-300 border-b-2 border-indigo-500" data-i18n="tab_all_orders">All Orders</button>
+        <button id="tab-btn-approved" onclick="switchHistoryTab('approved')" class="flex-1 py-2 font-bold text-indigo-200/60 hover:text-white" data-i18n="tab_approved_orders">Approved Orders</button>
       </div>
 
       <div id="order-history-list" class="space-y-3"></div>
+
+      <!-- হিস্ট্রি পেজের নিচে শর্টকাট বাটন -->
+      <div class="grid grid-cols-3 gap-2.5 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+        </button>
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+        </button>
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+        </button>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
+        </button>
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+      </div>
     </section>
 
     <!-- ADMIN DASHBOARD -->
-    <section id="view-admin" class="hidden space-y-5">
-      <div class="flex items-center justify-between border-b border-blue-500/40 pb-3">
+    <section id="view-admin" class="w-full hidden space-y-5 my-auto py-4">
+      <div class="flex items-center justify-between border-b border-indigo-500/20 pb-3">
         <div>
-          <h2 class="text-lg font-black text-[#d48bff]">Admin Control Panel</h2>
-          <p class="text-[11px] text-blue-200">Cloud Sync Active</p>
+          <h2 class="text-lg font-black text-indigo-300">Admin Control Panel</h2>
+          <p class="text-[11px] text-indigo-200">Cloud Sync Active</p>
         </div>
-        <button onclick="navigate('home')" class="text-xs bg-[#03185f] text-white px-3 py-1.5 rounded-lg hover:bg-blue-900 border border-blue-500/40">Exit</button>
+        <button onclick="navigate('home')" class="text-xs bg-[#090e24] text-white px-3 py-1.5 rounded-lg hover:bg-indigo-900 border border-indigo-500/30">Exit</button>
       </div>
 
       <!-- DEMO PASSWORD BAR -->
-      <div class="bg-gradient-to-r from-[#052b9c] to-[#042078] border border-[#b847fa]/40 p-4 rounded-xl shadow-lg flex justify-between items-center">
+      <div class="bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-500/30 p-4 rounded-xl shadow-lg flex justify-between items-center">
         <div>
-          <span class="text-[10px] uppercase font-bold text-blue-200 tracking-wider block">Admin Demo Password:</span>
+          <span class="text-[10px] uppercase font-bold text-indigo-200 tracking-wider block">Admin Demo Password:</span>
           <span id="display-demo-pass" class="font-mono text-lg font-black text-cyan-300 tracking-wider">11374314</span>
         </div>
-        <button onclick="openChangeDemoPassModal()" class="bg-[#b847fa]/20 hover:bg-[#b847fa]/30 text-[#d48bff] border border-[#b847fa]/40 text-xs font-bold px-3 py-1.5 rounded-lg transition active:scale-95">
+        <button onclick="openChangeDemoPassModal()" class="bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-200 border border-indigo-400/40 text-xs font-bold px-3 py-1.5 rounded-lg transition active:scale-95">
           <i class="fa-solid fa-key text-[10px] mr-1"></i> Change
         </button>
       </div>
 
       <!-- ADMIN SUPPORT USERNAME -->
-      <div class="bg-[#042078] border border-blue-500/30 p-4 rounded-xl space-y-2">
+      <div class="glass-card p-4 rounded-xl space-y-2">
         <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-brands fa-telegram text-cyan-400"></i> Support Admin Telegram Username</h3>
         <div class="flex gap-2">
-          <input type="text" id="admin-support-user-input" placeholder="e.g. TR_coinuniverse" class="flex-grow bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white text-xs focus:border-[#b847fa] focus:outline-none">
-          <button onclick="saveAdminSupportUsername()" class="bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save</button>
+          <input type="text" id="admin-support-user-input" placeholder="e.g. TR_coinuniverse" class="flex-grow bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
+          <button onclick="saveAdminSupportUsername()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save</button>
         </div>
       </div>
 
       <!-- ABOUT US EDITOR -->
-      <div class="bg-[#042078] border border-blue-500/30 p-4 rounded-xl space-y-2">
-        <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-[#b847fa]"></i> Manage "About Us" Message</h3>
-        <textarea id="admin-about-us-input" rows="4" placeholder="Write About Us information here..." class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white text-xs focus:border-[#b847fa] focus:outline-none"></textarea>
+      <div class="glass-card p-4 rounded-xl space-y-2">
+        <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-indigo-400"></i> Manage "About Us" Message</h3>
+        <textarea id="admin-about-us-input" rows="4" placeholder="Write About Us information here..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none"></textarea>
         <div class="flex justify-end gap-2">
-          <button onclick="clearAboutUs()" class="bg-rose-950 text-rose-300 px-3 py-1.5 rounded-lg text-xs border border-rose-800">Clear</button>
-          <button onclick="saveAboutUs()" class="bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save Message</button>
+          <button onclick="clearAboutUs()" class="bg-rose-950/60 text-rose-300 px-3 py-1.5 rounded-lg text-xs border border-rose-800">Clear</button>
+          <button onclick="saveAboutUs()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save Message</button>
         </div>
       </div>
 
       <!-- APP LOGO -->
-      <div class="bg-[#042078] border border-blue-500/30 p-4 rounded-xl space-y-2">
+      <div class="glass-card p-4 rounded-xl space-y-2">
         <h3 class="text-xs font-bold text-white">App Header Logo (Upload via Cloud)</h3>
-        <input type="file" id="admin-app-logo-file" accept="image/*" class="w-full text-xs text-blue-200 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-[#03185f] file:text-white border border-blue-500/40 rounded-lg">
-        <button id="btn-upload-logo" onclick="uploadAppLogo()" class="bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save New Logo</button>
+        <input type="file" id="admin-app-logo-file" accept="image/*" class="w-full text-xs text-indigo-200 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-[#090e24] file:text-white border border-indigo-500/30 rounded-lg">
+        <button id="btn-upload-logo" onclick="uploadAppLogo()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save New Logo</button>
       </div>
 
       <!-- COINS -->
-      <div class="bg-[#042078] border border-blue-500/30 p-4 rounded-xl space-y-3">
+      <div class="glass-card p-4 rounded-xl space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-white">Coins & Dynamic Rates</h3>
-          <button onclick="openCoinModal()" class="bg-[#b847fa]/20 text-[#d48bff] border border-[#b847fa]/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Coin</button>
+          <button onclick="openCoinModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Coin</button>
         </div>
         <div id="admin-coins-list" class="space-y-2"></div>
       </div>
 
       <!-- PAYMENT METHODS -->
-      <div class="bg-[#042078] border border-blue-500/30 p-4 rounded-xl space-y-3">
+      <div class="glass-card p-4 rounded-xl space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-white">Manage Payment Methods</h3>
-          <button onclick="openPaymentMethodModal()" class="bg-[#b847fa]/20 text-[#d48bff] border border-[#b847fa]/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Method</button>
+          <button onclick="openPaymentMethodModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Method</button>
         </div>
         <div id="admin-payment-methods-list" class="space-y-2"></div>
       </div>
       
       <!-- APKS -->
-      <div class="bg-[#042078] border border-blue-500/30 p-4 rounded-xl space-y-3">
+      <div class="glass-card p-4 rounded-xl space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-white">Manage APKs</h3>
-          <button onclick="openApkModal()" class="bg-[#b847fa]/20 text-[#d48bff] border border-[#b847fa]/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add APK</button>
+          <button onclick="openApkModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add APK</button>
         </div>
         <div id="admin-apks-list" class="space-y-2"></div>
       </div>
 
       <!-- VIDEOS -->
-      <div class="bg-[#042078] border border-blue-500/30 p-4 rounded-xl space-y-3">
+      <div class="glass-card p-4 rounded-xl space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-white">Manage Video Tutorials</h3>
-          <button onclick="openVideoModal()" class="bg-[#b847fa]/20 text-[#d48bff] border border-[#b847fa]/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Video</button>
+          <button onclick="openVideoModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Video</button>
         </div>
         <div id="admin-videos-list" class="space-y-2"></div>
       </div>
 
       <!-- CHANNELS -->
-      <div class="bg-[#042078] border border-blue-500/30 p-4 rounded-xl space-y-3">
+      <div class="glass-card p-4 rounded-xl space-y-3">
         <div class="flex justify-between items-center">
           <h3 class="text-xs font-bold text-white">Manage Channels</h3>
-          <button onclick="openChannelModal()" class="bg-[#b847fa]/20 text-[#d48bff] border border-[#b847fa]/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Channel</button>
+          <button onclick="openChannelModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Channel</button>
         </div>
         <div id="admin-channels-list" class="space-y-2"></div>
       </div>
@@ -389,53 +619,53 @@
   </main>
 
   <!-- PROFESSIONAL FOOTER SECTION -->
-  <footer class="w-full bg-[#020d36] border-t border-blue-500/30 text-blue-200 text-xs py-8 px-5 mt-8 shadow-2xl">
+  <footer class="w-full bg-[#080d22]/90 border-t border-indigo-500/20 text-indigo-200/70 text-xs py-8 px-5 mt-auto shadow-2xl">
     <div class="max-w-md mx-auto space-y-6">
       
-      <div class="flex items-center gap-2 pb-2 border-b border-blue-500/20">
-        <div class="w-7 h-7 rounded-full bg-[#b847fa]/20 flex items-center justify-center text-[#d48bff] border border-[#b847fa]/40">
+      <div class="flex items-center gap-2 pb-2 border-b border-indigo-500/20">
+        <div class="w-7 h-7 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-300 border border-indigo-400/30">
           <i class="fa-solid fa-store text-xs"></i>
         </div>
         <span class="font-extrabold text-white text-sm">RR COIN UNIVERSE</span>
         <span class="w-2 h-2 rounded-full bg-cyan-400 live-dot ml-1"></span>
       </div>
 
-      <p class="text-[11px] text-blue-200/80 leading-relaxed">
+      <p class="text-[11px] text-indigo-200/70 leading-relaxed">
         Your go-to platform for discovering legitimate coin selling, best automated rates, and instant verified mobile payouts.
       </p>
 
       <!-- QUICK LINKS -->
       <div class="space-y-2.5">
-        <h4 class="text-[#d48bff] font-black tracking-wider text-[11px] uppercase">QUICK LINKS</h4>
-        <ul class="space-y-2 text-xs font-medium text-gray-200">
-          <li><button onclick="navigate('home')" class="hover:text-[#d48bff] transition">Home</button></li>
-          <li><button onclick="navigate('methods')" class="hover:text-[#d48bff] transition">Instagram Work</button></li>
-          <li><button onclick="navigate('coin-store')" class="hover:text-[#d48bff] transition">Coin Methods</button></li>
-          <li><button onclick="navigate('apks')" class="hover:text-[#d48bff] transition">All APKs</button></li>
+        <h4 class="text-indigo-300 font-black tracking-wider text-[11px] uppercase">QUICK LINKS</h4>
+        <ul class="space-y-2 text-xs font-medium text-slate-200">
+          <li><button onclick="navigate('home')" class="hover:text-indigo-300 transition">Home</button></li>
+          <li><button onclick="navigate('methods')" class="hover:text-indigo-300 transition">Instagram Work</button></li>
+          <li><button onclick="navigate('coin-store')" class="hover:text-indigo-300 transition">Coin Methods</button></li>
+          <li><button onclick="navigate('apks')" class="hover:text-indigo-300 transition">All APKs</button></li>
         </ul>
       </div>
 
       <!-- RESOURCES -->
       <div class="space-y-2.5">
-        <h4 class="text-[#d48bff] font-black tracking-wider text-[11px] uppercase">RESOURCES</h4>
-        <ul class="space-y-2 text-xs font-medium text-gray-200">
-          <li><button onclick="navigate('methods')" class="hover:text-[#d48bff] transition">Work / Methods</button></li>
-          <li><button onclick="navigate('channels')" class="hover:text-[#d48bff] transition">Telegram Channels</button></li>
-          <li><button onclick="contactSupportAdmin()" class="hover:text-[#d48bff] transition">Admin</button></li>
+        <h4 class="text-indigo-300 font-black tracking-wider text-[11px] uppercase">RESOURCES</h4>
+        <ul class="space-y-2 text-xs font-medium text-slate-200">
+          <li><button onclick="navigate('methods')" class="hover:text-indigo-300 transition">Work / Methods</button></li>
+          <li><button onclick="navigate('channels')" class="hover:text-indigo-300 transition">Telegram Channels</button></li>
+          <li><button onclick="contactSupportAdmin()" class="hover:text-indigo-300 transition">Admin</button></li>
         </ul>
       </div>
 
       <!-- ABOUT -->
       <div class="space-y-2.5">
-        <h4 class="text-[#d48bff] font-black tracking-wider text-[11px] uppercase">ABOUT</h4>
-        <ul class="space-y-2 text-xs font-medium text-gray-200">
-          <li><button onclick="openAboutModal()" class="hover:text-[#d48bff] transition">About Us</button></li>
+        <h4 class="text-indigo-300 font-black tracking-wider text-[11px] uppercase">ABOUT</h4>
+        <ul class="space-y-2 text-xs font-medium text-slate-200">
+          <li><button onclick="openAboutModal()" class="hover:text-indigo-300 transition">About Us</button></li>
         </ul>
       </div>
 
-      <div class="pt-4 border-t border-blue-500/20 text-center text-[10px] text-blue-300/60 space-y-1">
+      <div class="pt-4 border-t border-indigo-500/20 text-center text-[10px] text-indigo-300/50 space-y-1">
         <p>© 2026 RR COIN UNIVERSE. All rights reserved.</p>
-        <p>Built with <span class="text-[#b847fa]">💜</span> for the earning community.</p>
+        <p>Built with <span class="text-indigo-400">💜</span> for the earning community.</p>
       </div>
 
     </div>
@@ -443,73 +673,73 @@
 
   <!-- ABOUT US MODAL -->
   <div id="modal-about-us-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-sm space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-blue-500/30 pb-3">
-        <h3 class="text-[#d48bff] font-black text-sm flex items-center gap-2"><i class="fa-solid fa-circle-info"></i> About Us</h3>
-        <button onclick="closeAboutModal()" class="text-blue-200 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div class="glass-card rounded-2xl p-5 w-full max-w-sm space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-indigo-500/20 pb-3">
+        <h3 class="text-indigo-300 font-black text-sm flex items-center gap-2"><i class="fa-solid fa-circle-info"></i> About Us</h3>
+        <button onclick="closeAboutModal()" class="text-indigo-200 hover:text-white p-1"><i class="fa-solid fa-xmark text-lg"></i></button>
       </div>
-      <div id="about-us-modal-content" class="text-xs text-blue-100 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap"></div>
-      <button onclick="closeAboutModal()" class="w-full bg-[#03185f] hover:bg-blue-900 text-white py-2 rounded-xl text-xs font-bold border border-blue-500/40">Close</button>
+      <div id="about-us-modal-content" class="text-xs text-indigo-100 leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap"></div>
+      <button onclick="closeAboutModal()" class="w-full bg-[#090e24] hover:bg-indigo-900 text-white py-2 rounded-xl text-xs font-bold border border-indigo-500/30">Close</button>
     </div>
   </div>
 
   <!-- ADMIN AUTH MODAL -->
   <div id="modal-admin-auth-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-xs space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-blue-500/30 pb-2">
-        <h3 class="text-[#d48bff] font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-lock"></i> Admin Access</h3>
-        <button onclick="closeAdminAuthModal()" class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <div class="glass-card rounded-2xl p-5 w-full max-w-xs space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-indigo-500/20 pb-2">
+        <h3 class="text-indigo-300 font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-lock"></i> Admin Access</h3>
+        <button onclick="closeAdminAuthModal()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <p class="text-[11px] text-blue-200">Enter Admin PIN or Password to access panel:</p>
-      <input type="password" id="admin-auth-input" placeholder="Enter Password..." class="w-full bg-[#03185f] border border-blue-500/40 rounded-xl px-3 py-2 text-white text-xs focus:border-[#b847fa] focus:outline-none">
+      <p class="text-[11px] text-indigo-200">Enter Admin PIN or Password to access panel:</p>
+      <input type="password" id="admin-auth-input" placeholder="Enter Password..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
       <div class="flex gap-2">
-        <button onclick="closeAdminAuthModal()" class="w-1/2 bg-[#03185f] text-white py-2 rounded-lg text-xs font-bold border border-blue-500/30">Cancel</button>
-        <button onclick="verifyAdminPassword()" class="w-1/2 bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white py-2 rounded-lg text-xs font-black shadow">Login</button>
+        <button onclick="closeAdminAuthModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg text-xs font-bold border border-indigo-500/30">Cancel</button>
+        <button onclick="verifyAdminPassword()" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white py-2 rounded-lg text-xs font-black shadow">Login</button>
       </div>
     </div>
   </div>
 
   <!-- CHANGE DEMO PASSWORD MODAL -->
   <div id="modal-change-pass-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-xs space-y-3 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-blue-500/30 pb-2">
-        <h3 class="text-[#d48bff] font-bold text-xs flex items-center gap-2"><i class="fa-solid fa-key"></i> Change Demo Password</h3>
-        <button onclick="closeChangeDemoPassModal()" class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <div class="glass-card rounded-2xl p-5 w-full max-w-xs space-y-3 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-indigo-500/20 pb-2">
+        <h3 class="text-indigo-300 font-bold text-xs flex items-center gap-2"><i class="fa-solid fa-key"></i> Change Demo Password</h3>
+        <button onclick="closeChangeDemoPassModal()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div>
-        <label class="text-[10px] text-blue-200 block mb-1">Previous Password</label>
-        <input type="password" id="input-old-pass" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white text-xs focus:border-[#b847fa] focus:outline-none">
+        <label class="text-[10px] text-indigo-200 block mb-1">Previous Password</label>
+        <input type="password" id="input-old-pass" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
       </div>
       <div>
-        <label class="text-[10px] text-blue-200 block mb-1">New Password</label>
-        <input type="password" id="input-new-pass" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white text-xs focus:border-[#b847fa] focus:outline-none">
+        <label class="text-[10px] text-indigo-200 block mb-1">New Password</label>
+        <input type="password" id="input-new-pass" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
       </div>
       <div>
-        <label class="text-[10px] text-blue-200 block mb-1">Confirm Password</label>
-        <input type="password" id="input-confirm-pass" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white text-xs focus:border-[#b847fa] focus:outline-none">
+        <label class="text-[10px] text-indigo-200 block mb-1">Confirm Password</label>
+        <input type="password" id="input-confirm-pass" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
       </div>
       <div class="flex gap-2 pt-2">
-        <button onclick="closeChangeDemoPassModal()" class="w-1/2 bg-[#03185f] text-white py-2 rounded-lg text-xs border border-blue-500/30">Cancel</button>
-        <button onclick="saveNewDemoPassword()" class="w-1/2 bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold py-2 rounded-lg text-xs shadow">Save</button>
+        <button onclick="closeChangeDemoPassModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg text-xs border border-indigo-500/30">Cancel</button>
+        <button onclick="saveNewDemoPassword()" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2 rounded-lg text-xs shadow">Save</button>
       </div>
     </div>
   </div>
 
   <!-- LANGUAGE MODAL -->
   <div id="modal-language-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-xs space-y-4 shadow-2xl">
-      <div class="flex justify-between items-center border-b border-blue-500/30 pb-3">
-        <h3 class="text-[#d48bff] font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-language"></i> Select Language / ভাষা</h3>
-        <button onclick="closeLanguageModal()" class="text-blue-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    <div class="glass-card rounded-2xl p-5 w-full max-w-xs space-y-4 shadow-2xl">
+      <div class="flex justify-between items-center border-b border-indigo-500/20 pb-3">
+        <h3 class="text-indigo-300 font-bold text-sm flex items-center gap-2"><i class="fa-solid fa-language"></i> Select Language / ভাষা</h3>
+        <button onclick="closeLanguageModal()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="space-y-2">
-        <button onclick="changeLanguage('en')" class="w-full bg-[#03185f] hover:bg-[#052585] border border-blue-500/40 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-white">
+        <button onclick="changeLanguage('en')" class="w-full bg-[#090e24] hover:bg-indigo-900/40 border border-indigo-500/30 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-white">
           <span class="flex items-center gap-2 text-base">🇺🇸 <span class="text-xs font-bold">English (US)</span></span>
-          <i id="check-lang-en" class="fa-solid fa-check text-[#b847fa]"></i>
+          <i id="check-lang-en" class="fa-solid fa-check text-indigo-400"></i>
         </button>
-        <button onclick="changeLanguage('bn')" class="w-full bg-[#03185f] hover:bg-[#052585] border border-blue-500/40 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-white">
+        <button onclick="changeLanguage('bn')" class="w-full bg-[#090e24] hover:bg-indigo-900/40 border border-indigo-500/30 p-3 rounded-xl flex items-center justify-between text-xs font-semibold text-white">
           <span class="flex items-center gap-2 text-base">🇧🇩 <span class="text-xs font-bold">বাংলা (BD)</span></span>
-          <i id="check-lang-bn" class="fa-solid fa-check text-[#b847fa] hidden"></i>
+          <i id="check-lang-bn" class="fa-solid fa-check text-indigo-400 hidden"></i>
         </button>
       </div>
     </div>
@@ -517,118 +747,118 @@
 
   <!-- ADMIN CUSTOM MODALS -->
   <div id="custom-modal-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
-    <div id="modal-coin" class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-sm hidden max-h-[90vh] overflow-y-auto">
-      <h3 class="text-[#d48bff] font-bold mb-4">Add / Edit Coin</h3>
+    <div id="modal-coin" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden max-h-[90vh] overflow-y-auto">
+      <h3 class="text-indigo-300 font-bold mb-4">Add / Edit Coin</h3>
       <input type="hidden" id="modal-coin-id">
       <div class="space-y-3 text-xs">
         <div>
-          <label class="text-blue-200 mb-1 block">Coin Name</label>
-          <input type="text" id="modal-coin-name" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
+          <label class="text-slate-200 mb-1 block">Coin Name</label>
+          <input type="text" id="modal-coin-name" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div>
-          <label class="text-blue-200 mb-1 block">Coin Logo (Upload via Cloud)</label>
-          <input type="file" id="modal-coin-file" accept="image/*" class="w-full text-blue-200 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-[#03185f] file:text-white">
+          <label class="text-slate-200 mb-1 block">Coin Logo (Upload via Cloud)</label>
+          <input type="file" id="modal-coin-file" accept="image/*" class="w-full text-indigo-200 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-[#090e24] file:text-white">
         </div>
         <div>
-          <label class="text-blue-200 mb-1 block">Receiver Username/Wallet</label>
-          <input type="text" id="modal-coin-receiver" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
+          <label class="text-slate-200 mb-1 block">Receiver Username/Wallet</label>
+          <input type="text" id="modal-coin-receiver" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
-        <div class="pt-2 border-t border-blue-500/30">
-          <label class="text-[#d48bff] font-bold mb-2 block">Pricing Tiers (3 Steps)</label>
+        <div class="pt-2 border-t border-indigo-500/20">
+          <label class="text-indigo-300 font-bold mb-2 block">Pricing Tiers (3 Steps - Min & Max Limits)</label>
           <div class="flex gap-2 mb-2">
-            <input type="number" id="t1-min" placeholder="Min K" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
-            <input type="number" id="t1-max" placeholder="Max K" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
-            <input type="number" step="0.01" id="t1-rate" placeholder="Rate ৳" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
+            <input type="number" id="t1-min" placeholder="Min K" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
+            <input type="number" id="t1-max" placeholder="Max K" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
+            <input type="number" step="0.01" id="t1-rate" placeholder="Rate ৳" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
           </div>
           <div class="flex gap-2 mb-2">
-            <input type="number" id="t2-min" placeholder="Min K" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
-            <input type="number" id="t2-max" placeholder="Max K" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
-            <input type="number" step="0.01" id="t2-rate" placeholder="Rate ৳" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
+            <input type="number" id="t2-min" placeholder="Min K" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
+            <input type="number" id="t2-max" placeholder="Max K" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
+            <input type="number" step="0.01" id="t2-rate" placeholder="Rate ৳" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
           </div>
           <div class="flex gap-2">
-            <input type="number" id="t3-min" placeholder="Min K" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
-            <input type="number" id="t3-max" placeholder="Max K" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
-            <input type="number" step="0.01" id="t3-rate" placeholder="Rate ৳" class="w-1/3 bg-[#03185f] border border-blue-500/40 rounded p-1.5 text-white focus:border-[#b847fa] focus:outline-none">
+            <input type="number" id="t3-min" placeholder="Min K" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
+            <input type="number" id="t3-max" placeholder="Max K" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
+            <input type="number" step="0.01" id="t3-rate" placeholder="Rate ৳" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
           </div>
         </div>
         <div class="flex gap-3 mt-4">
-          <button onclick="closeCustomModal()" class="w-1/2 bg-[#03185f] text-white py-2 rounded-lg border border-blue-500/30">Cancel</button>
-          <button id="btn-save-coin" onclick="saveCoinFromModal()" class="w-1/2 bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Coin</button>
+          <button onclick="closeCustomModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg border border-indigo-500/30">Cancel</button>
+          <button id="btn-save-coin" onclick="saveCoinFromModal()" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Coin</button>
         </div>
       </div>
     </div>
 
-    <div id="modal-apk" class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-sm hidden">
-      <h3 class="text-[#d48bff] font-bold mb-4">Add / Edit APK</h3>
+    <div id="modal-apk" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
+      <h3 class="text-indigo-300 font-bold mb-4">Add / Edit APK</h3>
       <div class="space-y-3 text-xs">
-        <input type="text" id="modal-apk-name" placeholder="APK Name" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
-        <input type="text" id="modal-apk-url" placeholder="Download Link (URL)" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
+        <input type="text" id="modal-apk-name" placeholder="APK Name" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
+        <input type="text" id="modal-apk-url" placeholder="Download Link (URL)" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         <div>
-          <label class="text-blue-200 mb-1 block">APK Logo (Upload via Cloud)</label>
-          <input type="file" id="modal-apk-file" accept="image/*" class="w-full text-blue-200 file:bg-[#03185f] file:text-white file:border-0 rounded">
+          <label class="text-slate-200 mb-1 block">APK Logo (Upload via Cloud)</label>
+          <input type="file" id="modal-apk-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
         </div>
         <div class="flex gap-3 mt-4">
-          <button onclick="closeCustomModal()" class="w-1/2 bg-[#03185f] text-white py-2 rounded-lg border border-blue-500/30">Cancel</button>
-          <button id="btn-save-apk" onclick="saveApkFromModal()" class="w-1/2 bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save APK</button>
+          <button onclick="closeCustomModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg border border-indigo-500/30">Cancel</button>
+          <button id="btn-save-apk" onclick="saveApkFromModal()" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save APK</button>
         </div>
       </div>
     </div>
 
-    <div id="modal-video" class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-sm hidden">
-      <h3 class="text-[#d48bff] font-bold mb-4">Add Video Tutorial</h3>
+    <div id="modal-video" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
+      <h3 class="text-indigo-300 font-bold mb-4">Add Video Tutorial</h3>
       <div class="space-y-3 text-xs">
         <div>
-          <label class="text-blue-200 mb-1 block">থাম্বনেইল ছবি (Upload via Cloud)</label>
-          <input type="file" id="modal-video-thumb-file" accept="image/*" class="w-full text-blue-200 file:bg-[#03185f] file:text-white file:border-0 rounded">
+          <label class="text-slate-200 mb-1 block">থাম্বনেইল ছবি (Upload via Cloud)</label>
+          <input type="file" id="modal-video-thumb-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
         </div>
         <div>
-          <label class="text-blue-200 mb-1 block">ভিডিওর শিরোনাম (Title)</label>
-          <input type="text" id="modal-video-title" placeholder="শিরোনাম লিখুন" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
+          <label class="text-slate-200 mb-1 block">ভিডিওর শিরোনাম (Title)</label>
+          <input type="text" id="modal-video-title" placeholder="শিরোনাম লিখুন" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div>
-          <label class="text-blue-200 mb-1 block">YouTube ভিডিও লিংক</label>
-          <input type="text" id="modal-video-url" placeholder="https://youtube.com/..." class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
+          <label class="text-slate-200 mb-1 block">YouTube ভিডিও লিংক</label>
+          <input type="text" id="modal-video-url" placeholder="https://youtube.com/..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div class="flex gap-3 mt-4">
-          <button onclick="closeCustomModal()" class="w-1/2 bg-[#03185f] text-white py-2 rounded-lg border border-blue-500/30">Cancel</button>
-          <button id="btn-save-video" onclick="saveVideoFromModal()" class="w-1/2 bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Video</button>
+          <button onclick="closeCustomModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg border border-indigo-500/30">Cancel</button>
+          <button id="btn-save-video" onclick="saveVideoFromModal()" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Video</button>
         </div>
       </div>
     </div>
 
-    <div id="modal-channel" class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-sm hidden">
-      <h3 class="text-[#d48bff] font-bold mb-4">Add Telegram Channel</h3>
+    <div id="modal-channel" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
+      <h3 class="text-indigo-300 font-bold mb-4">Add Telegram Channel</h3>
       <div class="space-y-3 text-xs">
         <div>
-          <label class="text-blue-200 mb-1 block">চ্যানেল লোগো (Upload via Cloud)</label>
-          <input type="file" id="modal-channel-file" accept="image/*" class="w-full text-blue-200 file:bg-[#03185f] file:text-white file:border-0 rounded">
+          <label class="text-slate-200 mb-1 block">চ্যানেল লোগো (Upload via Cloud)</label>
+          <input type="file" id="modal-channel-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
         </div>
         <div>
-          <label class="text-blue-200 mb-1 block">চ্যানেলের নাম</label>
-          <input type="text" id="modal-channel-name" placeholder="যেমন: Main Channel" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
+          <label class="text-slate-200 mb-1 block">চ্যানেলের নাম</label>
+          <input type="text" id="modal-channel-name" placeholder="যেমন: Main Channel" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div>
-          <label class="text-blue-200 mb-1 block">টেলিগ্রাম লিংক</label>
-          <input type="text" id="modal-channel-url" placeholder="https://t.me/..." class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
+          <label class="text-slate-200 mb-1 block">টেলিগ্রাম লিংক</label>
+          <input type="text" id="modal-channel-url" placeholder="https://t.me/..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div class="flex gap-3 mt-4">
-          <button onclick="closeCustomModal()" class="w-1/2 bg-[#03185f] text-white py-2 rounded-lg border border-blue-500/30">Cancel</button>
-          <button id="btn-save-channel" onclick="saveChannelFromModal()" class="w-1/2 bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Channel</button>
+          <button onclick="closeCustomModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg border border-indigo-500/30">Cancel</button>
+          <button id="btn-save-channel" onclick="saveChannelFromModal()" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Channel</button>
         </div>
       </div>
     </div>
 
-    <div id="modal-payment-method" class="bg-[#042078] border border-blue-500/40 rounded-2xl p-5 w-full max-w-sm hidden">
-      <h3 class="text-[#d48bff] font-bold mb-4">Add Payment Method</h3>
+    <div id="modal-payment-method" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
+      <h3 class="text-indigo-300 font-bold mb-4">Add Payment Method</h3>
       <div class="space-y-3 text-xs">
-        <input type="text" id="modal-pm-name" placeholder="পদ্ধতির নাম (যেমন: Upay)" class="w-full bg-[#03185f] border border-blue-500/40 rounded-lg p-2 text-white focus:border-[#b847fa] focus:outline-none">
+        <input type="text" id="modal-pm-name" placeholder="পদ্ধতির নাম (যেমন: Upay)" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         <div>
-          <label class="text-blue-200 mb-1 block">লোগো ছবি (Upload via Cloud)</label>
-          <input type="file" id="modal-pm-file" accept="image/*" class="w-full text-blue-200 file:bg-[#03185f] file:text-white file:border-0 rounded">
+          <label class="text-slate-200 mb-1 block">লোগো ছবি (Upload via Cloud)</label>
+          <input type="file" id="modal-pm-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
         </div>
         <div class="flex gap-3 mt-4">
-          <button onclick="closeCustomModal()" class="w-1/2 bg-[#03185f] text-white py-2 rounded-lg border border-blue-500/30">Cancel</button>
-          <button id="btn-save-pm" onclick="savePaymentMethodFromModal()" class="w-1/2 bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Method</button>
+          <button onclick="closeCustomModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg border border-indigo-500/30">Cancel</button>
+          <button id="btn-save-pm" onclick="savePaymentMethodFromModal()" class="w-1/2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Method</button>
         </div>
       </div>
     </div>
@@ -649,12 +879,12 @@
     const FIXED_ADMIN_PASS = "@61742529@";
     let demoAdminPass = "11374314";
 
-    // APP GLOBAL STATES
-    let adminSupportUsername = "TR_coinuniverse";
-    let aboutUsContent = "Welcome to RR COIN UNIVERSE!\n\nWe are the most trusted coin buying and selling platform in Bangladesh. Sell your social coins safely and receive payments instantly via bKash, Nagad, Rocket or Binance.";
-    let appLogo = "https://api.dicebear.com/7.x/identicon/svg?seed=rrcoinuniverse";
+    // APP GLOBAL STATES - LOCAL CACHING FIRST (INSTANT 0.1s LOAD)
+    let adminSupportUsername = localStorage.getItem('cache_adminSupport') || "TR_coinuniverse";
+    let aboutUsContent = localStorage.getItem('cache_aboutUs') || "Welcome to RR COIN UNIVERSE!\n\nWe are the most trusted coin buying and selling platform in Bangladesh. Sell your social coins safely and receive payments instantly via bKash, Nagad, Rocket or Binance.";
+    let appLogo = localStorage.getItem('cache_appLogo') || "https://api.dicebear.com/7.x/identicon/svg?seed=rrcoinuniverse";
 
-    let paymentMethodsData = [
+    let paymentMethodsData = JSON.parse(localStorage.getItem('cache_paymentMethods')) || [
       { name: "bKash", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><circle cx='256' cy='256' r='256' fill='%23E2136E'/><path fill='white' d='M256 100 L380 256 L256 412 L132 256 Z'/></svg>" },
       { name: "Nagad", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><rect width='512' height='512' fill='%23F47420' rx='100'/><circle cx='256' cy='256' r='140' fill='white'/></svg>" },
       { name: "Rocket", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><rect width='512' height='512' fill='%238C3A98' rx='100'/><polygon points='256,100 370,380 256,310 142,380' fill='white'/></svg>" },
@@ -662,19 +892,21 @@
       { name: "USDT", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><circle cx='256' cy='256' r='256' fill='%2326A17B'/><text x='50%25' y='65%25' font-size='220' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>₮</text></svg>" }
     ];
 
-    let coinsData = [
+    let coinsData = JSON.parse(localStorage.getItem('cache_coinsData')) || [
       { id: "tf-coin", name: "Top Follower Coin", logo: "https://api.dicebear.com/7.x/bottts/svg?seed=TF", receiver: "@TR_coinuniverse", tiers: [{ minK: 20, maxK: 199, rate: 5.50 }, { minK: 200, maxK: 499, rate: 5.55 }, { minK: 500, maxK: 10000, rate: 5.60 }] }
     ];
 
     let savedPaymentNumbers = JSON.parse(localStorage.getItem('savedPaymentNumbers')) || [];
-    let apksData = [];
-    let videosData = [];
-    let channelsData = [
+    let apksData = JSON.parse(localStorage.getItem('cache_apksData')) || [];
+    let videosData = JSON.parse(localStorage.getItem('cache_videosData')) || [];
+    let channelsData = JSON.parse(localStorage.getItem('cache_channelsData')) || [
       { name: "Main Channel", url: "https://t.me/TR_coinuniverse", logo: "https://api.dicebear.com/7.x/identicon/svg?seed=tg" }
     ];
-    let allOrdersData = {};
+    let allOrdersData = JSON.parse(localStorage.getItem('cache_ordersData')) || {};
 
     let currentSelectedCoin = null;
+    let currentCoinMin = 1;
+    let currentCoinMax = 100000;
     let currentHistoryTab = 'all';
 
     // TRANSLATIONS
@@ -751,19 +983,66 @@
     if (tg) { tg.ready(); tg.expand(); }
     const tgUser = tg?.initDataUnsafe?.user || { id: "Demo_User", first_name: "Guest User", username: "guest" };
 
-    // IMGBB UPLOAD HELPER
-    async function uploadToImgBB(file) {
-      const formData = new FormData();
-      formData.append("image", file);
-      const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
-        method: "POST",
-        body: formData
+    // ক্লায়েন্ট-সাইড ছবি অটো কম্প্রেশন
+    async function compressImage(file, maxWidth = 1200, quality = 0.7) {
+      return new Promise((resolve) => {
+        if (!file.type.startsWith('image/')) return resolve(file);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = event => {
+          const img = new Image();
+          img.src = event.target.result;
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            canvas.toBlob(blob => {
+              if (blob) {
+                resolve(new File([blob], file.name || "proof.jpg", { type: "image/jpeg" }));
+              } else {
+                resolve(file);
+              }
+            }, 'image/jpeg', quality);
+          };
+          img.onerror = () => resolve(file);
+        };
+        reader.onerror = () => resolve(file);
       });
-      const data = await res.json();
-      if (data.success) {
-        return data.data.url;
-      } else {
-        throw new Error(data.error?.message || "Image upload failed");
+    }
+
+    // IMGBB UPLOAD HELPER WITH COMPRESSION
+    async function uploadToImgBB(file) {
+      const compressedFile = await compressImage(file);
+      const formData = new FormData();
+      formData.append("image", compressedFile);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+      try {
+        const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+          method: "POST",
+          body: formData,
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        const data = await res.json();
+        if (data.success) {
+          return data.data.url;
+        } else {
+          throw new Error(data.error?.message || "Upload failed");
+        }
+      } catch (err) {
+        clearTimeout(timeoutId);
+        throw new Error(err.name === 'AbortError' ? "Network timeout. Try a smaller image or retry." : err.message);
       }
     }
 
@@ -788,11 +1067,26 @@
       document.getElementById('proof-preview-container').classList.add('hidden');
     }
 
-    // INITIAL DATA SYNC WITH FIREBASE (LIVE LISTENERS)
+    // অর্ডার আইডি অটো কপি
+    function copySuccessOrderId() {
+      const text = document.getElementById('success-order-id-display').innerText.replace('#', '').trim();
+      navigator.clipboard.writeText(text);
+      alert(currentLang === 'en' ? `Order ID #${text} copied to clipboard!` : `অর্ডার আইডি #${text} কপি করা হয়েছে!`);
+    }
+
+    // INITIAL DATA SYNC WITH FIREBASE
     document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('app-header-logo').src = appLogo;
       initPaymentRadios();
       setupProfileData();
       applyTranslations();
+      renderCoins();
+      renderUserPaymentOptions();
+      renderApks();
+      renderVideos();
+      renderChannels();
+      renderHistory();
+      renderSavedNumbers();
 
       // Listen for Config changes
       db.ref('appConfig').on('value', snapshot => {
@@ -800,14 +1094,17 @@
         if (val) {
           if (val.appLogo) {
             appLogo = val.appLogo;
+            localStorage.setItem('cache_appLogo', appLogo);
             document.getElementById('app-header-logo').src = appLogo;
           }
           if (val.adminSupportUsername) {
             adminSupportUsername = val.adminSupportUsername;
+            localStorage.setItem('cache_adminSupport', adminSupportUsername);
             document.getElementById('admin-support-user-input').value = adminSupportUsername;
           }
           if (val.aboutUsContent) {
             aboutUsContent = val.aboutUsContent;
+            localStorage.setItem('cache_aboutUs', aboutUsContent);
             document.getElementById('admin-about-us-input').value = aboutUsContent;
           }
           if (val.demoAdminPass) {
@@ -822,6 +1119,7 @@
         const val = snapshot.val();
         if (val && Array.isArray(val)) {
           coinsData = val;
+          localStorage.setItem('cache_coinsData', JSON.stringify(coinsData));
         } else if (!val) {
           db.ref('coinsData').set(coinsData);
         }
@@ -834,6 +1132,7 @@
         const val = snapshot.val();
         if (val && Array.isArray(val)) {
           paymentMethodsData = val;
+          localStorage.setItem('cache_paymentMethods', JSON.stringify(paymentMethodsData));
         } else if (!val) {
           db.ref('paymentMethodsData').set(paymentMethodsData);
         }
@@ -845,6 +1144,7 @@
       // Listen for APKs
       db.ref('apksData').on('value', snapshot => {
         apksData = snapshot.val() || [];
+        localStorage.setItem('cache_apksData', JSON.stringify(apksData));
         renderApks();
         renderAdminApks();
       });
@@ -852,6 +1152,7 @@
       // Listen for Videos
       db.ref('videosData').on('value', snapshot => {
         videosData = snapshot.val() || [];
+        localStorage.setItem('cache_videosData', JSON.stringify(videosData));
         renderVideos();
         renderAdminVideos();
       });
@@ -861,6 +1162,7 @@
         const val = snapshot.val();
         if (val && Array.isArray(val)) {
           channelsData = val;
+          localStorage.setItem('cache_channelsData', JSON.stringify(channelsData));
         } else if (!val) {
           db.ref('channelsData').set(channelsData);
         }
@@ -868,14 +1170,13 @@
         renderAdminChannels();
       });
 
-      // Listen for Orders (Real-time live sync for pending/approval)
+      // Listen for Orders
       db.ref('orders').on('value', snapshot => {
         allOrdersData = snapshot.val() || {};
+        localStorage.setItem('cache_ordersData', JSON.stringify(allOrdersData));
         renderHistory();
         setupProfileData();
       });
-
-      renderSavedNumbers();
     });
 
     function setupProfileData() {
@@ -913,7 +1214,6 @@
       document.getElementById('drawer-overlay').classList.add('hidden');
     }
 
-    // FOOTER & MENU DIRECT ADMIN LINK
     function contactSupportAdmin() {
       closeMenu();
       const clean = adminSupportUsername.replace('@', '').trim();
@@ -930,6 +1230,7 @@
     function saveAboutUs() {
       aboutUsContent = document.getElementById('admin-about-us-input').value.trim();
       db.ref('appConfig/aboutUsContent').set(aboutUsContent);
+      localStorage.setItem('cache_aboutUs', aboutUsContent);
       alert("About Us saved to cloud!");
     }
     function clearAboutUs() {
@@ -937,6 +1238,7 @@
         document.getElementById('admin-about-us-input').value = "";
         aboutUsContent = "";
         db.ref('appConfig/aboutUsContent').set("");
+        localStorage.setItem('cache_aboutUs', "");
       }
     }
 
@@ -945,6 +1247,7 @@
       if(!val) return alert("Enter valid username!");
       adminSupportUsername = val;
       db.ref('appConfig/adminSupportUsername').set(val);
+      localStorage.setItem('cache_adminSupport', val);
       alert("Support Admin Username saved to cloud!");
     }
 
@@ -1000,7 +1303,6 @@
       alert("Admin Demo Password updated in cloud!");
     }
 
-    // APP LOGO UPLOAD VIA IMGBB
     async function uploadAppLogo() {
       const file = document.getElementById('admin-app-logo-file').files[0];
       if (!file) return alert("Please select an image!");
@@ -1010,6 +1312,7 @@
       try {
         const url = await uploadToImgBB(file);
         appLogo = url;
+        localStorage.setItem('cache_appLogo', url);
         await db.ref('appConfig/appLogo').set(url);
         document.getElementById('app-header-logo').src = url;
         alert("App Logo updated across all devices!");
@@ -1028,15 +1331,15 @@
       coinsData.forEach(coin => {
         const minRate = coin.tiers?.length ? coin.tiers[0].rate : 0;
         el.innerHTML += `
-          <div class="bg-[#042078] border border-blue-500/30 rounded-xl p-3.5 flex items-center justify-between shadow-md">
+          <div class="glass-card rounded-2xl p-4 flex items-center justify-between shadow-lg hover:border-indigo-400/50 transition">
             <div class="flex items-center gap-3">
-              <img src="${coin.logo}" class="w-10 h-10 rounded-full object-cover border border-[#b847fa]/50 bg-[#03185f]">
+              <img src="${coin.logo}" class="w-11 h-11 rounded-full object-cover border border-indigo-400/40 bg-[#090e24]">
               <div>
                 <h4 class="text-sm font-bold text-white">${coin.name}</h4>
-                <p class="text-[11px] text-cyan-300">${t('from_rate')}${parseFloat(minRate).toFixed(2)}${t('per_1k')}</p>
+                <p class="text-[11px] text-cyan-300 font-medium">${t('from_rate')}${parseFloat(minRate).toFixed(2)}${t('per_1k')}</p>
               </div>
             </div>
-            <button onclick="openCoinSubmit('${coin.id}')" class="bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow active:scale-95 transition">${t('btn_sell_coin')}</button>
+            <button onclick="openCoinSubmit('${coin.id}')" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow active:scale-95 transition">${t('btn_sell_coin')}</button>
           </div>
         `;
       });
@@ -1050,16 +1353,30 @@
 
       const tiersTable = document.getElementById('submit-coin-tiers-table');
       tiersTable.innerHTML = '';
+      
+      const mins = currentSelectedCoin.tiers.map(t => Number(t.minK)).filter(n => !isNaN(n));
+      const maxs = currentSelectedCoin.tiers.map(t => Number(t.maxK)).filter(n => !isNaN(n));
+      currentCoinMin = mins.length ? Math.min(...mins) : 1;
+      currentCoinMax = maxs.length ? Math.max(...maxs) : 100000;
+
+      const minMaxIndicator = document.getElementById('coin-min-max-indicator');
+      minMaxIndicator.innerText = `Min: ${currentCoinMin}K | Max: ${currentCoinMax >= 100000 ? 'Any' : currentCoinMax + 'K'}`;
+
       currentSelectedCoin.tiers.forEach(tItem => {
         tiersTable.innerHTML += `
-          <div class="flex justify-between bg-[#03185f] px-2.5 py-1.5 rounded text-[11px] border border-blue-500/20">
-            <span class="text-blue-200">${tItem.minK}K – ${tItem.maxK >= 100000 ? t('any_amount') : tItem.maxK + 'K'}</span>
+          <div class="flex justify-between bg-[#090e24]/70 px-3 py-2 rounded-xl text-[11px] border border-indigo-500/20">
+            <span class="text-indigo-200">${tItem.minK}K – ${tItem.maxK >= 100000 ? t('any_amount') : tItem.maxK + 'K'}</span>
             <span class="font-bold text-cyan-300">৳${parseFloat(tItem.rate).toFixed(2)}${t('per_1k')}</span>
           </div>
         `;
       });
 
-      document.getElementById('input-coin-amount').value = '';
+      const inputAmount = document.getElementById('input-coin-amount');
+      inputAmount.value = '';
+      inputAmount.min = currentCoinMin;
+      inputAmount.max = currentCoinMax;
+      document.getElementById('coin-limit-error').classList.add('hidden');
+
       removeSelectedFile();
       document.getElementById('calculated-payout-text').innerText = '৳ 0.00';
       renderUserPaymentOptions();
@@ -1068,9 +1385,26 @@
 
     function calculatePayout() {
       if (!currentSelectedCoin) return;
-      const amountK = parseFloat(document.getElementById('input-coin-amount').value) || 0;
+      const inputElem = document.getElementById('input-coin-amount');
+      const errElem = document.getElementById('coin-limit-error');
+      const amountK = parseFloat(inputElem.value) || 0;
+
+      if (amountK > 0 && amountK < currentCoinMin) {
+        errElem.innerText = currentLang === 'en' ? `Minimum sell amount is ${currentCoinMin}K` : `সর্বনিম্ন ${currentCoinMin}K কয়েন দিতে হবে`;
+        errElem.classList.remove('hidden');
+      } else if (amountK > currentCoinMax) {
+        errElem.innerText = currentLang === 'en' ? `Maximum sell amount is ${currentCoinMax}K` : `সর্বোচ্চ সীমা ${currentCoinMax}K`;
+        errElem.classList.remove('hidden');
+      } else {
+        errElem.classList.add('hidden');
+      }
+
       let match = currentSelectedCoin.tiers.find(ti => amountK >= ti.minK && amountK <= ti.maxK);
-      if (!match && currentSelectedCoin.tiers.length) match = currentSelectedCoin.tiers[currentSelectedCoin.tiers.length - 1];
+      if (!match && currentSelectedCoin.tiers.length) {
+        if (amountK > currentSelectedCoin.tiers[currentSelectedCoin.tiers.length - 1].maxK) {
+          match = currentSelectedCoin.tiers[currentSelectedCoin.tiers.length - 1];
+        }
+      }
       const total = match ? (amountK * match.rate) : 0;
       document.getElementById('calculated-payout-text').innerText = '৳ ' + total.toFixed(2);
     }
@@ -1080,18 +1414,27 @@
       alert(t('alert_copied'));
     }
 
-    // SUBMIT ORDER WITH IMGBB & CLOUD SYNC
+    // সাবমিট অর্ডার (ইমেজ সাইজ অটো কম্প্রেশন ও ফায়ারবেস ব্যাকআপ সহ)
     async function submitOrderToAdmin() {
       const amountK = parseFloat(document.getElementById('input-coin-amount').value);
       const paymentRadio = document.querySelector('input[name="order-selected-payment"]:checked');
-      const proofFile = document.getElementById('order-proof-file').files[0];
+      const proofFileInput = document.getElementById('order-proof-file');
+      const proofFile = proofFileInput.files[0];
 
       if (!amountK || amountK <= 0) return alert(t('alert_amount'));
+      
+      if (amountK < currentCoinMin) {
+        return alert(currentLang === 'en' ? `Minimum sell limit is ${currentCoinMin}K coins!` : `সর্বনিম্ন ${currentCoinMin}K কয়েন সেল দিতে হবে!`);
+      }
+      if (amountK > currentCoinMax) {
+        return alert(currentLang === 'en' ? `Maximum sell limit is ${currentCoinMax}K coins!` : `সর্বোচ্চ সীমা ${currentCoinMax}K এর বেশি সেল দেওয়া যাবে না!`);
+      }
+
       if (!paymentRadio) return alert(t('alert_payment'));
       if (!proofFile) return alert(t('alert_proof'));
 
       const submitBtn = document.getElementById('btn-submit-order-elem');
-      submitBtn.innerText = "Submitting Order...";
+      submitBtn.innerText = currentLang === 'en' ? "Compressing & Uploading..." : "স্ক্রিনশট আপলোড হচ্ছে...";
       submitBtn.disabled = true;
 
       try {
@@ -1099,13 +1442,11 @@
         const orderId = "CS-" + Math.random().toString(36).substring(2, 8).toUpperCase();
         const payoutText = document.getElementById('calculated-payout-text').innerText;
         
-        // নাম্বার ও মেথড আলাদা করা যেন টেলিগ্রামে এক ট্যাপে কপি করা যায়
         const fullPaymentText = paymentRadio.value;
         const parts = fullPaymentText.split(" - ");
         const payMethod = parts[0] || "";
         const payNumber = parts.slice(1).join(" - ") || "";
 
-        // 1. SAVE TO FIREBASE
         const orderData = {
           id: orderId,
           userId: tgUser.id,
@@ -1124,7 +1465,6 @@
         };
         await db.ref('orders/' + orderId).set(orderData);
 
-        // 2. SEND TO TELEGRAM - পেমেন্ট নাম্বার কোড ট্যাগে রাখা হলো যেন এক ক্লিকে কপি হয়
         const captionText = `🔔 <b>New Coin Order! / নতুন অর্ডার!</b>\n\n` +
                             `🆔 <b>Order ID:</b> <code>#${orderId}</code>\n` +
                             `👤 <b>User:</b> @${tgUser.username || 'N/A'} (ID: <code>${tgUser.id}</code>)\n` +
@@ -1159,7 +1499,7 @@
             fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ chat_id: chatId, text: captionText, parse_mode: "HTML", reply_markup: JSON.parse(replyMarkupJson) })
+              body: JSON.stringify({ chat_id: chatId, text: captionText + `\n\n🖼 <b>Proof Image:</b> ${proofUrl}`, parse_mode: "HTML", reply_markup: JSON.parse(replyMarkupJson) })
             });
           });
         });
@@ -1167,7 +1507,7 @@
         document.getElementById('success-order-id-display').innerText = '#' + orderId;
         navigate('order-success');
       } catch(err) {
-        alert("Submission failed: " + err.message);
+        alert("Submission error: " + err.message + "\nঅনুগ্রহ করে ইন্টারনেট চেক করে আবার চেষ্টা করুন।");
       } finally {
         submitBtn.innerText = t('btn_submit_order');
         submitBtn.disabled = false;
@@ -1180,7 +1520,7 @@
       container.innerHTML = '';
       paymentMethodsData.forEach((pm, idx) => {
         container.innerHTML += `
-          <label class="flex items-center gap-2 p-2 bg-[#03185f] rounded-lg border border-blue-500/40 cursor-pointer hover:border-[#b847fa]/60 transition">
+          <label class="flex items-center gap-2 p-2.5 bg-[#090e24] rounded-xl border border-indigo-500/30 cursor-pointer hover:border-indigo-400 transition">
             <input type="radio" name="pay-method-choice" value="${pm.name}" ${idx===0?'checked':''}>
             <img src="${pm.logo}" class="w-5 h-5 rounded-full object-cover">
             <span class="font-bold text-white">${pm.name}</span>
@@ -1191,12 +1531,12 @@
 
     function renderUserPaymentOptions() {
       const el = document.getElementById('user-payment-selection-list');
-      el.innerHTML = savedPaymentNumbers.length ? '' : `<p class="text-xs text-rose-300 p-2 bg-[#03185f] rounded-lg border border-rose-900/40">${t('empty_payment')}</p>`;
+      el.innerHTML = savedPaymentNumbers.length ? '' : `<p class="text-xs text-rose-300 p-2.5 bg-[#090e24] rounded-xl border border-rose-900/40">${t('empty_payment')}</p>`;
       savedPaymentNumbers.forEach((p, idx) => {
         const pm = paymentMethodsData.find(m => m.name === p.method) || { logo: '' };
         el.innerHTML += `
-          <label class="flex items-center justify-between p-2.5 bg-[#03185f] rounded-lg border border-blue-500/40 cursor-pointer hover:border-[#b847fa]/60 transition">
-            <div class="flex items-center gap-2">
+          <label class="flex items-center justify-between p-3 bg-[#090e24] rounded-xl border border-indigo-500/30 cursor-pointer hover:border-indigo-400 transition">
+            <div class="flex items-center gap-2.5">
               <input type="radio" name="order-selected-payment" value="${p.method} - ${p.number}" ${idx===0?'checked':''}>
               <img src="${pm.logo}" class="w-5 h-5 rounded-full object-cover">
               <span class="font-bold text-white text-xs">${p.method}</span>
@@ -1229,17 +1569,17 @@
       const el = document.getElementById('saved-numbers-container');
       el.innerHTML = '';
       if (!savedPaymentNumbers.length) {
-        el.innerHTML = `<p class="text-xs text-blue-300/60">${t('empty_payment')}</p>`;
+        el.innerHTML = `<p class="text-xs text-indigo-300/50">${t('empty_payment')}</p>`;
         return;
       }
       savedPaymentNumbers.forEach((p, idx) => {
         const pm = paymentMethodsData.find(m => m.name === p.method) || { logo: '' };
         el.innerHTML += `
-          <div class="bg-[#042078] border border-blue-500/30 p-2.5 rounded-lg flex justify-between items-center text-xs shadow">
-            <div class="flex items-center gap-2">
+          <div class="glass-card p-3 rounded-xl flex justify-between items-center text-xs shadow">
+            <div class="flex items-center gap-2.5">
               <img src="${pm.logo}" class="w-5 h-5 rounded-full object-cover">
               <span class="font-bold text-white">${p.method}</span>
-              <span class="text-blue-100 font-mono">${p.number}</span>
+              <span class="text-indigo-200 font-mono">${p.number}</span>
             </div>
             <button onclick="deletePaymentNumber(${idx})" class="text-rose-400 p-1 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
           </div>
@@ -1250,8 +1590,8 @@
     // ORDER HISTORY WITH REAL-TIME STATUS & TRX ID
     function switchHistoryTab(tab) {
       currentHistoryTab = tab;
-      document.getElementById('tab-btn-all').className = tab === 'all' ? "flex-1 py-2 font-bold text-[#d48bff] border-b-2 border-[#b847fa]" : "flex-1 py-2 font-bold text-blue-200 hover:text-white";
-      document.getElementById('tab-btn-approved').className = tab === 'approved' ? "flex-1 py-2 font-bold text-[#d48bff] border-b-2 border-[#b847fa]" : "flex-1 py-2 font-bold text-blue-200 hover:text-white";
+      document.getElementById('tab-btn-all').className = tab === 'all' ? "flex-1 py-2 font-bold text-indigo-300 border-b-2 border-indigo-500" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
+      document.getElementById('tab-btn-approved').className = tab === 'approved' ? "flex-1 py-2 font-bold text-indigo-300 border-b-2 border-indigo-500" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
       filterHistory();
     }
 
@@ -1265,7 +1605,7 @@
       if (query) list = list.filter(o => o.id.toLowerCase().includes(query));
 
       if (!list.length) {
-        el.innerHTML = `<p class="text-xs text-blue-300/60 text-center py-4">${t('empty_history')}</p>`;
+        el.innerHTML = `<p class="text-xs text-indigo-300/50 text-center py-4">${t('empty_history')}</p>`;
         return;
       }
 
@@ -1282,15 +1622,15 @@
 
         const paymentAccLabel = currentLang === 'en' ? 'Payment Account:' : 'পেমেন্ট একাউন্ট:';
         el.innerHTML += `
-          <div class="bg-[#042078] border border-blue-500/30 p-3.5 rounded-xl space-y-1.5 text-xs shadow">
+          <div class="glass-card p-4 rounded-2xl space-y-2 text-xs shadow">
             <div class="flex justify-between items-center font-mono font-bold">
               <span class="text-cyan-300">#${ord.id}</span>
-              <span class="text-[10px] ${badgeColor} px-2 py-0.5 rounded font-bold">${statusText}</span>
+              <span class="text-[10px] ${badgeColor} px-2.5 py-0.5 rounded-full font-bold">${statusText}</span>
             </div>
-            <div class="text-gray-100 font-semibold">${ord.coin} (${ord.amount})</div>
-            <div class="text-blue-200 text-[11px]">${paymentAccLabel} <span class="text-gray-100 font-mono">${ord.paymentInfo || 'N/A'}</span></div>
+            <div class="text-slate-100 font-semibold">${ord.coin} (${ord.amount})</div>
+            <div class="text-indigo-200 text-[11px]">${paymentAccLabel} <span class="text-slate-100 font-mono">${ord.paymentInfo || 'N/A'}</span></div>
             ${ord.trxId ? `<div class="text-emerald-400 font-mono text-[11px] font-bold">Trx ID: ${ord.trxId}</div>` : ''}
-            <div class="flex justify-between text-blue-200 text-[11px] pt-1.5 border-t border-blue-500/30">
+            <div class="flex justify-between text-indigo-300/80 text-[11px] pt-2 border-t border-indigo-500/20">
               <span class="font-bold text-cyan-300">Total: ${ord.total}</span>
               <span>${ord.date}</span>
             </div>
@@ -1306,12 +1646,12 @@
       el.innerHTML = '';
       apksData.forEach(apk => {
         el.innerHTML += `
-          <div class="bg-[#042078] border border-blue-500/30 p-3 rounded-xl flex justify-between items-center shadow">
-            <div class="flex items-center gap-2.5">
-              <img src="${apk.logo}" class="w-8 h-8 rounded-lg object-cover">
+          <div class="glass-card p-3.5 rounded-2xl flex justify-between items-center shadow">
+            <div class="flex items-center gap-3">
+              <img src="${apk.logo}" class="w-9 h-9 rounded-xl object-cover bg-[#090e24]">
               <span class="text-sm font-bold text-white">${apk.name}</span>
             </div>
-            <a href="${apk.url}" target="_blank" class="bg-gradient-to-r from-[#b847fa] to-[#9326e6] hover:brightness-110 text-white font-bold text-xs px-3 py-1.5 rounded-lg">${t('btn_download')}</a>
+            <a href="${apk.url}" target="_blank" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow active:scale-95 transition">${t('btn_download')}</a>
           </div>
         `;
       });
@@ -1322,11 +1662,11 @@
       el.innerHTML = '';
       videosData.forEach(vid => {
         el.innerHTML += `
-          <div class="bg-[#042078] border border-blue-500/30 rounded-xl overflow-hidden shadow">
-            <img src="${vid.thumb}" class="w-full h-36 object-cover bg-[#03185f]">
-            <div class="p-3 flex justify-between items-center">
+          <div class="glass-card rounded-2xl overflow-hidden shadow">
+            <img src="${vid.thumb}" class="w-full h-36 object-cover bg-[#090e24]">
+            <div class="p-3.5 flex justify-between items-center">
               <h4 class="text-xs font-bold text-white">${vid.title}</h4>
-              <a href="${vid.url}" target="_blank" class="bg-[#b847fa]/20 text-[#d48bff] border border-[#b847fa]/40 text-xs px-2.5 py-1 rounded-lg">${t('btn_watch')}</a>
+              <a href="${vid.url}" target="_blank" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-xs px-3 py-1.5 rounded-xl font-bold active:scale-95 transition">${t('btn_watch')}</a>
             </div>
           </div>
         `;
@@ -1338,12 +1678,12 @@
       el.innerHTML = '';
       channelsData.forEach(ch => {
         el.innerHTML += `
-          <div class="bg-[#042078] border border-blue-500/30 p-3 rounded-xl flex justify-between items-center shadow">
-            <div class="flex items-center gap-2.5">
-              <img src="${ch.logo}" class="w-7 h-7 rounded-full object-cover">
+          <div class="glass-card p-3.5 rounded-2xl flex justify-between items-center shadow">
+            <div class="flex items-center gap-3">
+              <img src="${ch.logo}" class="w-8 h-8 rounded-full object-cover">
               <span class="text-xs font-bold text-white">${ch.name}</span>
             </div>
-            <a href="${ch.url}" target="_blank" class="bg-[#03185f] text-[#d48bff] border border-[#b847fa]/40 font-bold text-xs px-3 py-1.5 rounded-lg">${t('btn_join')}</a>
+            <a href="${ch.url}" target="_blank" class="bg-[#090e24] text-indigo-300 border border-indigo-400/40 font-bold text-xs px-3.5 py-1.5 rounded-xl active:scale-95 transition">${t('btn_join')}</a>
           </div>
         `;
       });
@@ -1364,11 +1704,11 @@
       el.innerHTML = '';
       coinsData.forEach((c, idx) => {
         el.innerHTML += `
-          <div class="bg-[#03185f] p-2.5 rounded-lg border border-blue-500/40 flex justify-between items-center text-xs">
+          <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs">
             <div class="flex items-center gap-2"><img src="${c.logo}" class="w-7 h-7 rounded-full object-cover"> <span class="font-bold text-white">${c.name}</span></div>
-            <div class="flex gap-1.5">
-              <button onclick="openCoinModal('${c.id}')" class="text-[#d48bff] bg-[#b847fa]/15 px-2 py-1 rounded">Edit</button>
-              <button onclick="deleteCoin(${idx})" class="text-rose-400 bg-rose-500/15 px-2 py-1 rounded">Delete</button>
+            <div class="flex gap-2">
+              <button onclick="openCoinModal('${c.id}')" class="text-indigo-300 bg-indigo-600/20 px-2.5 py-1 rounded-lg">Edit</button>
+              <button onclick="deleteCoin(${idx})" class="text-rose-400 bg-rose-500/20 px-2.5 py-1 rounded-lg">Delete</button>
             </div>
           </div>
         `;
@@ -1442,6 +1782,7 @@
       }
 
       await db.ref('coinsData').set(coinsData);
+      localStorage.setItem('cache_coinsData', JSON.stringify(coinsData));
       saveBtn.innerText = "Save Coin";
       saveBtn.disabled = false;
       closeCustomModal();
@@ -1451,6 +1792,7 @@
       if(confirm("Delete coin?")) {
         coinsData.splice(idx, 1);
         await db.ref('coinsData').set(coinsData);
+        localStorage.setItem('cache_coinsData', JSON.stringify(coinsData));
       }
     }
 
@@ -1459,7 +1801,7 @@
       const el = document.getElementById('admin-apks-list');
       el.innerHTML = '';
       apksData.forEach((a, idx) => {
-        el.innerHTML += `<div class="bg-[#03185f] p-2 rounded-lg border border-blue-500/40 flex justify-between items-center text-xs"><div class="flex items-center gap-2"><img src="${a.logo}" class="w-6 h-6 rounded object-cover"><span class="text-white">${a.name}</span></div><button onclick="deleteApk(${idx})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></div>`;
+        el.innerHTML += `<div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs"><div class="flex items-center gap-2"><img src="${a.logo}" class="w-6 h-6 rounded object-cover"><span class="text-white">${a.name}</span></div><button onclick="deleteApk(${idx})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></div>`;
       });
     }
 
@@ -1487,6 +1829,7 @@
 
       apksData.push({ name, url, logo });
       await db.ref('apksData').set(apksData);
+      localStorage.setItem('cache_apksData', JSON.stringify(apksData));
       saveBtn.innerText = "Save APK";
       saveBtn.disabled = false;
       closeCustomModal();
@@ -1495,6 +1838,7 @@
     async function deleteApk(idx) {
       apksData.splice(idx, 1);
       await db.ref('apksData').set(apksData);
+      localStorage.setItem('cache_apksData', JSON.stringify(apksData));
     }
 
     // ADMIN VIDEOS
@@ -1502,7 +1846,7 @@
       const el = document.getElementById('admin-videos-list');
       el.innerHTML = '';
       videosData.forEach((v, idx) => {
-        el.innerHTML += `<div class="bg-[#03185f] p-2 rounded-lg border border-blue-500/40 flex justify-between items-center text-xs"><span class="text-white truncate max-w-[200px]">${v.title}</span><button onclick="deleteVideo(${idx})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></div>`;
+        el.innerHTML += `<div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs"><span class="text-white truncate max-w-[200px]">${v.title}</span><button onclick="deleteVideo(${idx})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></div>`;
       });
     }
 
@@ -1523,13 +1867,14 @@
       saveBtn.innerText = "Saving...";
       saveBtn.disabled = true;
 
-      let thumb = "https://placehold.co/600x400/042078/b847fa?text=Tutorial";
+      let thumb = "https://placehold.co/600x400/0d163a/818cf8?text=Tutorial";
       if (fileInput.files.length > 0) {
         try { thumb = await uploadToImgBB(fileInput.files[0]); } catch(e){}
       }
 
       videosData.push({ title, url, thumb });
       await db.ref('videosData').set(videosData);
+      localStorage.setItem('cache_videosData', JSON.stringify(videosData));
       saveBtn.innerText = "Save Video";
       saveBtn.disabled = false;
       closeCustomModal();
@@ -1538,6 +1883,7 @@
     async function deleteVideo(idx) {
       videosData.splice(idx, 1);
       await db.ref('videosData').set(videosData);
+      localStorage.setItem('cache_videosData', JSON.stringify(videosData));
     }
 
     // ADMIN CHANNELS
@@ -1545,7 +1891,7 @@
       const el = document.getElementById('admin-channels-list');
       el.innerHTML = '';
       channelsData.forEach((c, idx) => {
-        el.innerHTML += `<div class="bg-[#03185f] p-2 rounded-lg border border-blue-500/40 flex justify-between items-center text-xs"><div class="flex items-center gap-2"><img src="${c.logo}" class="w-6 h-6 rounded-full object-cover"><span class="text-white">${c.name}</span></div><button onclick="deleteChannel(${idx})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></div>`;
+        el.innerHTML += `<div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs"><div class="flex items-center gap-2"><img src="${c.logo}" class="w-6 h-6 rounded-full object-cover"><span class="text-white">${c.name}</span></div><button onclick="deleteChannel(${idx})" class="text-rose-400"><i class="fa-solid fa-trash"></i></button></div>`;
       });
     }
 
@@ -1573,6 +1919,7 @@
 
       channelsData.push({ name, url, logo });
       await db.ref('channelsData').set(channelsData);
+      localStorage.setItem('cache_channelsData', JSON.stringify(channelsData));
       saveBtn.innerText = "Save Channel";
       saveBtn.disabled = false;
       closeCustomModal();
@@ -1581,6 +1928,7 @@
     async function deleteChannel(idx) {
       channelsData.splice(idx, 1);
       await db.ref('channelsData').set(channelsData);
+      localStorage.setItem('cache_channelsData', JSON.stringify(channelsData));
     }
 
     // ADMIN PAYMENT METHODS
@@ -1589,7 +1937,7 @@
       el.innerHTML = '';
       paymentMethodsData.forEach((pm, idx) => {
         el.innerHTML += `
-          <div class="bg-[#03185f] p-2.5 rounded-lg border border-blue-500/40 flex justify-between items-center text-xs">
+          <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs">
             <div class="flex items-center gap-2">
               <img src="${pm.logo}" class="w-6 h-6 rounded-full object-cover">
               <span class="text-white font-bold">${pm.name}</span>
@@ -1622,6 +1970,7 @@
 
       paymentMethodsData.push({ name, logo });
       await db.ref('paymentMethodsData').set(paymentMethodsData);
+      localStorage.setItem('cache_paymentMethods', JSON.stringify(paymentMethodsData));
       saveBtn.innerText = "Save Method";
       saveBtn.disabled = false;
       closeCustomModal();
@@ -1631,6 +1980,7 @@
       if (paymentMethodsData.length <= 1) return alert("At least one method required!");
       paymentMethodsData.splice(idx, 1);
       await db.ref('paymentMethodsData').set(paymentMethodsData);
+      localStorage.setItem('cache_paymentMethods', JSON.stringify(paymentMethodsData));
     }
   </script>
 </body>
