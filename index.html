@@ -13,7 +13,6 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
   <style>
-    /* প্রিমিয়াম রয়্যাল মিডনাইট ডার্ক থিম */
     body { 
       background: radial-gradient(circle at top center, #111d4a 0%, #090e24 50%, #050816 100%);
       background-attachment: fixed;
@@ -91,54 +90,65 @@
   <!-- MAIN APP CONTAINER -->
   <main class="max-w-md mx-auto p-4 w-full flex-grow flex flex-col justify-center items-center">
 
-    <!-- HOME (সেন্টার্ড ও আধুনিক রয়্যাল ডার্ক লুক) -->
-    <section id="view-home" class="w-full my-auto py-6 flex flex-col justify-center space-y-4">
-      <div class="glass-card p-6 rounded-3xl text-center shadow-2xl relative overflow-hidden">
-        <div class="inline-flex items-center gap-1.5 bg-indigo-500/20 text-indigo-200 text-xs px-3.5 py-1 rounded-full border border-indigo-400/30 font-semibold shadow">
-          <i class="fa-solid fa-shield-halved text-[11px] text-cyan-400"></i>
+    <!-- HOME -->
+    <section id="view-home" class="w-full my-auto py-5 flex flex-col justify-center space-y-4">
+      
+      <!-- ১. বড় ও আকর্ষণীয় ওয়েলকাম মেসেজ কার্ড -->
+      <div class="glass-card p-6 sm:p-7 rounded-[26px] text-center shadow-[0_10px_35px_rgba(0,0,0,0.5)] border border-indigo-400/30 relative overflow-hidden">
+        <div class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/25 to-cyan-500/25 text-cyan-300 text-xs px-4 py-1.5 rounded-full border border-cyan-400/40 font-semibold shadow-inner">
+          <i class="fa-solid fa-shield-halved text-xs text-cyan-400"></i>
           <span>100% safe & trusted buyer in Bangladesh</span>
         </div>
-        <h2 class="text-2xl font-black mt-4 text-white tracking-tight">
-          <span data-i18n="welcome_title">Welcome to</span> <br>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-indigo-300 font-extrabold">RR COIN UNIVERSE</span>
+        <h2 class="text-2xl sm:text-3xl font-black mt-4 text-white tracking-tight leading-snug">
+          <span data-i18n="welcome_title" class="text-slate-300 text-base font-bold block mb-1">Welcome to</span>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-indigo-300 text-2xl sm:text-3xl font-black tracking-wide drop-shadow-md">RR COIN UNIVERSE</span>
         </h2>
-        <p class="text-xs text-indigo-100/80 mt-2 font-normal leading-relaxed">
+        <p class="text-xs sm:text-sm text-indigo-100/90 mt-3 font-normal leading-relaxed max-w-xs mx-auto">
           Sell your coins at the best rates and receive instant payments via bKash, Nagad, Rocket or Binance.
         </p>
       </div>
 
-      <button onclick="navigate('coin-store')" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-4 px-5 rounded-2xl flex items-center justify-between shadow-xl shadow-indigo-950/60 active:scale-[0.98] transition">
-        <span class="flex items-center gap-3"><i class="fa-solid fa-coins text-xl text-yellow-300"></i> <span data-i18n="btn_coin_sell" class="text-base tracking-wide">Coins Sell</span></span>
-        <i class="fa-solid fa-arrow-right text-base"></i>
+      <!-- ২. বড় ও আকর্ষণীয় কয়েন সেল বাটন -->
+      <button onclick="navigate('coin-store')" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-5 px-6 rounded-2xl flex items-center justify-between shadow-2xl shadow-indigo-950/80 border border-indigo-400/40 active:scale-[0.98] transition-all">
+        <span class="flex items-center gap-3.5">
+          <span class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 shadow-inner">
+            <i class="fa-solid fa-coins text-2xl text-yellow-300"></i>
+          </span>
+          <span data-i18n="btn_coin_sell" class="text-lg tracking-wide font-black">Coins Sell</span>
+        </span>
+        <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+          <i class="fa-solid fa-arrow-right text-lg text-white"></i>
+        </span>
       </button>
 
-      <!-- শর্টকাট নেভিগেশন গ্রিড (৬টি বাটন) -->
+      <!-- ৩. হোম স্ক্রিনের নির্দিষ্ট ৬টি বাটন (পেমেন্ট, হিস্ট্রি, টিউটোরিয়াল, চ্যানেল, ল্যাঙ্গুয়েজ, অল এপিকে) -->
       <div class="grid grid-cols-3 gap-2.5 pt-1">
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
         </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
         </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
         </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
         </button>
       </div>
+
     </section>
 
     <!-- PROFILE -->
@@ -170,31 +180,30 @@
         </div>
       </div>
 
-      <!-- প্রোফাইলের নিচে শর্টকাট বাটনসমূহ -->
-      <div class="grid grid-cols-3 gap-2.5 pt-2">
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+      <div class="grid grid-cols-3 gap-2 pt-2">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
         </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
         </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
         </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
         </button>
       </div>
     </section>
@@ -207,36 +216,35 @@
       </div>
       <div id="coins-list" class="space-y-3"></div>
 
-      <!-- কয়েন স্টোর তালিকার নিচে শর্টকাট বাটন -->
-      <div class="grid grid-cols-3 gap-2.5 pt-2">
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+      <div class="grid grid-cols-3 gap-2 pt-2">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
         </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
         </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
         </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
         </button>
       </div>
     </section>
 
-    <!-- COIN SUBMIT (এখানে কোনো শর্টকাট থাকবে না যেন পেজটি ক্লিন থাকে) -->
+    <!-- COIN SUBMIT -->
     <section id="view-coin-submit" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-white" id="submit-coin-title">Submit Coin</h2>
@@ -280,7 +288,6 @@
           <div id="user-payment-selection-list" class="space-y-2 text-sm"></div>
         </div>
 
-        <!-- ফাইল চয়েস বক্স এবং ইমেজ প্রিভিউ -->
         <div>
           <label class="block text-xs text-slate-200 font-medium mb-1.5" data-i18n="label_screenshot_proof">Screenshot Proof (Required)</label>
           <div onclick="document.getElementById('order-proof-file').click()" class="border-2 border-dashed border-indigo-500/40 hover:border-indigo-400 bg-[#090e24]/70 hover:bg-[#090e24] rounded-2xl p-5 text-center cursor-pointer transition shadow">
@@ -310,7 +317,6 @@
       </div>
       <h2 class="text-2xl font-black text-white" data-i18n="order_success_title">Order Submitted!</h2>
       
-      <!-- অর্ডার আইডি বক্স (ক্লিক করলে অটো কপি) -->
       <div onclick="copySuccessOrderId()" class="glass-card hover:border-cyan-400 p-4 rounded-2xl max-w-xs mx-auto shadow-md cursor-pointer transition active:scale-95 group">
         <p class="text-[11px] text-indigo-200" data-i18n="label_order_id">Your Order ID:</p>
         <div class="flex items-center justify-center gap-2 mt-1">
@@ -336,31 +342,30 @@
       </div>
       <div id="saved-numbers-container" class="space-y-2"></div>
 
-      <!-- পেমেন্ট সেটিংসের নিচে শর্টকাট বাটন -->
-      <div class="grid grid-cols-3 gap-2.5 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+      <div class="grid grid-cols-3 gap-2 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
         </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
         </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
         </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
         </button>
       </div>
     </section>
@@ -373,31 +378,30 @@
       </div>
       <div id="apk-cards-list" class="space-y-2.5"></div>
 
-      <!-- APKs তালিকার নিচে শর্টকাট বাটন -->
-      <div class="grid grid-cols-3 gap-2.5 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+      <div class="grid grid-cols-3 gap-2 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
         </button>
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
         </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
         </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
         </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
         </button>
       </div>
     </section>
@@ -410,31 +414,30 @@
       </div>
       <div id="methods-video-list" class="space-y-3"></div>
 
-      <!-- টিউটোরিয়াল পেজের নিচে শর্টকাট বাটন -->
-      <div class="grid grid-cols-3 gap-2.5 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+      <div class="grid grid-cols-3 gap-2 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
         </button>
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
         </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
         </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
         </button>
       </div>
     </section>
@@ -447,31 +450,30 @@
       </div>
       <div id="channels-list" class="space-y-2.5"></div>
 
-      <!-- চ্যানেল পেজের নিচে শর্টকাট বাটন -->
-      <div class="grid grid-cols-3 gap-2.5 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+      <div class="grid grid-cols-3 gap-2 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
         </button>
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
         </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
         </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
+        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
           <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        </button>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
         </button>
       </div>
     </section>
@@ -494,31 +496,23 @@
 
       <div id="order-history-list" class="space-y-3"></div>
 
-      <!-- হিস্ট্রি পেজের নিচে শর্টকাট বাটন -->
-      <div class="grid grid-cols-3 gap-2.5 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
+      <!-- হিস্ট্রি পেজে নির্দিষ্ট ৪টি বাটন -->
+      <div class="grid grid-cols-4 gap-2 pt-2">
+        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-coins text-indigo-400 text-sm mb-1 block"></i>
+          <span class="text-[9px] font-semibold text-slate-100 truncate block" data-i18n="nav_store">Coins</span>
         </button>
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-indigo-400 text-sm mb-1 block"></i>
+          <span class="text-[9px] font-semibold text-slate-100 truncate block" data-i18n="btn_payment">Payment</span>
         </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-sm mb-1 block"></i>
+          <span class="text-[9px] font-semibold text-slate-100 truncate block" data-i18n="btn_tutorials">Tutorials</span>
         </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
-        </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_apks">APKs</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[11px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-sm mb-1 block"></i>
+          <span class="text-[9px] font-semibold text-slate-100 truncate block" data-i18n="nav_channels">Channels</span>
         </button>
       </div>
     </section>
@@ -1046,7 +1040,6 @@
       }
     }
 
-    // স্ক্রিনশট প্রিভিউ হ্যান্ডলার
     function previewProofImage(input) {
       const previewContainer = document.getElementById('proof-preview-container');
       const previewImg = document.getElementById('proof-preview-img');
@@ -1067,7 +1060,6 @@
       document.getElementById('proof-preview-container').classList.add('hidden');
     }
 
-    // অর্ডার আইডি অটো কপি
     function copySuccessOrderId() {
       const text = document.getElementById('success-order-id-display').innerText.replace('#', '').trim();
       navigator.clipboard.writeText(text);
@@ -1414,7 +1406,7 @@
       alert(t('alert_copied'));
     }
 
-    // সাবমিট অর্ডার (ইমেজ সাইজ অটো কম্প্রেশন ও ফায়ারবেস ব্যাকআপ সহ)
+    // সাবমিট অর্ডার
     async function submitOrderToAdmin() {
       const amountK = parseFloat(document.getElementById('input-coin-amount').value);
       const paymentRadio = document.querySelector('input[name="order-selected-payment"]:checked');
@@ -1587,7 +1579,7 @@
       });
     }
 
-    // ORDER HISTORY WITH REAL-TIME STATUS & TRX ID
+    // ORDER HISTORY
     function switchHistoryTab(tab) {
       currentHistoryTab = tab;
       document.getElementById('tab-btn-all').className = tab === 'all' ? "flex-1 py-2 font-bold text-indigo-300 border-b-2 border-indigo-500" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
