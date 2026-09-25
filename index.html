@@ -276,7 +276,7 @@
 
         <div>
           <label class="block text-xs text-slate-200 font-medium mb-1" data-i18n="label_deposit_amount">Deposit Amount (in BDT)</label>
-          <input type="number" id="input-deposit-amount" oninput="calculateDepositUsd()" placeholder="Enter Amount / টাকার পরিমাণ" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm focus:border-indigo-400 focus:outline-none transition">
+          <input type="number" id="input-deposit-amount" oninput="calculateDepositUsd()" placeholder="Enter Amount" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm focus:border-indigo-400 focus:outline-none transition">
         </div>
 
         <div>
@@ -341,7 +341,7 @@
       <div id="meta-products-list" class="space-y-3"></div>
     </section>
 
-    <!-- META PRODUCT PURCHASE VIEW (ADDITIVE SERVICE CHARGE) -->
+    <!-- META PRODUCT PURCHASE VIEW (PURE ENGLISH DETAILS) -->
     <section id="view-meta-purchase" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-white flex items-center gap-2" id="meta-purchase-title">Purchase Account</h2>
@@ -366,7 +366,7 @@
         <div>
           <label class="block text-xs text-slate-200 font-medium mb-1" data-i18n="label_how_many_accounts">How many accounts do you want?</label>
           <input type="number" id="input-meta-qty" min="1" step="1" oninput="calculateMetaPurchase()" placeholder="Example: 10" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm focus:border-indigo-400 focus:outline-none transition">
-          <p id="meta-stock-error" class="hidden text-[11px] text-rose-400 mt-1 font-semibold"></p>
+          <p id="meta-stock-error" class="hidden text-[11px] text-amber-400 mt-1 font-semibold"></p>
         </div>
 
         <div class="bg-[#090e24]/70 border border-indigo-500/20 p-3.5 rounded-xl space-y-2 text-xs">
@@ -379,15 +379,15 @@
             <span id="meta-calc-qty" class="font-mono font-bold text-white">0</span>
           </div>
           <div class="flex justify-between text-indigo-200">
-            <span>Subtotal (মূল দাম):</span>
+            <span data-i18n="label_subtotal">Subtotal:</span>
             <span id="meta-calc-gross" class="font-mono font-bold text-white">৳ 0.00</span>
           </div>
           <div class="flex justify-between text-amber-300">
-            <span>Service Charge (সার্ভিস চার্জ):</span>
+            <span data-i18n="label_service_charge">Service Charge:</span>
             <span id="meta-calc-charge" class="font-mono font-bold">+৳ 0.00</span>
           </div>
           <div class="flex justify-between text-sm font-black pt-2 border-t border-indigo-500/20 text-cyan-300">
-            <span>Total Payable (সর্বমোট প্রদেয়):</span>
+            <span data-i18n="label_total_payable">Total Payable:</span>
             <span id="meta-calc-final" class="font-mono text-base">৳ 0.00</span>
           </div>
         </div>
@@ -514,7 +514,7 @@
         <div>
           <div class="flex justify-between items-center mb-1.5">
             <label class="block text-xs text-slate-200 font-medium" data-i18n="label_select_payment">Select Payment Method</label>
-            <button onclick="navigate('payment-settings')" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white text-xs font-bold px-3 py-1.5 rounded-lg border border-indigo-400/40 shadow flex items-center gap-1.5 active:scale-95 transition">
+            <button onclick="navigate('payment-settings')" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg border border-indigo-400/40 shadow flex items-center gap-1.5 active:scale-95 transition">
               <i class="fa-solid fa-gear text-[10px]"></i>
               <span data-i18n="btn_manage_numbers">Manage Numbers</span>
             </button>
@@ -526,7 +526,7 @@
           <label class="block text-xs text-slate-200 font-medium mb-1.5" data-i18n="label_screenshot_proof">Screenshot Proof (Required)</label>
           <div onclick="document.getElementById('order-proof-file').click()" class="border-2 border-dashed border-indigo-500/40 hover:border-indigo-400 bg-[#090e24]/70 hover:bg-[#090e24] rounded-2xl p-5 text-center cursor-pointer transition shadow">
             <i class="fa-solid fa-cloud-arrow-up text-2xl text-indigo-400 mb-1.5 block"></i>
-            <p class="text-xs font-bold text-slate-100">Tap to upload Screenshot / স্ক্রিনশট সিলেক্ট করুন</p>
+            <p class="text-xs font-bold text-slate-100">Tap to upload Screenshot</p>
             <p class="text-[10px] text-indigo-300 mt-0.5">Supports PNG, JPG, JPEG (Auto Compressed)</p>
           </div>
           <input type="file" id="order-proof-file" accept="image/*" onchange="previewProofImage(this)" class="hidden">
@@ -557,7 +557,7 @@
           <p id="success-order-id-display" class="font-mono font-bold text-cyan-300 text-lg">#CS-0000</p>
           <i class="fa-regular fa-copy text-xs text-indigo-300 group-hover:text-cyan-300"></i>
         </div>
-        <p class="text-[9px] text-indigo-300/80 mt-1">ট্যাপ করে অর্ডার আইডি কপি করুন</p>
+        <p class="text-[9px] text-indigo-300/80 mt-1">Tap to copy Order ID</p>
       </div>
 
       <button onclick="navigate('home')" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold text-xs py-3 px-8 rounded-xl hover:brightness-110 shadow-lg transition active:scale-95" data-i18n="btn_back_home">Back to Home</button>
@@ -931,7 +931,7 @@
     </div>
   </div>
 
-  <!-- ADMIN CUSTOM MODALS (COINS, APKS, VIDEOS, RECEIVERS, META PRODUCTS) -->
+  <!-- ADMIN CUSTOM MODALS -->
   <div id="custom-modal-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
 
     <!-- COIN MODAL -->
@@ -1054,15 +1054,15 @@
       <h3 class="text-indigo-300 font-bold mb-4">Add Video Tutorial</h3>
       <div class="space-y-3 text-xs">
         <div>
-          <label class="text-slate-200 mb-1 block">থাম্বনেইল ছবি (Upload via Cloud)</label>
+          <label class="text-slate-200 mb-1 block">Thumbnail Image (Upload via Cloud)</label>
           <input type="file" id="modal-video-thumb-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
         </div>
         <div>
-          <label class="text-slate-200 mb-1 block">ভিডিওর শিরোনাম (Title)</label>
-          <input type="text" id="modal-video-title" placeholder="শিরোনাম লিখুন" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
+          <label class="text-slate-200 mb-1 block">Video Title</label>
+          <input type="text" id="modal-video-title" placeholder="Enter Title" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div>
-          <label class="text-slate-200 mb-1 block">YouTube ভিডিও লিংক</label>
+          <label class="text-slate-200 mb-1 block">YouTube Video URL</label>
           <input type="text" id="modal-video-url" placeholder="https://youtube.com/..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div class="flex gap-3 mt-4">
@@ -1077,15 +1077,15 @@
       <h3 class="text-indigo-300 font-bold mb-4">Add Telegram Channel</h3>
       <div class="space-y-3 text-xs">
         <div>
-          <label class="text-slate-200 mb-1 block">চ্যানেল লোগো (Upload via Cloud)</label>
+          <label class="text-slate-200 mb-1 block">Channel Logo (Upload via Cloud)</label>
           <input type="file" id="modal-channel-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
         </div>
         <div>
-          <label class="text-slate-200 mb-1 block">চ্যানেলের নাম</label>
-          <input type="text" id="modal-channel-name" placeholder="যেমন: Main Channel" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
+          <label class="text-slate-200 mb-1 block">Channel Name</label>
+          <input type="text" id="modal-channel-name" placeholder="e.g. Main Channel" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div>
-          <label class="text-slate-200 mb-1 block">টেলিগ্রাম লিংক</label>
+          <label class="text-slate-200 mb-1 block">Telegram Link</label>
           <input type="text" id="modal-channel-url" placeholder="https://t.me/..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div class="flex gap-3 mt-4">
@@ -1099,9 +1099,9 @@
     <div id="modal-payment-method" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
       <h3 class="text-indigo-300 font-bold mb-4">Add Coin Sell Method</h3>
       <div class="space-y-3 text-xs">
-        <input type="text" id="modal-pm-name" placeholder="পদ্ধতির নাম (যেমন: Upay)" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
+        <input type="text" id="modal-pm-name" placeholder="Method Name (e.g. Upay)" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         <div>
-          <label class="text-slate-200 mb-1 block">লোগো ছবি (Upload via Cloud)</label>
+          <label class="text-slate-200 mb-1 block">Method Logo (Upload via Cloud)</label>
           <input type="file" id="modal-pm-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
         </div>
         <div class="flex gap-3 mt-4">
@@ -1224,7 +1224,8 @@
         label_trx_id: "Transaction ID (TrxID / TxID)", btn_confirm_deposit: "Confirm Deposit", deposit_success_title: "Deposit Submitted!",
         label_deposit_id: "Your Deposit ID:", deposit_history_heading: "Deposit History", meta_store_heading: "Meta Buy Store",
         label_how_many_accounts: "How many accounts do you want?", btn_buy_now: "BUY NOW", meta_success_title: "Order Placed Successfully!",
-        label_meta_order_id: "Meta Order ID:", meta_history_heading: "Meta Buy History", stock_count: "Stock:"
+        label_meta_order_id: "Meta Order ID:", meta_history_heading: "Meta Buy History", stock_count: "Stock:",
+        label_subtotal: "Subtotal:", label_service_charge: "Service Charge:", label_total_payable: "Total Payable:"
       },
       bn: {
         menu: "মেনু", nav_home: "হোম", nav_lang: "ভাষা পরিবর্তন", nav_profile: "প্রোফাইল", nav_store: "কয়েন স্টোর",
@@ -1252,7 +1253,8 @@
         label_trx_id: "ট্রানজেকশন আইডি (TrxID / TxID)", btn_confirm_deposit: "ডিপোজিট কনফার্ম করুন", deposit_success_title: "ডিপোজিট জমা হয়েছে!",
         label_deposit_id: "আপনার ডিপোজিট আইডি:", deposit_history_heading: "ডিপোজিট হিস্ট্রি", meta_store_heading: "মেটা বাই স্টোর",
         label_how_many_accounts: "কতটি একাউন্ট নিতে চান?", btn_buy_now: "এখনই ক্রয় করুন", meta_success_title: "অর্ডার সফল হয়েছে!",
-        label_meta_order_id: "মেটা অর্ডার আইডি:", meta_history_heading: "মেটা বাই হিস্ট্রি", stock_count: "স্টক:"
+        label_meta_order_id: "মেটা অর্ডার আইডি:", meta_history_heading: "মেটা বাই হিস্ট্রি", stock_count: "স্টক:",
+        label_subtotal: "সাবটোটাল:", label_service_charge: "সার্ভিস চার্জ:", label_total_payable: "মোট প্রদেয়:"
       }
     };
 
@@ -1266,6 +1268,7 @@
       document.getElementById('check-lang-bn').classList.toggle('hidden', currentLang !== 'bn');
       document.getElementById('new-account-number').placeholder = currentLang === 'en' ? 'Number or Wallet Address' : 'নাম্বার বা ওয়ালেট এড্রেস';
       document.getElementById('input-coin-amount').placeholder = currentLang === 'en' ? 'Example: 20' : 'উদাহরণ: 20';
+      document.getElementById('input-deposit-amount').placeholder = currentLang === 'en' ? 'Enter Amount' : 'টাকার পরিমাণ লিখুন';
       document.getElementById('history-search-input').placeholder = currentLang === 'en' ? 'Search Order ID (#CS-...)' : 'অর্ডার আইডি সার্চ (#CS-...)';
     }
 
@@ -1702,7 +1705,7 @@
     }
 
     // ==========================================
-    // META BUY STORE & PURCHASE (PLUS CHARGE)
+    // META BUY STORE & PURCHASE (PURE ENGLISH & PLUS CHARGE)
     // ==========================================
     function renderMetaProducts() {
       const el = document.getElementById('meta-products-list');
@@ -1767,7 +1770,7 @@
       const unit = currentSelectedMetaProduct.unitPrice || 0;
 
       if (qty > stock) {
-        errElem.innerText = `বর্তমান স্টক (${stock}) এর চেয়ে বেশি অর্ডার করা হচ্ছে। অর্ডারটি ব্যাকলগ/পেন্ডিং থাকবে।`;
+        errElem.innerText = `Current stock (${stock}) exceeded. Order will be queued as backlog.`;
         errElem.classList.remove('hidden');
       } else {
         errElem.classList.add('hidden');
@@ -1819,26 +1822,56 @@
           throw new Error("Balance verification failed or insufficient funds!");
         }
 
-        // 2. CHECK AVAILABLE STOCK
+        // 2. CHECK AVAILABLE STOCK FOR INSTANT AUTO-DELIVERY
         const stockSnapshot = await db.ref('metaStock/' + currentSelectedMetaProduct.id).once('value');
         const allStock = stockSnapshot.val() || {};
         const availableItems = Object.entries(allStock).filter(([k, v]) => v && v.status === "AVAILABLE");
 
         const now = new Date().toLocaleString();
         let initialStatus = "PENDING_STOCK";
+        let isDelivered = false;
 
         if (availableItems.length >= qty) {
-          // Sufficient stock available -> Instant Reserve
-          initialStatus = "PENDING";
-          const reserveUpdates = {};
+          initialStatus = "DELIVERED";
+          isDelivered = true;
+
+          const lines = [
+            "RR COIN UNIVERSE - OFFICIAL DELIVERY",
+            `Order ID: ${orderId}`,
+            `Product: ${currentSelectedMetaProduct.name}`,
+            `Quantity: ${qty}`,
+            `Delivery Date: ${now}`,
+            "",
+            "Account Data / Credentials"
+          ];
+
+          const stockUpdates = {};
           for (let i = 0; i < qty; i++) {
-            const [itemId] = availableItems[i];
-            reserveUpdates[`${itemId}/status`] = "RESERVED";
-            reserveUpdates[`${itemId}/orderId`] = orderId;
-            reserveUpdates[`${itemId}/reservedFor`] = tgUser.id;
-            reserveUpdates[`${itemId}/reservedAt`] = now;
+            const [itemId, itemData] = availableItems[i];
+            lines.push(itemData.accountData || "N/A");
+            stockUpdates[`${itemId}/status`] = "DELIVERED";
+            stockUpdates[`${itemId}/orderId`] = orderId;
+            stockUpdates[`${itemId}/deliveredTo`] = tgUser.id;
+            stockUpdates[`${itemId}/deliveredAt`] = now;
           }
-          await db.ref('metaStock/' + currentSelectedMetaProduct.id).update(reserveUpdates);
+          await db.ref('metaStock/' + currentSelectedMetaProduct.id).update(stockUpdates);
+
+          // Auto deliver CSV file to user inbox
+          try {
+            const csvBlob = new Blob([lines.join("\r\n")], { type: "text/csv" });
+            const formData = new FormData();
+            formData.append("chat_id", tgUser.id);
+            formData.append("document", csvBlob, `RR_Meta_${orderId}.csv`);
+            formData.append("caption", `🎉 <b>Meta Buy Successful (Auto Delivered)</b>\n━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Order ID:</b> <code>#${orderId}</code>\n🛍 <b>Product:</b> ${escapeHtml(currentSelectedMetaProduct.name)}\n🔢 <b>Quantity:</b> ${qty} Accounts\n💰 <b>Total Paid:</b> ৳${finalTotal.toFixed(2)}\n\n<i>Here is your accounts file.</i>\n━━━━━━━━━━━━━━━━━━━━`);
+            formData.append("parse_mode", "HTML");
+
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
+              method: "POST",
+              body: formData
+            });
+          } catch (e) {
+            console.error("Document delivery error:", e);
+          }
         }
 
         // Deduct visible stock display
@@ -1880,14 +1913,14 @@
           timestamp: Date.now()
         });
 
-        // 4. TELEGRAM NOTIFICATION WITH WORKER BUTTONS
+        // 4. TELEGRAM NOTIFICATION (NO APPROVE/REJECT BUTTONS - PURE AUTO INFO)
         const safeOrderId = escapeHtml(orderId);
         const safeUser = escapeHtml(tgUser.username || 'N/A');
         const safeUserId = escapeHtml(tgUser.id);
         const safeProd = escapeHtml(currentSelectedMetaProduct.name);
         const currentRemBal = (userWallet.balance - finalTotal).toFixed(2);
 
-        const captionText = `📦 <b>New Meta Buy Order!</b>\n\n` +
+        const captionText = `📦 <b>${isDelivered ? "NEW META BUY (AUTO DELIVERED)" : "NEW META BUY (WAITING FOR STOCK)"}</b>\n━━━━━━━━━━━━━━━━━━━━\n` +
                             `🆔 <b>Order ID:</b> <code>#${safeOrderId}</code>\n` +
                             `👤 <b>User:</b> @${safeUser} (ID: <code>${safeUserId}</code>)\n` +
                             `🛍️ <b>Product:</b> ${safeProd}\n` +
@@ -1900,15 +1933,6 @@
                             `📅 <b>Date:</b> ${now}\n` +
                             `📊 <b>Status:</b> ${initialStatus}`;
 
-        const inlineKeyboard = JSON.stringify({
-          inline_keyboard: [
-            [
-              { text: "✅ APPROVE / PROCESS", callback_data: `mb_acc_${orderId}` },
-              { text: "❌ REJECT", callback_data: `mb_rej_${orderId}` }
-            ]
-          ]
-        });
-
         ADMIN_IDS.forEach(async (chatId) => {
           try {
             await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -1917,8 +1941,7 @@
               body: JSON.stringify({
                 chat_id: chatId,
                 text: captionText,
-                parse_mode: "HTML",
-                reply_markup: JSON.parse(inlineKeyboard)
+                parse_mode: "HTML"
               })
             });
           } catch(e){}
@@ -1949,7 +1972,7 @@
       if (!depositMethodsData.length) return;
 
       depositMethodsData.forEach((dm, idx) => {
-        const logoSrc = dm.logo && dm.logo.length > 20 ? dm.logo : getMethodSvgFallback(dm.name);
+        const logoSrc = (dm.logo && dm.logo.length > 20) ? dm.logo : getMethodSvgFallback(dm.name);
         container.innerHTML += `
           <label class="flex items-center gap-2 p-2.5 bg-[#090e24] rounded-xl border border-indigo-500/30 cursor-pointer hover:border-emerald-400 transition">
             <input type="radio" name="deposit-method-choice" value="${dm.id}" ${idx===0?'checked':''} onchange="selectDepositMethod('${dm.id}')">
@@ -1992,7 +2015,6 @@
       const amount = parseFloat(document.getElementById('input-deposit-amount').value);
       const trxId = document.getElementById('input-deposit-trx').value.trim();
 
-      // Unlimited Deposit: Any valid amount > 0 is allowed
       if (!amount || amount <= 0) return alert(currentLang === 'en' ? "Please enter a valid deposit amount!" : "সঠিক জমার পরিমাণ লিখুন!");
       if (!trxId) return alert(currentLang === 'en' ? "Please enter Transaction ID!" : "ট্রানজেকশন আইডি দিন!");
       if (!currentSelectedDepositMethod) return alert("Select a deposit method!");
@@ -2042,7 +2064,6 @@
         depMsg += `🔖 <b>TrxID:</b> <code>${safeTrx}</code>\n` +
                   `📅 <b>Date:</b> ${new Date().toLocaleString()}`;
 
-        // Uses appr_dep_ and rej_dep_ for seamless Cloudflare Worker acceptance
         const inlineKeyboard = JSON.stringify({
           inline_keyboard: [
             [
@@ -2469,7 +2490,7 @@
       const el = document.getElementById('adm-deposit-methods-list');
       el.innerHTML = '';
       depositMethodsData.forEach((m, idx) => {
-        const logoSrc = m.logo && m.logo.length > 20 ? m.logo : getMethodSvgFallback(m.name);
+        const logoSrc = (m.logo && m.logo.length > 20) ? m.logo : getMethodSvgFallback(m.name);
         el.innerHTML += `
           <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs">
             <div class="flex items-center gap-2.5">
@@ -2781,7 +2802,7 @@
       const container = document.getElementById('payment-method-radios');
       container.innerHTML = '';
       paymentMethodsData.forEach((pm, idx) => {
-        const logoSrc = pm.logo && pm.logo.length > 20 ? pm.logo : getMethodSvgFallback(pm.name);
+        const logoSrc = (pm.logo && pm.logo.length > 20) ? pm.logo : getMethodSvgFallback(pm.name);
         container.innerHTML += `
           <label class="flex items-center gap-2 p-2.5 bg-[#090e24] rounded-xl border border-indigo-500/30 cursor-pointer hover:border-indigo-400 transition">
             <input type="radio" name="pay-method-choice" value="${pm.name}" ${idx===0?'checked':''}>
@@ -2797,7 +2818,7 @@
       el.innerHTML = savedPaymentNumbers.length ? '' : `<p class="text-xs text-rose-300 p-2.5 bg-[#090e24] rounded-xl border border-rose-900/40">${t('empty_payment')}</p>`;
       savedPaymentNumbers.forEach((p, idx) => {
         const pm = paymentMethodsData.find(m => m.name === p.method) || { logo: '' };
-        const logoSrc = pm.logo && pm.logo.length > 20 ? pm.logo : getMethodSvgFallback(p.method);
+        const logoSrc = (pm.logo && pm.logo.length > 20) ? pm.logo : getMethodSvgFallback(p.method);
         el.innerHTML += `
           <label class="flex items-center justify-between p-3 bg-[#090e24] rounded-xl border border-indigo-500/30 cursor-pointer hover:border-indigo-400 transition">
             <div class="flex items-center gap-2.5">
@@ -2838,7 +2859,7 @@
       }
       savedPaymentNumbers.forEach((p, idx) => {
         const pm = paymentMethodsData.find(m => m.name === p.method) || { logo: '' };
-        const logoSrc = pm.logo && pm.logo.length > 20 ? pm.logo : getMethodSvgFallback(p.method);
+        const logoSrc = (pm.logo && pm.logo.length > 20) ? pm.logo : getMethodSvgFallback(p.method);
         el.innerHTML += `
           <div class="glass-card p-3 rounded-xl flex justify-between items-center text-xs shadow">
             <div class="flex items-center gap-2.5">
@@ -3164,7 +3185,7 @@
       const el = document.getElementById('admin-payment-methods-list');
       el.innerHTML = '';
       paymentMethodsData.forEach((pm, idx) => {
-        const logoSrc = pm.logo && pm.logo.length > 20 ? pm.logo : getMethodSvgFallback(pm.name);
+        const logoSrc = (pm.logo && pm.logo.length > 20) ? pm.logo : getMethodSvgFallback(pm.name);
         el.innerHTML += `
           <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs">
             <div class="flex items-center gap-2">
