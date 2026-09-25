@@ -39,33 +39,43 @@
     }
     .live-dot { animation: pulse-dot 1.4s ease-in-out infinite; }
     .glass-card {
-      background: rgba(17, 27, 65, 0.7);
+      background: rgba(17, 27, 65, 0.75);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(99, 102, 241, 0.25);
+    }
+    .tab-active {
+      border-bottom: 2px solid #38bdf8;
+      color: #38bdf8;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-indigo-600 selection:text-white">
 
-  <!-- LIVE 3D BACKGROUND ANIMATION (visual only, behind all existing UI) -->
+  <!-- LIVE 3D BACKGROUND ANIMATION -->
   <canvas id="bg-3d-canvas"></canvas>
 
   <!-- TOP HEADER -->
-  <header class="sticky top-0 z-40 bg-[#0d163a]/90 backdrop-blur-md border-b border-indigo-500/20 px-4 py-3 flex items-center justify-between shadow-lg">
-    <div class="flex items-center gap-3 cursor-pointer select-none" onclick="handleAdminTrigger()" title="Click 5 times for Admin Panel">
-      <img id="app-header-logo" src="https://api.dicebear.com/7.x/identicon/svg?seed=rrcoinuniverse" class="w-9 h-9 rounded-full object-cover border border-indigo-400/50 bg-[#090e24] shadow-md">
+  <header class="sticky top-0 z-40 bg-[#0d163a]/90 backdrop-blur-md border-b border-indigo-500/20 px-3.5 py-2.5 flex items-center justify-between shadow-lg">
+    <div class="flex items-center gap-2.5 cursor-pointer select-none" onclick="handleAdminTrigger()" title="Click 5 times for Admin Panel">
+      <img id="app-header-logo" src="https://api.dicebear.com/7.x/identicon/svg?seed=rrcoinuniverse" class="w-8 h-8 rounded-full object-cover border border-indigo-400/50 bg-[#090e24] shadow-md">
       <div>
-        <h1 class="font-black text-sm text-white tracking-wide">RR COIN UNIVERSE</h1>
-        <div class="flex items-center gap-1.5 mt-0.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 live-dot inline-block shadow"></span>
-          <span class="text-[10px] font-bold text-cyan-400 uppercase tracking-widest">LIVE</span>
+        <h1 class="font-black text-xs sm:text-sm text-white tracking-wide">RR COIN UNIVERSE</h1>
+        <div class="flex items-center gap-1 mt-0.5">
+          <span class="w-2 h-2 rounded-full bg-cyan-400 live-dot inline-block shadow"></span>
+          <span class="text-[9px] font-bold text-cyan-400 uppercase tracking-widest">LIVE</span>
         </div>
       </div>
     </div>
+
+    <!-- RIGHT: WALLET BALANCE BADGE + HOME + MENU -->
     <div class="flex items-center gap-2">
-      <button onclick="navigate('home')" class="p-2 text-indigo-200 hover:text-white transition"><i class="fa-solid fa-house"></i></button>
+      <button onclick="navigate('wallet')" class="flex items-center gap-1.5 bg-gradient-to-r from-indigo-900/70 to-purple-900/70 border border-indigo-400/40 hover:border-cyan-400 px-2.5 py-1.5 rounded-xl shadow transition active:scale-95 group">
+        <i class="fa-solid fa-wallet text-cyan-300 text-xs group-hover:scale-110 transition"></i>
+        <span id="header-balance-display" class="font-mono font-bold text-xs text-white">৳ 0.00</span>
+      </button>
+      <button onclick="navigate('home')" class="p-2 text-indigo-200 hover:text-white transition"><i class="fa-solid fa-house text-sm"></i></button>
       <button onclick="toggleMenu()" class="p-2 rounded-xl bg-indigo-600/20 text-indigo-300 hover:text-white border border-indigo-500/40 shadow transition active:scale-95">
-        <i class="fa-solid fa-bars text-lg"></i>
+        <i class="fa-solid fa-bars text-base"></i>
       </button>
     </div>
   </header>
@@ -80,11 +90,16 @@
       </div>
       <nav class="mt-4 space-y-1 text-sm font-medium">
         <button onclick="navigate('home')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-house text-indigo-400"></i> <span data-i18n="nav_home">Home</span></button>
+        <button onclick="navigate('wallet')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center justify-between text-slate-100"><span class="flex items-center gap-3"><i class="fa-solid fa-wallet text-cyan-300"></i> <span data-i18n="nav_wallet">Wallet / Balance</span></span> <span id="menu-balance-badge" class="text-[10px] bg-cyan-500/20 text-cyan-200 px-2 py-0.5 rounded font-mono font-bold border border-cyan-500/30">৳ 0.00</span></button>
+        <button onclick="navigate('meta-buy')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-cart-shopping text-cyan-400"></i> <span data-i18n="nav_meta_buy">Meta Buy Store</span></button>
+        <button onclick="navigate('deposit')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-money-bill-transfer text-emerald-400"></i> <span data-i18n="nav_deposit">Deposit</span></button>
+        <button onclick="navigate('deposit-history')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-receipt text-indigo-400"></i> <span data-i18n="nav_deposit_history">Deposit History</span></button>
+        <button onclick="navigate('meta-history')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-boxes-packing text-indigo-400"></i> <span data-i18n="nav_meta_history">Meta Buy History</span></button>
         <button onclick="openLanguageModal()" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center justify-between text-slate-100"><span class="flex items-center gap-3"><i class="fa-solid fa-globe text-indigo-400"></i> <span data-i18n="nav_lang">Language</span></span> <span id="current-lang-badge" class="text-[10px] bg-indigo-500/20 text-indigo-200 px-2 py-0.5 rounded font-bold border border-indigo-500/30">English</span></button>
         <button onclick="navigate('profile')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-user text-indigo-400"></i> <span data-i18n="nav_profile">Profile</span></button>
         <button onclick="navigate('coin-store')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-coins text-indigo-400"></i> <span data-i18n="nav_store">Coin Store</span></button>
-        <button onclick="navigate('history')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> <span data-i18n="nav_history">Order History</span></button>
-        <button onclick="navigate('payment-settings')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-wallet text-indigo-400"></i> <span data-i18n="nav_payment">Payment Settings</span></button>
+        <button onclick="navigate('history')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> <span data-i18n="nav_history">Coin Orders History</span></button>
+        <button onclick="navigate('payment-settings')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-gear text-indigo-400"></i> <span data-i18n="nav_payment">Payment Numbers</span></button>
         <button onclick="navigate('methods')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-play text-indigo-400"></i> <span data-i18n="nav_tutorials">Video Tutorials</span></button>
         <button onclick="navigate('apks')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-solid fa-download text-indigo-400"></i> <span data-i18n="nav_apks">All APKs</span></button>
         <button onclick="navigate('channels')" class="w-full text-left px-3 py-2.5 rounded-xl hover:bg-indigo-900/40 flex items-center gap-3 text-slate-100"><i class="fa-brands fa-telegram text-indigo-400"></i> <span data-i18n="nav_channels">Channels</span></button>
@@ -95,7 +110,7 @@
     <div class="pt-4 border-t border-indigo-500/20">
       <button onclick="contactSupportAdmin()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow-lg text-xs transition active:scale-95">
         <i class="fa-brands fa-telegram text-base"></i>
-        <span>Support And admin</span>
+        <span>Support And Admin</span>
       </button>
     </div>
   </div>
@@ -103,63 +118,327 @@
   <!-- MAIN APP CONTAINER -->
   <main class="max-w-md mx-auto p-4 w-full flex-grow flex flex-col justify-center items-center">
 
-    <!-- HOME -->
-    <section id="view-home" class="w-full my-auto py-5 flex flex-col justify-center space-y-4">
-      <div class="glass-card p-6 sm:p-7 rounded-[26px] text-center shadow-[0_10px_35px_rgba(0,0,0,0.5)] border border-indigo-400/30 relative overflow-hidden">
-        <div class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/25 to-cyan-500/25 text-cyan-300 text-xs px-4 py-1.5 rounded-full border border-cyan-400/40 font-semibold shadow-inner">
+    <!-- HOME VIEW -->
+    <section id="view-home" class="w-full my-auto py-4 flex flex-col justify-center space-y-3.5">
+      <div class="glass-card p-6 rounded-[24px] text-center shadow-xl border border-indigo-400/30 relative overflow-hidden">
+        <div class="inline-flex items-center gap-2 bg-gradient-to-r from-indigo-500/25 to-cyan-500/25 text-cyan-300 text-xs px-3.5 py-1.5 rounded-full border border-cyan-400/40 font-semibold shadow-inner">
           <i class="fa-solid fa-shield-halved text-xs text-cyan-400"></i>
           <span>100% safe & trusted buyer in Bangladesh</span>
         </div>
-        <h2 class="text-2xl sm:text-3xl font-black mt-4 text-white tracking-tight leading-snug">
-          <span data-i18n="welcome_title" class="text-slate-300 text-base font-bold block mb-1">Welcome to</span>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-indigo-300 text-2xl sm:text-3xl font-black tracking-wide drop-shadow-md">RR COIN UNIVERSE</span>
+        <h2 class="text-2xl font-black mt-3 text-white tracking-tight leading-snug">
+          <span data-i18n="welcome_title" class="text-slate-300 text-sm font-bold block mb-0.5">Welcome to</span>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-indigo-300 text-2xl font-black tracking-wide drop-shadow-md">RR COIN UNIVERSE</span>
         </h2>
-        <p class="text-xs sm:text-sm text-indigo-100/90 mt-3 font-normal leading-relaxed max-w-xs mx-auto">
-          Sell your coins at the best rates and receive instant payments via bKash, Nagad, Rocket or Binance.
+        <p class="text-xs text-indigo-100/90 mt-2 font-normal leading-relaxed max-w-xs mx-auto">
+          Sell coins or buy Meta accounts with instant payouts and automated wallet system.
         </p>
       </div>
 
-      <button onclick="navigate('coin-store')" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-5 px-6 rounded-2xl flex items-center justify-between shadow-2xl shadow-indigo-950/80 border border-indigo-400/40 active:scale-[0.98] transition-all">
-        <span class="flex items-center gap-3.5">
+      <!-- COINS SELL BUTTON -->
+      <button onclick="navigate('coin-store')" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-4 px-5 rounded-2xl flex items-center justify-between shadow-xl shadow-indigo-950/80 border border-indigo-400/40 active:scale-[0.98] transition-all">
+        <span class="flex items-center gap-3">
           <span class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 shadow-inner">
             <i class="fa-solid fa-coins text-2xl text-yellow-300"></i>
           </span>
           <span data-i18n="btn_coin_sell" class="text-lg tracking-wide font-black">Coins Sell</span>
         </span>
         <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
-          <i class="fa-solid fa-arrow-right text-lg text-white"></i>
+          <i class="fa-solid fa-arrow-right text-base text-white"></i>
         </span>
       </button>
 
-      <div class="grid grid-cols-3 gap-2.5 pt-1">
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+      <!-- META BUY BUTTON (IMMEDIATELY BELOW COIN SELL) -->
+      <button onclick="navigate('meta-buy')" class="w-full bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 hover:brightness-110 text-white font-black py-4 px-5 rounded-2xl flex items-center justify-between shadow-xl shadow-blue-950/80 border border-cyan-400/40 active:scale-[0.98] transition-all">
+        <span class="flex items-center gap-3">
+          <span class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 shadow-inner">
+            <i class="fa-solid fa-cart-shopping text-2xl text-cyan-300"></i>
+          </span>
+          <div class="text-left">
+            <span data-i18n="btn_meta_buy" class="text-lg tracking-wide font-black block leading-none">Meta Buy</span>
+            <span class="text-[10px] text-cyan-200/90 font-medium">Aged Accounts & Verified BMs</span>
+          </div>
+        </span>
+        <span class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+          <i class="fa-solid fa-arrow-right text-base text-white"></i>
+        </span>
+      </button>
+
+      <!-- QUICK SHORTCUTS -->
+      <div class="grid grid-cols-4 gap-2 pt-1">
+        <button onclick="navigate('wallet')" class="glass-card hover:bg-indigo-900/40 p-2.5 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-wallet text-cyan-400 text-sm mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_wallet">Wallet</span>
         </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
+        <button onclick="navigate('deposit')" class="glass-card hover:bg-indigo-900/40 p-2.5 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-money-bill-transfer text-emerald-400 text-sm mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_deposit">Deposit</span>
+        </button>
+        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-sm mb-1 block"></i>
           <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
         </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
+        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-gear text-indigo-400 text-sm mb-1 block"></i>
+          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-play text-indigo-400 text-sm mb-1 block"></i>
           <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
         </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
+        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-brands fa-telegram text-indigo-400 text-sm mb-1 block"></i>
           <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
         </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
-        </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
+        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 rounded-2xl text-center shadow transition active:scale-95">
+          <i class="fa-solid fa-download text-indigo-400 text-sm mb-1 block"></i>
           <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
         </button>
       </div>
     </section>
 
-    <!-- PROFILE -->
+    <!-- WALLET / BALANCE VIEW -->
+    <section id="view-wallet" class="w-full hidden space-y-4 my-auto py-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-wallet text-cyan-400"></i> <span data-i18n="wallet_title">My Wallet</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+      </div>
+
+      <div class="glass-card p-6 rounded-3xl text-center border border-indigo-400/30 shadow-2xl relative overflow-hidden bg-gradient-to-b from-[#111d4a] to-[#090e24]">
+        <span class="text-xs text-indigo-300 font-semibold uppercase tracking-wider block" data-i18n="label_current_balance">Current Balance</span>
+        <h3 id="wallet-balance-amount" class="text-3xl sm:text-4xl font-black text-cyan-300 font-mono my-2.5 drop-shadow">৳ 0.00</h3>
+        
+        <div class="flex justify-center gap-3 mt-4">
+          <button onclick="navigate('deposit')" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white text-xs font-black py-2.5 px-6 rounded-xl shadow-lg flex items-center gap-2 active:scale-95 transition">
+            <i class="fa-solid fa-plus-circle"></i>
+            <span data-i18n="btn_deposit">Deposit</span>
+          </button>
+          <button onclick="navigate('deposit-history')" class="bg-indigo-600/30 hover:bg-indigo-600/50 text-indigo-200 border border-indigo-400/40 text-xs font-bold py-2.5 px-4 rounded-xl shadow flex items-center gap-2 active:scale-95 transition">
+            <i class="fa-solid fa-receipt"></i>
+            <span data-i18n="btn_deposit_history">History</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 text-xs">
+        <div class="glass-card p-3.5 rounded-2xl">
+          <span class="text-indigo-300 text-[11px] block" data-i18n="stat_total_deposit">Total Deposit</span>
+          <span id="wallet-stat-total-deposit" class="font-bold text-base text-emerald-400 font-mono mt-1 block">৳ 0.00</span>
+        </div>
+        <div class="glass-card p-3.5 rounded-2xl">
+          <span class="text-indigo-300 text-[11px] block" data-i18n="stat_total_spent">Total Spent</span>
+          <span id="wallet-stat-total-spent" class="font-bold text-base text-rose-400 font-mono mt-1 block">৳ 0.00</span>
+        </div>
+        <div class="glass-card p-3.5 rounded-2xl">
+          <span class="text-indigo-300 text-[11px] block" data-i18n="stat_meta_purchases">Meta Purchases</span>
+          <span id="wallet-stat-meta-purchases" class="font-bold text-base text-cyan-300 font-mono mt-1 block">0 Pcs</span>
+        </div>
+        <div class="glass-card p-3.5 rounded-2xl">
+          <span class="text-indigo-300 text-[11px] block" data-i18n="stat_coin_sell_total">Coin Sold Value</span>
+          <span id="wallet-stat-coin-sold" class="font-bold text-base text-indigo-200 font-mono mt-1 block">৳ 0.00</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEPOSIT VIEW -->
+    <section id="view-deposit" class="w-full hidden space-y-4 my-auto py-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-money-bill-transfer text-emerald-400"></i> <span data-i18n="deposit_title">Deposit Money</span></h2>
+        <button onclick="navigate('wallet')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 space-y-3 shadow-md">
+        <label class="block text-xs text-slate-200 font-medium" data-i18n="label_select_deposit_method">Select Payment Method</label>
+        <div id="deposit-methods-selection-container" class="grid grid-cols-2 gap-2 text-xs"></div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 space-y-3 shadow-md">
+        <div class="flex justify-between items-center bg-[#090e24]/80 p-3.5 rounded-xl border border-indigo-500/20">
+          <div>
+            <p class="text-[11px] text-indigo-200" id="deposit-number-heading" data-i18n="send_money_to">Send Money To:</p>
+            <p id="deposit-receiver-display" class="font-bold text-cyan-300 text-sm font-mono mt-0.5 select-all">01XXXXXXXXX</p>
+          </div>
+          <button onclick="copyDepositReceiver()" class="bg-indigo-600/30 text-indigo-200 hover:text-white text-xs px-3.5 py-1.5 rounded-lg border border-indigo-400/40 active:scale-95 transition" data-i18n="btn_copy">Copy</button>
+        </div>
+
+        <div id="binance-rate-box" class="hidden bg-yellow-500/10 border border-yellow-500/30 p-3 rounded-xl text-xs space-y-1">
+          <div class="flex justify-between font-semibold">
+            <span class="text-yellow-300">USD Exchange Rate:</span>
+            <span id="binance-usd-rate-text" class="text-white font-mono">1 USD = 130 BDT</span>
+          </div>
+          <div class="flex justify-between text-[11px] text-indigo-200">
+            <span>Equivalent USD:</span>
+            <span id="binance-calculated-usd" class="font-bold text-emerald-400 font-mono">$0.00</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-200 font-medium mb-1" data-i18n="label_deposit_amount">Deposit Amount (in BDT)</label>
+          <input type="number" id="input-deposit-amount" oninput="calculateDepositUsd()" placeholder="Minimum: ৳100" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm focus:border-indigo-400 focus:outline-none transition">
+        </div>
+
+        <div>
+          <label class="block text-xs text-slate-200 font-medium mb-1" data-i18n="label_trx_id">Transaction ID (TrxID / TxID)</label>
+          <input type="text" id="input-deposit-trx" placeholder="e.g. 9J283HDK83" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm uppercase focus:border-indigo-400 focus:outline-none transition">
+        </div>
+
+        <button id="btn-submit-deposit-elem" onclick="submitDepositOrder()" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-700 hover:brightness-110 text-white font-black py-3.5 rounded-xl shadow-lg active:scale-[0.99] transition" data-i18n="btn_confirm_deposit">Confirm Deposit</button>
+      </div>
+    </section>
+
+    <!-- DEPOSIT SUCCESS VIEW -->
+    <section id="view-deposit-success" class="w-full hidden text-center py-10 space-y-5 my-auto">
+      <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-emerald-500/40 shadow-lg">
+        <i class="fa-solid fa-check"></i>
+      </div>
+      <h2 class="text-2xl font-black text-white" data-i18n="deposit_success_title">Deposit Submitted!</h2>
+      <p class="text-xs text-indigo-200 max-w-xs mx-auto">Admin will verify your deposit and add balance to your wallet shortly.</p>
+      
+      <div onclick="copyDepositSuccessId()" class="glass-card hover:border-cyan-400 p-4 rounded-2xl max-w-xs mx-auto shadow-md cursor-pointer transition active:scale-95 group">
+        <p class="text-[11px] text-indigo-200" data-i18n="label_deposit_id">Your Deposit ID:</p>
+        <div class="flex items-center justify-center gap-2 mt-1">
+          <p id="success-deposit-id-display" class="font-mono font-bold text-cyan-300 text-lg">DEP-00000000</p>
+          <i class="fa-regular fa-copy text-xs text-indigo-300 group-hover:text-cyan-300"></i>
+        </div>
+        <p class="text-[9px] text-indigo-300/80 mt-1">Tap to copy Deposit ID</p>
+      </div>
+
+      <div class="flex justify-center gap-3">
+        <button onclick="navigate('home')" class="bg-[#090e24] hover:bg-indigo-900/40 text-white font-semibold text-xs py-3 px-6 rounded-xl border border-indigo-500/30 transition active:scale-95" data-i18n="btn_back_home">Home</button>
+        <button onclick="contactSupportAdmin()" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold text-xs py-3 px-6 rounded-xl hover:brightness-110 shadow-lg transition active:scale-95">Support Admin</button>
+      </div>
+    </section>
+
+    <!-- DEPOSIT HISTORY VIEW -->
+    <section id="view-deposit-history" class="w-full hidden space-y-4 my-auto py-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-receipt text-indigo-400"></i> <span data-i18n="deposit_history_heading">Deposit History</span></h2>
+        <button onclick="navigate('wallet')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+      </div>
+
+      <div>
+        <input type="text" id="deposit-history-search" oninput="filterDepositHistory()" placeholder="Search Deposit ID (DEP-...)" class="w-full glass-card rounded-xl px-3 py-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
+      </div>
+
+      <div class="flex border-b border-indigo-500/20 text-xs">
+        <button id="tab-dep-all" onclick="switchDepositHistoryTab('all')" class="flex-1 py-2 font-bold tab-active">All</button>
+        <button id="tab-dep-approved" onclick="switchDepositHistoryTab('approved')" class="flex-1 py-2 font-bold text-indigo-200/60 hover:text-white">Approved</button>
+        <button id="tab-dep-pending" onclick="switchDepositHistoryTab('pending')" class="flex-1 py-2 font-bold text-indigo-200/60 hover:text-white">Pending</button>
+      </div>
+
+      <div id="deposit-history-list" class="space-y-3"></div>
+    </section>
+
+    <!-- META BUY STORE VIEW -->
+    <section id="view-meta-buy" class="w-full hidden space-y-4 my-auto py-4">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-cart-shopping text-cyan-400"></i> <span data-i18n="meta_store_heading">Meta Buy Store</span></h2>
+        <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+      </div>
+
+      <div id="meta-products-list" class="space-y-3"></div>
+    </section>
+
+    <!-- META PRODUCT PURCHASE VIEW -->
+    <section id="view-meta-purchase" class="w-full hidden space-y-4 my-auto py-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2" id="meta-purchase-title">Purchase Account</h2>
+        <button onclick="navigate('meta-buy')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 space-y-3 shadow-md">
+        <div class="flex items-center gap-3">
+          <img id="meta-purchase-logo" src="" class="w-12 h-12 rounded-xl object-cover bg-[#090e24] border border-cyan-400/40">
+          <div>
+            <h4 id="meta-purchase-name" class="font-bold text-white text-sm">Product Name</h4>
+            <div class="flex items-center gap-2 mt-1">
+              <span class="text-xs text-cyan-300 font-bold font-mono" id="meta-purchase-unit-price">৳0 / Account</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-200 border border-indigo-500/30" id="meta-purchase-stock-badge">Stock: 0</span>
+            </div>
+          </div>
+        </div>
+        <p id="meta-purchase-desc" class="text-xs text-indigo-200/80 leading-relaxed"></p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-4 space-y-4 shadow-md">
+        <div>
+          <label class="block text-xs text-slate-200 font-medium mb-1" data-i18n="label_how_many_accounts">How many accounts do you want?</label>
+          <input type="number" id="input-meta-qty" min="1" step="1" oninput="calculateMetaPurchase()" placeholder="Example: 10" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm focus:border-indigo-400 focus:outline-none transition">
+          <p id="meta-stock-error" class="hidden text-[11px] text-rose-400 mt-1 font-semibold"></p>
+        </div>
+
+        <div class="bg-[#090e24]/70 border border-indigo-500/20 p-3.5 rounded-xl space-y-2 text-xs">
+          <div class="flex justify-between text-indigo-200">
+            <span>Unit Price:</span>
+            <span id="meta-calc-unit" class="font-mono font-bold text-white">৳ 0.00</span>
+          </div>
+          <div class="flex justify-between text-indigo-200">
+            <span>Quantity:</span>
+            <span id="meta-calc-qty" class="font-mono font-bold text-white">0</span>
+          </div>
+          <div class="flex justify-between text-indigo-200">
+            <span>Gross Amount:</span>
+            <span id="meta-calc-gross" class="font-mono font-bold text-white">৳ 0.00</span>
+          </div>
+          <div class="flex justify-between text-emerald-400">
+            <span>Service Deduction / Discount:</span>
+            <span id="meta-calc-charge" class="font-mono font-bold">-৳ 0.00</span>
+          </div>
+          <div class="flex justify-between text-sm font-black pt-2 border-t border-indigo-500/20 text-cyan-300">
+            <span>Total Payable:</span>
+            <span id="meta-calc-final" class="font-mono text-base">৳ 0.00</span>
+          </div>
+        </div>
+
+        <div id="meta-balance-status-box" class="flex justify-between items-center text-xs p-2.5 rounded-xl bg-indigo-900/30 border border-indigo-500/30">
+          <span class="text-indigo-200">Your Wallet Balance:</span>
+          <span id="meta-user-balance-check" class="font-mono font-bold text-cyan-300">৳ 0.00</span>
+        </div>
+
+        <button id="btn-submit-meta-buy" onclick="executeMetaPurchase()" class="w-full bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-700 hover:brightness-110 text-white font-black py-3.5 rounded-xl shadow-lg active:scale-[0.99] transition" data-i18n="btn_buy_now">BUY NOW</button>
+      </div>
+    </section>
+
+    <!-- META BUY SUCCESS VIEW -->
+    <section id="view-meta-success" class="w-full hidden text-center py-10 space-y-5 my-auto">
+      <div class="w-16 h-16 bg-cyan-500/20 text-cyan-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-cyan-400/40 shadow-lg">
+        <i class="fa-solid fa-boxes-packing"></i>
+      </div>
+      <h2 class="text-2xl font-black text-white" data-i18n="meta_success_title">Order Placed Successfully!</h2>
+      <p class="text-xs text-indigo-200 max-w-xs mx-auto">Your purchased accounts file will be sent directly through the Telegram bot.</p>
+      
+      <div onclick="copyMetaOrderId()" class="glass-card hover:border-cyan-400 p-4 rounded-2xl max-w-xs mx-auto shadow-md cursor-pointer transition active:scale-95 group">
+        <p class="text-[11px] text-indigo-200" data-i18n="label_meta_order_id">Meta Order ID:</p>
+        <div class="flex items-center justify-center gap-2 mt-1">
+          <p id="success-meta-id-display" class="font-mono font-bold text-cyan-300 text-lg">MB-00000000</p>
+          <i class="fa-regular fa-copy text-xs text-indigo-300 group-hover:text-cyan-300"></i>
+        </div>
+        <p class="text-[9px] text-indigo-300/80 mt-1">Tap to copy Order ID</p>
+      </div>
+
+      <div class="flex justify-center gap-3">
+        <button onclick="navigate('home')" class="bg-[#090e24] hover:bg-indigo-900/40 text-white font-semibold text-xs py-3 px-6 rounded-xl border border-indigo-500/30 transition active:scale-95" data-i18n="btn_back_home">Home</button>
+        <button onclick="navigate('meta-history')" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold text-xs py-3 px-6 rounded-xl hover:brightness-110 shadow-lg transition active:scale-95" data-i18n="nav_meta_history">My Orders</button>
+      </div>
+    </section>
+
+    <!-- META BUY HISTORY VIEW -->
+    <section id="view-meta-history" class="w-full hidden space-y-4 my-auto py-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-boxes-packing text-indigo-400"></i> <span data-i18n="meta_history_heading">Meta Buy History</span></h2>
+        <button onclick="navigate('wallet')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
+      </div>
+
+      <div>
+        <input type="text" id="meta-history-search" oninput="filterMetaHistory()" placeholder="Search Meta Order ID (MB-...)" class="w-full glass-card rounded-xl px-3 py-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
+      </div>
+
+      <div id="meta-history-list" class="space-y-3"></div>
+    </section>
+
+    <!-- PROFILE VIEW -->
     <section id="view-profile" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between mb-2">
         <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-user text-indigo-400"></i> <span data-i18n="profile_heading">My Profile</span></h2>
@@ -173,86 +452,33 @@
         <p id="profile-user-handle" class="text-xs text-indigo-300 font-mono mt-0.5">@username</p>
         <p id="profile-user-id" class="text-[11px] text-indigo-200 mt-1 font-mono">ID: 123456789</p>
       </div>
-      <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
-        <div class="glass-card p-3.5 rounded-2xl">
-          <span class="text-indigo-200 text-[11px] block" data-i18n="stat_total">Total Orders</span>
-          <span id="stat-total-orders" class="font-bold text-base text-white mt-1 block">0</span>
-        </div>
-        <div class="glass-card p-3.5 rounded-2xl">
-          <span class="text-emerald-400 text-[11px] block" data-i18n="stat_approved">Approved</span>
-          <span id="stat-approved-orders" class="font-bold text-base text-emerald-300 mt-1 block">0</span>
-        </div>
-        <div class="glass-card p-3.5 rounded-2xl">
-          <span class="text-rose-400 text-[11px] block" data-i18n="stat_cancelled">Cancelled</span>
-          <span id="stat-rejected-orders" class="font-bold text-base text-rose-300 mt-1 block">0</span>
-        </div>
-      </div>
 
-      <div class="grid grid-cols-3 gap-2 pt-2">
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
-        </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
-        </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
-        </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
-        </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
-        </button>
+      <div class="grid grid-cols-3 gap-2.5 text-center text-xs">
+        <div class="glass-card p-3 rounded-2xl">
+          <span class="text-indigo-200 text-[10px] block" data-i18n="stat_wallet_balance">Balance</span>
+          <span id="profile-stat-balance" class="font-bold text-sm text-cyan-300 mt-1 block font-mono">৳ 0.00</span>
+        </div>
+        <div class="glass-card p-3 rounded-2xl">
+          <span class="text-emerald-400 text-[10px] block" data-i18n="stat_approved">Coin Orders</span>
+          <span id="stat-total-orders" class="font-bold text-sm text-emerald-300 mt-1 block font-mono">0</span>
+        </div>
+        <div class="glass-card p-3 rounded-2xl">
+          <span class="text-cyan-400 text-[10px] block" data-i18n="stat_meta_purchases">Meta Orders</span>
+          <span id="stat-total-meta" class="font-bold text-sm text-cyan-300 mt-1 block font-mono">0</span>
+        </div>
       </div>
     </section>
 
-    <!-- COIN STORE -->
+    <!-- COIN STORE VIEW -->
     <section id="view-coin-store" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between mb-2">
         <h2 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-store text-indigo-400"></i> <span data-i18n="store_heading">Select Coin to Sell</span></h2>
         <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
       <div id="coins-list" class="space-y-3"></div>
-
-      <div class="grid grid-cols-3 gap-2 pt-2">
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
-        </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
-        </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
-        </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
-        </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
-        </button>
-      </div>
     </section>
 
-    <!-- COIN SUBMIT -->
+    <!-- COIN SUBMIT VIEW -->
     <section id="view-coin-submit" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-white" id="submit-coin-title">Submit Coin</h2>
@@ -314,11 +540,11 @@
           </div>
         </div>
 
-        <button id="btn-submit-order-elem" onclick="submitOrderToAdmin()" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-3.5 rounded-xl shadow-lg shadow-indigo-950/50 active:scale-[0.99] transition" data-i18n="btn_submit_order">Submit Order</button>
+        <button id="btn-submit-order-elem" onclick="submitOrderToAdmin()" class="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-700 hover:brightness-110 text-white font-black py-3.5 rounded-xl shadow-lg active:scale-[0.99] transition" data-i18n="btn_submit_order">Submit Order</button>
       </div>
     </section>
 
-    <!-- ORDER SUCCESS -->
+    <!-- COIN ORDER SUCCESS VIEW -->
     <section id="view-order-success" class="w-full hidden text-center py-10 space-y-5 my-auto">
       <div class="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-3xl border border-emerald-500/40 shadow-lg">
         <i class="fa-solid fa-check"></i>
@@ -337,7 +563,7 @@
       <button onclick="navigate('home')" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold text-xs py-3 px-8 rounded-xl hover:brightness-110 shadow-lg transition active:scale-95" data-i18n="btn_back_home">Back to Home</button>
     </section>
 
-    <!-- PAYMENT SETTINGS -->
+    <!-- PAYMENT SETTINGS VIEW -->
     <section id="view-payment-settings" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-wallet text-indigo-400"></i> <span data-i18n="payment_settings_title">Payment Numbers</span></h2>
@@ -349,147 +575,39 @@
         <button onclick="savePaymentNumber()" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold py-2.5 rounded-xl text-xs shadow transition active:scale-95" data-i18n="btn_save_number">Save Number</button>
       </div>
       <div id="saved-numbers-container" class="space-y-2"></div>
-
-      <div class="grid grid-cols-3 gap-2 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
-        </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
-        </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
-        </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
-        </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
-        </button>
-      </div>
     </section>
 
-    <!-- APKS -->
+    <!-- APKS VIEW -->
     <section id="view-apks" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-download text-indigo-400"></i> <span data-i18n="apks_heading">Download APKs</span></h2>
         <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
       <div id="apk-cards-list" class="space-y-2.5"></div>
-
-      <div class="grid grid-cols-3 gap-2 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
-        </button>
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
-        </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
-        </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
-        </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
-        </button>
-      </div>
     </section>
     
-    <!-- VIDEOS -->
+    <!-- VIDEOS VIEW -->
     <section id="view-methods" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-play text-indigo-400"></i> <span data-i18n="tutorials_heading">Video Tutorials</span></h2>
         <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
       <div id="methods-video-list" class="space-y-3"></div>
-
-      <div class="grid grid-cols-3 gap-2 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
-        </button>
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
-        </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
-        </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-brands fa-telegram text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_channels">Channels</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
-        </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
-        </button>
-      </div>
     </section>
 
-    <!-- CHANNELS -->
+    <!-- CHANNELS VIEW -->
     <section id="view-channels" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
         <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-brands fa-telegram text-indigo-400"></i> <span data-i18n="channels_heading">Channels</span></h2>
         <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
       <div id="channels-list" class="space-y-2.5"></div>
-
-      <div class="grid grid-cols-3 gap-2 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-coins text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_store">Coin Store</span>
-        </button>
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_payment">Payment</span>
-        </button>
-        <button onclick="navigate('history')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-clock-rotate-left text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_history">History</span>
-        </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="btn_tutorials">Tutorials</span>
-        </button>
-        <button onclick="openLanguageModal()" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-globe text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_lang">Language</span>
-        </button>
-        <button onclick="navigate('apks')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-download text-indigo-400 text-base mb-1 block"></i>
-          <span class="text-[10px] font-semibold text-slate-100" data-i18n="nav_apks">All APKs</span>
-        </button>
-      </div>
     </section>
 
-    <!-- ORDER HISTORY -->
+    <!-- COIN ORDER HISTORY VIEW -->
     <section id="view-history" class="w-full hidden space-y-4 my-auto py-4">
       <div class="flex items-center justify-between">
-        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> <span data-i18n="history_heading">Order History</span></h2>
+        <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-indigo-400"></i> <span data-i18n="history_heading">Coin Orders History</span></h2>
         <button onclick="navigate('home')" class="text-xs text-indigo-200 hover:text-white"><i class="fa-solid fa-arrow-left"></i> <span data-i18n="btn_back">Back</span></button>
       </div>
 
@@ -498,132 +616,198 @@
       </div>
 
       <div class="flex border-b border-indigo-500/20 text-xs">
-        <button id="tab-btn-all" onclick="switchHistoryTab('all')" class="flex-1 py-2 font-bold text-indigo-300 border-b-2 border-indigo-500" data-i18n="tab_all_orders">All Orders</button>
+        <button id="tab-btn-all" onclick="switchHistoryTab('all')" class="flex-1 py-2 font-bold tab-active" data-i18n="tab_all_orders">All Orders</button>
         <button id="tab-btn-approved" onclick="switchHistoryTab('approved')" class="flex-1 py-2 font-bold text-indigo-200/60 hover:text-white" data-i18n="tab_approved_orders">Approved Orders</button>
       </div>
 
       <div id="order-history-list" class="space-y-3"></div>
-
-      <!-- হিস্ট্রি পেজে নির্দিষ্ট ৪টি বাটন -->
-      <div class="grid grid-cols-4 gap-2 pt-2">
-        <button onclick="navigate('coin-store')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-coins text-indigo-400 text-sm mb-1 block"></i>
-          <span class="text-[9px] font-semibold text-slate-100 truncate block" data-i18n="nav_store">Coins</span>
-        </button>
-        <button onclick="navigate('payment-settings')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-wallet text-indigo-400 text-sm mb-1 block"></i>
-          <span class="text-[9px] font-semibold text-slate-100 truncate block" data-i18n="btn_payment">Payment</span>
-        </button>
-        <button onclick="navigate('methods')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-solid fa-play text-indigo-400 text-sm mb-1 block"></i>
-          <span class="text-[9px] font-semibold text-slate-100 truncate block" data-i18n="btn_tutorials">Tutorials</span>
-        </button>
-        <button onclick="navigate('channels')" class="glass-card hover:bg-indigo-900/40 p-2.5 py-3 rounded-2xl text-center shadow transition active:scale-95">
-          <i class="fa-brands fa-telegram text-indigo-400 text-sm mb-1 block"></i>
-          <span class="text-[9px] font-semibold text-slate-100 truncate block" data-i18n="nav_channels">Channels</span>
-        </button>
-      </div>
     </section>
 
-    <!-- ADMIN DASHBOARD -->
+    <!-- ADMIN CONTROL PANEL -->
     <section id="view-admin" class="w-full hidden space-y-5 my-auto py-4">
       <div class="flex items-center justify-between border-b border-indigo-500/20 pb-3">
         <div>
           <h2 class="text-lg font-black text-indigo-300">Admin Control Panel</h2>
-          <p class="text-[11px] text-indigo-200">Cloud Sync Active</p>
+          <p class="text-[11px] text-cyan-300 font-mono">Realtime Management Core Active</p>
         </div>
         <button onclick="navigate('home')" class="text-xs bg-[#090e24] text-white px-3 py-1.5 rounded-lg hover:bg-indigo-900 border border-indigo-500/30">Exit</button>
       </div>
 
-      <!-- DEMO PASSWORD BAR -->
-      <div class="bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-500/30 p-4 rounded-xl shadow-lg flex justify-between items-center">
-        <div>
-          <span class="text-[10px] uppercase font-bold text-indigo-200 tracking-wider block">Admin Demo Password:</span>
-          <span id="display-demo-pass" class="font-mono text-lg font-black text-cyan-300 tracking-wider">11374314</span>
-        </div>
-        <button onclick="openChangeDemoPassModal()" class="bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-200 border border-indigo-400/40 text-xs font-bold px-3 py-1.5 rounded-lg transition active:scale-95">
-          <i class="fa-solid fa-key text-[10px] mr-1"></i> Change
-        </button>
+      <!-- Navigation Grid inside Admin -->
+      <div class="grid grid-cols-3 gap-1.5 bg-[#090e24] p-1.5 rounded-xl border border-indigo-500/30 text-[11px] font-semibold text-center">
+        <button id="adm-tab-btn-users" onclick="switchAdminSection('users')" class="py-1.5 rounded-lg bg-indigo-600 text-white">Users</button>
+        <button id="adm-tab-btn-deposits" onclick="switchAdminSection('deposits')" class="py-1.5 rounded-lg text-indigo-200">Deposits</button>
+        <button id="adm-tab-btn-meta" onclick="switchAdminSection('meta')" class="py-1.5 rounded-lg text-indigo-200">Meta</button>
+        <button id="adm-tab-btn-paymethods" onclick="switchAdminSection('paymethods')" class="py-1.5 rounded-lg text-indigo-200">Receivers</button>
+        <button id="adm-tab-btn-coins" onclick="switchAdminSection('coins')" class="py-1.5 rounded-lg text-indigo-200">Coins</button>
+        <button id="adm-tab-btn-settings" onclick="switchAdminSection('settings')" class="py-1.5 rounded-lg text-indigo-200">Settings</button>
       </div>
 
-      <!-- ADMIN SUPPORT USERNAME -->
-      <div class="glass-card p-4 rounded-xl space-y-2">
-        <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-brands fa-telegram text-cyan-400"></i> Support Admin Telegram Username</h3>
-        <div class="flex gap-2">
-          <input type="text" id="admin-support-user-input" placeholder="e.g. TR_coinuniverse" class="flex-grow bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
-          <button onclick="saveAdminSupportUsername()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save</button>
+      <!-- 1. ADMIN USER BALANCE MANAGEMENT -->
+      <div id="adm-sec-users" class="space-y-3">
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-user-gear text-cyan-400"></i> User Account & Balance Management</h3>
+          <div class="flex gap-2">
+            <input type="text" id="adm-search-user-input" placeholder="Enter Telegram User ID or Username" class="flex-grow bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
+            <button onclick="admSearchUser()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Search</button>
+          </div>
+          
+          <div id="adm-user-result-card" class="hidden bg-[#090e24]/90 p-4 rounded-xl border border-indigo-400/30 space-y-2 text-xs">
+            <div class="flex justify-between items-center pb-2 border-b border-indigo-500/20">
+              <div>
+                <p id="adm-found-username" class="font-bold text-white text-sm">@username</p>
+                <p id="adm-found-userid" class="text-[10px] text-indigo-300 font-mono">ID: 00000000</p>
+              </div>
+              <span id="adm-found-balance" class="font-mono font-black text-cyan-300 text-lg">৳ 0.00</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] text-indigo-200">
+              <p>Total Deposit: <b id="adm-found-dep" class="text-emerald-400 font-mono">৳ 0</b></p>
+              <p>Total Spent: <b id="adm-found-spent" class="text-rose-400 font-mono">৳ 0</b></p>
+            </div>
+            <div class="flex gap-2 pt-2 border-t border-indigo-500/20">
+              <button onclick="admOpenBalanceModal('ADD')" class="w-1/2 bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 border border-emerald-500/40 py-2 rounded-lg font-bold">+ Add Balance</button>
+              <button onclick="admOpenBalanceModal('DEDUCT')" class="w-1/2 bg-rose-600/30 hover:bg-rose-600/50 text-rose-300 border border-rose-500/40 py-2 rounded-lg font-bold">- Deduct Balance</button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- ABOUT US EDITOR -->
-      <div class="glass-card p-4 rounded-xl space-y-2">
-        <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-indigo-400"></i> Manage "About Us" Message</h3>
-        <textarea id="admin-about-us-input" rows="4" placeholder="Write About Us information here..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none"></textarea>
-        <div class="flex justify-end gap-2">
-          <button onclick="clearAboutUs()" class="bg-rose-950/60 text-rose-300 px-3 py-1.5 rounded-lg text-xs border border-rose-800">Clear</button>
-          <button onclick="saveAboutUs()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save Message</button>
+      <!-- 2. ADMIN DEPOSITS MANAGEMENT -->
+      <div id="adm-sec-deposits" class="space-y-3 hidden">
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-money-bill-transfer text-emerald-400"></i> Deposit Verification</h3>
+            <span id="adm-deposit-count-badge" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">0 Pending</span>
+          </div>
+          <div id="adm-deposit-requests-list" class="space-y-2"></div>
         </div>
       </div>
 
-      <!-- APP LOGO -->
-      <div class="glass-card p-4 rounded-xl space-y-2">
-        <h3 class="text-xs font-bold text-white">App Header Logo (Upload via Cloud)</h3>
-        <input type="file" id="admin-app-logo-file" accept="image/*" class="w-full text-xs text-indigo-200 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-[#090e24] file:text-white border border-indigo-500/30 rounded-lg">
-        <button id="btn-upload-logo" onclick="uploadAppLogo()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save New Logo</button>
+      <!-- 3. ADMIN META BUY & PRODUCT MANAGEMENT -->
+      <div id="adm-sec-meta" class="space-y-3 hidden">
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-white">Meta Products & Stock</h3>
+            <button onclick="openMetaProductModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Product</button>
+          </div>
+          <div id="adm-meta-products-list" class="space-y-2"></div>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <h3 class="text-xs font-bold text-white">Meta Buy Orders</h3>
+          <div class="flex gap-1.5 text-[10px]">
+            <button onclick="filterAdmMetaOrders('today')" class="px-2.5 py-1 rounded bg-indigo-600 text-white">Today</button>
+            <button onclick="filterAdmMetaOrders('yesterday')" class="px-2.5 py-1 rounded bg-[#090e24] text-indigo-200 border border-indigo-500/30">Yesterday</button>
+            <button onclick="filterAdmMetaOrders('all')" class="px-2.5 py-1 rounded bg-[#090e24] text-indigo-200 border border-indigo-500/30">All</button>
+          </div>
+          <div id="adm-meta-orders-list" class="space-y-2"></div>
+        </div>
       </div>
 
-      <!-- COINS -->
-      <div class="glass-card p-4 rounded-xl space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold text-white">Coins & Dynamic Rates</h3>
-          <button onclick="openCoinModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Coin</button>
+      <!-- 4. ADMIN RECEIVING NUMBERS & CUSTOM LOGO SETTINGS -->
+      <div id="adm-sec-paymethods" class="space-y-3 hidden">
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-white">Deposit Methods & Receiving Accounts</h3>
+            <button onclick="openDepositMethodModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Receiver</button>
+          </div>
+          <p class="text-[11px] text-indigo-200/80">Configure bKash, Nagad, Rocket numbers and Binance IDs with custom logos.</p>
+          <div id="adm-deposit-methods-list" class="space-y-2"></div>
         </div>
-        <div id="admin-coins-list" class="space-y-2"></div>
       </div>
 
-      <!-- PAYMENT METHODS -->
-      <div class="glass-card p-4 rounded-xl space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold text-white">Manage Payment Methods</h3>
-          <button onclick="openPaymentMethodModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Method</button>
+      <!-- 5. ADMIN COINS -->
+      <div id="adm-sec-coins" class="space-y-3 hidden">
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-white">Coins & Dynamic Rates</h3>
+            <button onclick="openCoinModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Coin</button>
+          </div>
+          <div id="admin-coins-list" class="space-y-2"></div>
         </div>
-        <div id="admin-payment-methods-list" class="space-y-2"></div>
-      </div>
-      
-      <!-- APKS -->
-      <div class="glass-card p-4 rounded-xl space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold text-white">Manage APKs</h3>
-          <button onclick="openApkModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add APK</button>
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-white">Sell Payout Methods</h3>
+            <button onclick="openPaymentMethodModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Method</button>
+          </div>
+          <div id="admin-payment-methods-list" class="space-y-2"></div>
         </div>
-        <div id="admin-apks-list" class="space-y-2"></div>
-      </div>
-
-      <!-- VIDEOS -->
-      <div class="glass-card p-4 rounded-xl space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold text-white">Manage Video Tutorials</h3>
-          <button onclick="openVideoModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Video</button>
-        </div>
-        <div id="admin-videos-list" class="space-y-2"></div>
       </div>
 
-      <!-- CHANNELS -->
-      <div class="glass-card p-4 rounded-xl space-y-3">
-        <div class="flex justify-between items-center">
-          <h3 class="text-xs font-bold text-white">Manage Channels</h3>
-          <button onclick="openChannelModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Channel</button>
+      <!-- 6. ADMIN GENERAL SETTINGS & CLOUD CONFIG -->
+      <div id="adm-sec-settings" class="space-y-3 hidden">
+        <div class="glass-card p-4 rounded-xl space-y-2">
+          <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-dollar-sign text-emerald-400"></i> Binance USD / BDT Exchange Rate</h3>
+          <div class="flex gap-2">
+            <input type="number" id="adm-usd-rate-input" placeholder="130" class="w-32 bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none font-mono">
+            <button onclick="saveUsdRate()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save Rate</button>
+          </div>
         </div>
-        <div id="admin-channels-list" class="space-y-2"></div>
+
+        <div class="bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-500/30 p-4 rounded-xl shadow-lg flex justify-between items-center">
+          <div>
+            <span class="text-[10px] uppercase font-bold text-indigo-200 tracking-wider block">Admin Demo Password:</span>
+            <span id="display-demo-pass" class="font-mono text-lg font-black text-cyan-300 tracking-wider">11374314</span>
+          </div>
+          <button onclick="openChangeDemoPassModal()" class="bg-indigo-600/30 hover:bg-indigo-600/40 text-indigo-200 border border-indigo-400/40 text-xs font-bold px-3 py-1.5 rounded-lg transition active:scale-95">
+            <i class="fa-solid fa-key text-[10px] mr-1"></i> Change
+          </button>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl space-y-2">
+          <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-brands fa-telegram text-cyan-400"></i> Support Admin Telegram Username</h3>
+          <div class="flex gap-2">
+            <input type="text" id="admin-support-user-input" placeholder="e.g. TR_coinuniverse" class="flex-grow bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
+            <button onclick="saveAdminSupportUsername()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save</button>
+          </div>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl space-y-2">
+          <h3 class="text-xs font-bold text-white">App Header Logo (Upload via Cloud)</h3>
+          <input type="file" id="admin-app-logo-file" accept="image/*" class="w-full text-xs text-indigo-200 file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:bg-[#090e24] file:text-white border border-indigo-500/30 rounded-lg">
+          <button id="btn-upload-logo" onclick="uploadAppLogo()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save New Logo</button>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl space-y-2">
+          <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-indigo-400"></i> Manage "About Us" Message</h3>
+          <textarea id="admin-about-us-input" rows="3" placeholder="Write About Us information here..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none"></textarea>
+          <div class="flex justify-end gap-2">
+            <button onclick="clearAboutUs()" class="bg-rose-950/60 text-rose-300 px-3 py-1.5 rounded-lg text-xs border border-rose-800">Clear</button>
+            <button onclick="saveAboutUs()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save</button>
+          </div>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-white">Manage APKs</h3>
+            <button onclick="openApkModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add APK</button>
+          </div>
+          <div id="admin-apks-list" class="space-y-2"></div>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-white">Manage Video Tutorials</h3>
+            <button onclick="openVideoModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Video</button>
+          </div>
+          <div id="admin-videos-list" class="space-y-2"></div>
+        </div>
+
+        <div class="glass-card p-4 rounded-xl space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-xs font-bold text-white">Manage Channels</h3>
+            <button onclick="openChannelModal()" class="bg-indigo-600/30 text-indigo-200 border border-indigo-400/40 text-[11px] px-2.5 py-1 rounded-lg">+ Add Channel</button>
+          </div>
+          <div id="admin-channels-list" class="space-y-2"></div>
+        </div>
       </div>
     </section>
 
   </main>
 
   <!-- PROFESSIONAL FOOTER SECTION -->
-  <footer class="w-full bg-[#080d22]/90 border-t border-indigo-500/20 text-indigo-200/70 text-xs py-8 px-5 mt-auto shadow-2xl">
-    <div class="max-w-md mx-auto space-y-6">
-      
+  <footer class="w-full bg-[#080d22]/90 border-t border-indigo-500/20 text-indigo-200/70 text-xs py-7 px-5 mt-auto shadow-2xl">
+    <div class="max-w-md mx-auto space-y-5">
       <div class="flex items-center gap-2 pb-2 border-b border-indigo-500/20">
         <div class="w-7 h-7 rounded-full bg-indigo-600/20 flex items-center justify-center text-indigo-300 border border-indigo-400/30">
           <i class="fa-solid fa-store text-xs"></i>
@@ -633,45 +817,27 @@
       </div>
 
       <p class="text-[11px] text-indigo-200/70 leading-relaxed">
-        Your go-to platform for discovering legitimate coin selling, best automated rates, and instant verified mobile payouts.
+        Your go-to platform for legitimate social coin selling and verified Meta premium accounts delivery with instant mobile payouts.
       </p>
 
-      <!-- QUICK LINKS -->
-      <div class="space-y-2.5">
+      <div class="space-y-2">
         <h4 class="text-indigo-300 font-black tracking-wider text-[11px] uppercase">QUICK LINKS</h4>
         <ul class="space-y-2 text-xs font-medium text-slate-200">
           <li><button onclick="navigate('home')" class="hover:text-indigo-300 transition">Home</button></li>
-          <li><button onclick="navigate('methods')" class="hover:text-indigo-300 transition">Instagram Work</button></li>
-          <li><button onclick="navigate('coin-store')" class="hover:text-indigo-300 transition">Coin Methods</button></li>
-          <li><button onclick="navigate('apks')" class="hover:text-indigo-300 transition">All APKs</button></li>
+          <li><button onclick="navigate('coin-store')" class="hover:text-indigo-300 transition">Sell Coins</button></li>
+          <li><button onclick="navigate('meta-buy')" class="hover:text-indigo-300 transition">Meta Buy Store</button></li>
+          <li><button onclick="navigate('wallet')" class="hover:text-indigo-300 transition">My Wallet & Deposit</button></li>
         </ul>
       </div>
 
-      <!-- RESOURCES -->
-      <div class="space-y-2.5">
-        <h4 class="text-indigo-300 font-black tracking-wider text-[11px] uppercase">RESOURCES</h4>
-        <ul class="space-y-2 text-xs font-medium text-slate-200">
-          <li><button onclick="navigate('methods')" class="hover:text-indigo-300 transition">Work / Methods</button></li>
-          <li><button onclick="navigate('channels')" class="hover:text-indigo-300 transition">Telegram Channels</button></li>
-          <li><button onclick="contactSupportAdmin()" class="hover:text-indigo-300 transition">Admin</button></li>
-        </ul>
-      </div>
-
-      <!-- ABOUT -->
-      <div class="space-y-2.5">
-        <h4 class="text-indigo-300 font-black tracking-wider text-[11px] uppercase">ABOUT</h4>
-        <ul class="space-y-2 text-xs font-medium text-slate-200">
-          <li><button onclick="openAboutModal()" class="hover:text-indigo-300 transition">About Us</button></li>
-        </ul>
-      </div>
-
-      <div class="pt-4 border-t border-indigo-500/20 text-center text-[10px] text-indigo-300/50 space-y-1">
+      <div class="pt-3 border-t border-indigo-500/20 text-center text-[10px] text-indigo-300/50 space-y-1">
         <p>© 2026 RR COIN UNIVERSE. All rights reserved.</p>
         <p>Built with <span class="text-indigo-400">💜</span> for the earning community.</p>
       </div>
-
     </div>
   </footer>
+
+  <!-- MODALS -->
 
   <!-- ABOUT US MODAL -->
   <div id="modal-about-us-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
@@ -747,8 +913,29 @@
     </div>
   </div>
 
-  <!-- ADMIN CUSTOM MODALS -->
+  <!-- ADMIN BALANCE ADJUST MODAL -->
+  <div id="modal-balance-adjust-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
+    <div class="glass-card rounded-2xl p-5 w-full max-w-xs space-y-3 shadow-2xl">
+      <h3 id="adm-balance-modal-title" class="text-indigo-300 font-bold text-xs flex items-center gap-2"><i class="fa-solid fa-coins"></i> Adjust Balance</h3>
+      <div>
+        <label class="text-[10px] text-indigo-200 block mb-1">Amount (in BDT)</label>
+        <input type="number" id="adm-adjust-amount-input" placeholder="e.g. 500" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none font-mono">
+      </div>
+      <div>
+        <label class="text-[10px] text-indigo-200 block mb-1">Reason / Note (Audit Log)</label>
+        <input type="text" id="adm-adjust-reason-input" placeholder="Manual credit / refund" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none">
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button onclick="closeBalanceAdjustModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg text-xs border border-indigo-500/30">Cancel</button>
+        <button onclick="confirmAdminBalanceAdjust()" class="w-1/2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:brightness-110 text-white font-bold py-2 rounded-lg text-xs shadow">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN CUSTOM MODALS (COINS, APKS, VIDEOS, RECEIVERS, META PRODUCTS) -->
   <div id="custom-modal-overlay" class="fixed inset-0 modal-overlay z-50 hidden flex items-center justify-center p-4">
+
+    <!-- COIN MODAL -->
     <div id="modal-coin" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden max-h-[90vh] overflow-y-auto">
       <h3 class="text-indigo-300 font-bold mb-4">Add / Edit Coin</h3>
       <input type="hidden" id="modal-coin-id">
@@ -766,7 +953,7 @@
           <input type="text" id="modal-coin-receiver" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         </div>
         <div class="pt-2 border-t border-indigo-500/20">
-          <label class="text-indigo-300 font-bold mb-2 block">Pricing Tiers (3 Steps - Min & Max Limits)</label>
+          <label class="text-indigo-300 font-bold mb-2 block">Pricing Tiers (Min & Max Limits)</label>
           <div class="flex gap-2 mb-2">
             <input type="number" id="t1-min" placeholder="Min K" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
             <input type="number" id="t1-max" placeholder="Max K" class="w-1/3 bg-[#090e24] border border-indigo-500/30 rounded p-1.5 text-white focus:border-indigo-400 focus:outline-none">
@@ -790,6 +977,63 @@
       </div>
     </div>
 
+    <!-- META PRODUCT MODAL -->
+    <div id="modal-meta-product" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden max-h-[90vh] overflow-y-auto">
+      <h3 class="text-indigo-300 font-bold mb-4" id="modal-meta-title">Add / Edit Meta Product</h3>
+      <input type="hidden" id="modal-meta-id">
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-200 mb-1 block">Product Name</label>
+          <input type="text" id="modal-meta-name" placeholder="e.g. Meta FB Accounts (2018-2022)" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-slate-200 mb-1 block">Unit Price (BDT per account)</label>
+          <input type="number" id="modal-meta-price" placeholder="85" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none font-mono">
+        </div>
+        <div>
+          <label class="text-slate-200 mb-1 block">Available Stock Count</label>
+          <input type="number" id="modal-meta-stock" placeholder="5000" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none font-mono">
+        </div>
+        <div>
+          <label class="text-slate-200 mb-1 block">Product Logo (Upload via Cloud)</label>
+          <input type="file" id="modal-meta-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
+        </div>
+        <div>
+          <label class="text-slate-200 mb-1 block">Description</label>
+          <textarea id="modal-meta-desc" rows="2" placeholder="Product details..." class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none"></textarea>
+        </div>
+        <div class="flex gap-3 mt-4">
+          <button onclick="closeCustomModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg border border-indigo-500/30">Cancel</button>
+          <button onclick="saveMetaProductFromModal()" class="w-1/2 bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Product</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPOSIT METHOD MODAL (WITH NUMBER & LOGO UPLOAD) -->
+    <div id="modal-deposit-method" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
+      <h3 class="text-indigo-300 font-bold mb-4" id="modal-dep-method-title">Add / Edit Deposit Method</h3>
+      <input type="hidden" id="modal-dep-method-id">
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="text-slate-200 mb-1 block">Method Name (e.g. bKash, Nagad, Rocket, Binance)</label>
+          <input type="text" id="modal-dep-name" placeholder="bKash" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
+        </div>
+        <div>
+          <label class="text-slate-200 mb-1 block">Receiving Number or Binance ID</label>
+          <input type="text" id="modal-dep-number" placeholder="01XXXXXXXXX or Binance UID" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none font-mono">
+        </div>
+        <div>
+          <label class="text-slate-200 mb-1 block">Method Logo (Upload via Cloud)</label>
+          <input type="file" id="modal-dep-file" accept="image/*" class="w-full text-indigo-200 file:bg-[#090e24] file:text-white file:border-0 rounded">
+        </div>
+        <div class="flex gap-3 mt-4">
+          <button onclick="closeCustomModal()" class="w-1/2 bg-[#090e24] text-white py-2 rounded-lg border border-indigo-500/30">Cancel</button>
+          <button onclick="saveDepositMethodFromModal()" class="w-1/2 bg-gradient-to-r from-emerald-600 to-indigo-600 hover:brightness-110 text-white font-bold py-2 rounded-lg shadow">Save Method</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- APK MODAL -->
     <div id="modal-apk" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
       <h3 class="text-indigo-300 font-bold mb-4">Add / Edit APK</h3>
       <div class="space-y-3 text-xs">
@@ -806,6 +1050,7 @@
       </div>
     </div>
 
+    <!-- VIDEO MODAL -->
     <div id="modal-video" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
       <h3 class="text-indigo-300 font-bold mb-4">Add Video Tutorial</h3>
       <div class="space-y-3 text-xs">
@@ -828,6 +1073,7 @@
       </div>
     </div>
 
+    <!-- CHANNEL MODAL -->
     <div id="modal-channel" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
       <h3 class="text-indigo-300 font-bold mb-4">Add Telegram Channel</h3>
       <div class="space-y-3 text-xs">
@@ -850,8 +1096,9 @@
       </div>
     </div>
 
+    <!-- COIN SELL PAYMENT METHOD MODAL -->
     <div id="modal-payment-method" class="glass-card rounded-2xl p-5 w-full max-w-sm hidden">
-      <h3 class="text-indigo-300 font-bold mb-4">Add Payment Method</h3>
+      <h3 class="text-indigo-300 font-bold mb-4">Add Coin Sell Method</h3>
       <div class="space-y-3 text-xs">
         <input type="text" id="modal-pm-name" placeholder="পদ্ধতির নাম (যেমন: Upay)" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white focus:border-indigo-400 focus:outline-none">
         <div>
@@ -866,8 +1113,9 @@
     </div>
   </div>
 
+  <!-- APPLICATION SCRIPT LOGIC -->
   <script>
-    // CONFIGURATION - UPDATED FOR RR COIN UNIVERSE
+    // CONFIGURATION - UPDATED WITH REQUESTED NEW BOT TOKEN
     const BOT_TOKEN = "8445816181:AAGqXhzNUcGDznimPncramDXaJdkLO1oxyQ";
     const ADMIN_IDS = ["8711733087", "8133969637"];
     const FIREBASE_DB_URL = "https://rr-coin-universe-default-rtdb.firebaseio.com";
@@ -876,21 +1124,45 @@
     firebase.initializeApp({ databaseURL: FIREBASE_DB_URL });
     const db = firebase.database();
 
-    // FIXED SECRET PASSWORD (NEVER SHOWN / CHANGED)
+    // FIXED SECRET PASSWORD & DEMO PASSWORD
     const FIXED_ADMIN_PASS = "@61742529@";
     let demoAdminPass = "11374314";
 
-    // APP GLOBAL STATES - LOCAL CACHING FIRST (INSTANT 0.1s LOAD)
+    // CACHED APPLICATION STATES
     let adminSupportUsername = localStorage.getItem('cache_adminSupport') || "TR_coinuniverse";
-    let aboutUsContent = localStorage.getItem('cache_aboutUs') || "Welcome to RR COIN UNIVERSE!\n\nWe are the most trusted coin buying and selling platform in Bangladesh. Sell your social coins safely and receive payments instantly via bKash, Nagad, Rocket or Binance.";
+    let aboutUsContent = localStorage.getItem('cache_aboutUs') || "Welcome to RR COIN UNIVERSE!\n\nWe are the most trusted coin buying and selling platform in Bangladesh. Sell your social coins safely and buy Meta accounts with instant payouts.";
     let appLogo = localStorage.getItem('cache_appLogo') || "https://api.dicebear.com/7.x/identicon/svg?seed=rrcoinuniverse";
+    let usdExchangeRate = parseFloat(localStorage.getItem('cache_usdRate')) || 130;
+    let metaAbove2000Charge = 25;
 
+    // INTERNAL WALLET STATE
+    let userWallet = {
+      balance: 0,
+      totalDeposit: 0,
+      totalSpent: 0,
+      metaPurchasesCount: 0
+    };
+
+    // DEPOSIT METHODS DATA (WITH EDITABLE NUMBERS & LOGOS)
+    let depositMethodsData = JSON.parse(localStorage.getItem('cache_depositMethods')) || [
+      { id: "dep-bkash", name: "bKash", number: "01700000000 (Personal)", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><circle cx='256' cy='256' r='256' fill='%23E2136E'/><path fill='white' d='M256 100 L380 256 L256 412 L132 256 Z'/></svg>" },
+      { id: "dep-nagad", name: "Nagad", number: "01800000000 (Personal)", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><rect width='512' height='512' fill='%23F47420' rx='100'/><circle cx='256' cy='256' r='140' fill='white'/></svg>" },
+      { id: "dep-rocket", name: "Rocket", number: "019000000007 (Personal)", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><rect width='512' height='512' fill='%238C3A98' rx='100'/><polygon points='256,100 370,380 256,310 142,380' fill='white'/></svg>" },
+      { id: "dep-binance", name: "Binance", number: "738291039 (Binance Pay ID)", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><circle cx='256' cy='256' r='256' fill='%23F3BA2F'/><path fill='%2314151A' d='M256 122 L347 214 L256 305 L165 214 Z'/></svg>" }
+    ];
+
+    // META PRODUCTS DATA
+    let metaProductsData = JSON.parse(localStorage.getItem('cache_metaProducts')) || [
+      { id: "meta-fb-aged", name: "Meta Facebook Account (2018-2022)", unitPrice: 85, stock: 4500, logo: "https://api.dicebear.com/7.x/identicon/svg?seed=meta1", desc: "Aged 2FA Active, Full Fresh Cookies + Mail Included", active: true },
+      { id: "meta-bm-verified", name: "Meta Verified BM (250$ Limit)", unitPrice: 350, stock: 850, logo: "https://api.dicebear.com/7.x/identicon/svg?seed=metabm", desc: "Reinstated High Limit Green BM with Document Verification", active: true }
+    ];
+
+    // COIN SELL PAYMENT METHODS
     let paymentMethodsData = JSON.parse(localStorage.getItem('cache_paymentMethods')) || [
       { name: "bKash", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><circle cx='256' cy='256' r='256' fill='%23E2136E'/><path fill='white' d='M256 100 L380 256 L256 412 L132 256 Z'/></svg>" },
       { name: "Nagad", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><rect width='512' height='512' fill='%23F47420' rx='100'/><circle cx='256' cy='256' r='140' fill='white'/></svg>" },
       { name: "Rocket", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><rect width='512' height='512' fill='%238C3A98' rx='100'/><polygon points='256,100 370,380 256,310 142,380' fill='white'/></svg>" },
-      { name: "Binance", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><circle cx='256' cy='256' r='256' fill='%23F3BA2F'/><path fill='%2314151A' d='M256 122 L347 214 L256 305 L165 214 Z'/></svg>" },
-      { name: "USDT", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><circle cx='256' cy='256' r='256' fill='%2326A17B'/><text x='50%25' y='65%25' font-size='220' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>₮</text></svg>" }
+      { name: "Binance", logo: "data:image/svg+xml;utf8,<svg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'><circle cx='256' cy='256' r='256' fill='%23F3BA2F'/><path fill='%2314151A' d='M256 122 L347 214 L256 305 L165 214 Z'/></svg>" }
     ];
 
     let coinsData = JSON.parse(localStorage.getItem('cache_coinsData')) || [
@@ -904,11 +1176,18 @@
       { name: "Main Channel", url: "https://t.me/TR_coinuniverse", logo: "https://api.dicebear.com/7.x/identicon/svg?seed=tg" }
     ];
     let allOrdersData = JSON.parse(localStorage.getItem('cache_ordersData')) || {};
+    let allDepositsData = {};
+    let allMetaOrdersData = {};
 
     let currentSelectedCoin = null;
     let currentCoinMin = 1;
     let currentCoinMax = 100000;
     let currentHistoryTab = 'all';
+    let currentDepositTab = 'all';
+    let currentSelectedMetaProduct = null;
+    let currentSelectedDepositMethod = null;
+    let admSelectedUserObj = null;
+    let admBalanceActionType = 'ADD';
 
     // TRANSLATIONS
     const translations = {
@@ -916,26 +1195,37 @@
         menu: "Menu", nav_home: "Home", nav_lang: "Language", nav_profile: "Profile", nav_store: "Coin Store",
         nav_history: "Order History", nav_payment: "Payment Settings", nav_tutorials: "Video Tutorials",
         nav_apks: "All APKs", nav_channels: "Channels", welcome_title: "Welcome to", btn_coin_sell: "Coins Sell",
-        btn_payment: "Payment", btn_history: "History", btn_tutorials: "Tutorials", profile_heading: "My Profile",
-        btn_back: "Back", stat_total: "Total Orders", stat_approved: "Approved", stat_cancelled: "Cancelled",
+        btn_meta_buy: "Meta Buy", btn_wallet: "Wallet", btn_deposit: "Deposit", btn_history: "History",
+        btn_payment: "Payment", btn_tutorials: "Tutorials", profile_heading: "My Profile", btn_back: "Back",
+        stat_total: "Total Orders", stat_approved: "Approved", stat_cancelled: "Cancelled", stat_wallet_balance: "Balance",
         store_heading: "Select Coin to Sell", btn_sell_coin: "Sell Coin →", send_coins_to: "Send coins to this Username:",
         btn_copy: "Copy", live_pricing_tiers: "Live Pricing Tiers:", label_coin_amount: "Coin Amount (in K)",
         label_total_payout: "Total Amount:", label_select_payment: "Select Payment Method", btn_manage_numbers: "Manage Numbers",
         label_screenshot_proof: "Screenshot Proof (Required)", btn_submit_order: "Submit Order", order_success_title: "Order Submitted!",
         label_order_id: "Your Order ID:", btn_back_home: "Back to Home", payment_settings_title: "Payment Numbers",
         btn_save_number: "Save Number", apks_heading: "Download APKs", btn_download: "Download", tutorials_heading: "Video Tutorials",
-        btn_watch: "Watch", channels_heading: "Channels", btn_join: "Join", history_heading: "Order History",
+        btn_watch: "Watch", channels_heading: "Channels", btn_join: "Join", history_heading: "Coin Orders History",
         tab_all_orders: "All Orders", tab_approved_orders: "Approved Orders", empty_history: "No order history found.",
         empty_payment: "No saved payment numbers found.", from_rate: "From ৳", per_1k: " / 1K", any_amount: "Any Amount",
         alert_amount: "Please enter a valid coin amount!", alert_payment: "Please select a payment method!",
-        alert_proof: "Screenshot proof of sending coins is mandatory!", alert_copied: "Copied to clipboard!", alert_number: "Please enter account number!"
+        alert_proof: "Screenshot proof of sending coins is mandatory!", alert_copied: "Copied to clipboard!", alert_number: "Please enter account number!",
+        nav_wallet: "Wallet / Balance", nav_meta_buy: "Meta Buy Store", nav_deposit: "Deposit Money", nav_deposit_history: "Deposit History",
+        nav_meta_history: "Meta Buy History", wallet_title: "My Wallet", label_current_balance: "Current Balance",
+        stat_total_deposit: "Total Deposit", stat_total_spent: "Total Spent", stat_meta_purchases: "Meta Purchases",
+        stat_coin_sell_total: "Coin Sold Value", btn_deposit_history: "Deposit History", deposit_title: "Deposit Money",
+        label_select_deposit_method: "Select Deposit Method", send_money_to: "Send Money To:", label_deposit_amount: "Deposit Amount (BDT)",
+        label_trx_id: "Transaction ID (TrxID / TxID)", btn_confirm_deposit: "Confirm Deposit", deposit_success_title: "Deposit Submitted!",
+        label_deposit_id: "Your Deposit ID:", deposit_history_heading: "Deposit History", meta_store_heading: "Meta Buy Store",
+        label_how_many_accounts: "How many accounts do you want?", btn_buy_now: "BUY NOW", meta_success_title: "Order Placed Successfully!",
+        label_meta_order_id: "Meta Order ID:", meta_history_heading: "Meta Buy History", stock_count: "Stock:"
       },
       bn: {
         menu: "মেনু", nav_home: "হোম", nav_lang: "ভাষা পরিবর্তন", nav_profile: "প্রোফাইল", nav_store: "কয়েন স্টোর",
-        nav_history: "অর্ডার হিস্ট্রি", nav_payment: "পেমেন্ট সেটিংস", nav_tutorials: "ভিডিও টিউটোরিয়াল",
+        nav_history: "কয়েন অর্ডার হিস্ট্রি", nav_payment: "পেমেন্ট নাম্বারসমূহ", nav_tutorials: "ভিডিও টিউটোরিয়াল",
         nav_apks: "সকল APKs", nav_channels: "টেলিগ্রাম চ্যানেল", welcome_title: "স্বাগতম", btn_coin_sell: "কয়েন বিক্রি করুন",
-        btn_payment: "পেমেন্ট", btn_history: "হিস্ট্রি", btn_tutorials: "টিউটোরিয়াল", profile_heading: "আমার প্রোফাইল",
-        btn_back: "ফিরে যান", stat_total: "মোট অর্ডার", stat_approved: "অনুমোদিত", stat_cancelled: "বাতিল",
+        btn_meta_buy: "মেটা বাই (Meta Buy)", btn_wallet: "ওয়ালেট", btn_deposit: "ডিপোজিট", btn_history: "হিস্ট্রি",
+        btn_payment: "পেমেন্ট", btn_tutorials: "টিউটোরিয়াল", profile_heading: "আমার প্রোফাইল", btn_back: "ফিরে যান",
+        stat_total: "মোট অর্ডার", stat_approved: "অনুমোদিত", stat_cancelled: "বাতিল", stat_wallet_balance: "ব্যালেন্স",
         store_heading: "কয়েন নির্বাচন করুন", btn_sell_coin: "কয়েন সেল →", send_coins_to: "এই ইউজারনেমে কয়েন পাঠান:",
         btn_copy: "কপি", live_pricing_tiers: "বর্তমান মূল্য তালিকা:", label_coin_amount: "কয়েনের পরিমাণ (K হিসেবে)",
         label_total_payout: "মোট টাকা:", label_select_payment: "পেমেন্ট মেথড সিলেক্ট করুন", btn_manage_numbers: "নাম্বার ম্যানেজ করুন",
@@ -943,10 +1233,19 @@
         order_success_title: "অর্ডার সফলভাবে জমা হয়েছে!", label_order_id: "আপনার অর্ডার আইডি:", btn_back_home: "হোমে ফিরে যান",
         payment_settings_title: "পেমেন্ট নাম্বারসমূহ", btn_save_number: "নাম্বার সেভ করুন", apks_heading: "APKs ডাউনলোড",
         btn_download: "ডাউনলোড", tutorials_heading: "ভিডিও টিউটোরিয়াল", btn_watch: "দেখুন", channels_heading: "চ্যানেলসমূহ",
-        btn_join: "জয়েন", history_heading: "অর্ডার হিস্ট্রি", tab_all_orders: "সকল অর্ডার", tab_approved_orders: "অনুমোদিত অর্ডার",
-        empty_history: "কোনো অর্ডার হিস্ট্রি পাওয়া যায়নি।", empty_payment: "কোনো সেভ করা নাম্বার নেই।", from_rate: "শুরু ৳",
+        btn_join: "জয়েন", history_heading: "কয়েন অর্ডার হিস্ট্রি", tab_all_orders: "সকল অর্ডার", tab_approved_orders: "অনুমোদিত অর্ডার",
+        empty_history: "কোনো হিস্ট্রি পাওয়া যায়নি।", empty_payment: "কোনো সেভ করা নাম্বার নেই।", from_rate: "শুরু ৳",
         per_1k: " / ১,০০০", any_amount: "যেকোনো পরিমাণ", alert_amount: "সঠিক কয়েনের পরিমাণ লিখুন!", alert_payment: "পেমেন্ট মেথড সিলেক্ট করুন!",
-        alert_proof: "কয়েন পাঠানোর স্ক্রিনশট প্রুফ দেওয়া বাধ্যতামূলক!", alert_copied: "কপি করা হয়েছে!", alert_number: "নাম্বার লিখুন!"
+        alert_proof: "কয়েন পাঠানোর স্ক্রিনশট প্রুফ দেওয়া বাধ্যতামূলক!", alert_copied: "কপি করা হয়েছে!", alert_number: "নাম্বার লিখুন!",
+        nav_wallet: "ওয়ালেট ও ব্যালেন্স", nav_meta_buy: "মেটা বাই স্টোর", nav_deposit: "ডিপোজিট করুন", nav_deposit_history: "ডিপোজিট হিস্ট্রি",
+        nav_meta_history: "মেটা বাই হিস্ট্রি", wallet_title: "আমার ওয়ালেট", label_current_balance: "বর্তমান ব্যালেন্স",
+        stat_total_deposit: "মোট ডিপোজিট", stat_total_spent: "মোট খরচ", stat_meta_purchases: "মেটা ক্রয়",
+        stat_coin_sell_total: "কয়েন সেল ভ্যালু", btn_deposit_history: "ডিপোজিট হিস্ট্রি", deposit_title: "টাকা ডিপোজিট করুন",
+        label_select_deposit_method: "ডিপোজিট মেথড সিলেক্ট করুন", send_money_to: "টাকা পাঠানোর নাম্বার / আইডি:", label_deposit_amount: "ডিপোজিট পরিমাণ (BDT)",
+        label_trx_id: "ট্রানজেকশন আইডি (TrxID / TxID)", btn_confirm_deposit: "ডিপোজিট কনফার্ম করুন", deposit_success_title: "ডিপোজিট জমা হয়েছে!",
+        label_deposit_id: "আপনার ডিপোজিট আইডি:", deposit_history_heading: "ডিপোজিট হিস্ট্রি", meta_store_heading: "মেটা বাই স্টোর",
+        label_how_many_accounts: "কতটি একাউন্ট নিতে চান?", btn_buy_now: "এখনই ক্রয় করুন", meta_success_title: "অর্ডার সফল হয়েছে!",
+        label_meta_order_id: "মেটা অর্ডার আইডি:", meta_history_heading: "মেটা বাই হিস্ট্রি", stock_count: "স্টক:"
       }
     };
 
@@ -970,30 +1269,30 @@
       localStorage.setItem('appLang', lang);
       applyTranslations();
       renderCoins();
+      renderMetaProducts();
+      renderDepositMethods();
       renderSavedNumbers();
       renderApks();
       renderVideos();
       renderChannels();
       renderHistory();
-      if (currentSelectedCoin) openCoinSubmit(currentSelectedCoin.id);
+      renderDepositHistory();
+      renderMetaHistory();
       closeLanguageModal();
     }
 
-    // TELEGRAM USER
+    // TELEGRAM USER IDENTITY
     const tg = window.Telegram?.WebApp;
     if (tg) { tg.ready(); tg.expand(); }
     const tgUser = tg?.initDataUnsafe?.user || { id: "8711733087", first_name: "Admin User", username: "novair5" };
 
     function escapeHtml(text) {
       if (!text) return "";
-      return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
+      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
 
-    // আল্ট্রা-লাইট ফাস্ট কম্প্রেশন (যাতে পলকের মধ্যে ০.১ সেকেন্ডে ফাইল প্রসেস হয়ে যায়)
-    async function compressImage(file, maxWidth = 900, quality = 0.5) {
+    // COMPRESSION HELPER
+    async function compressImage(file, maxWidth = 850, quality = 0.5) {
       return new Promise((resolve) => {
         if (!file || !file.type.startsWith('image/')) return resolve(file);
         const reader = new FileReader();
@@ -1014,11 +1313,8 @@
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, width, height);
             canvas.toBlob(blob => {
-              if (blob) {
-                resolve(new File([blob], "proof.jpg", { type: "image/jpeg" }));
-              } else {
-                resolve(file);
-              }
+              if (blob) resolve(new File([blob], "proof.jpg", { type: "image/jpeg" }));
+              else resolve(file);
             }, 'image/jpeg', quality);
           };
           img.onerror = () => resolve(file);
@@ -1027,7 +1323,6 @@
       });
     }
 
-    // বেস৬৪ কনভার্টার (টেলিগ্রাম ব্যাকআপের জন্য)
     async function fileToBase64(file) {
       return new Promise((resolve) => {
         const reader = new FileReader();
@@ -1036,39 +1331,15 @@
       });
     }
 
-    function previewProofImage(input) {
-      const previewContainer = document.getElementById('proof-preview-container');
-      const previewImg = document.getElementById('proof-preview-img');
-      if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          previewImg.src = e.target.result;
-          previewContainer.classList.remove('hidden');
-        };
-        reader.readAsDataURL(input.files[0]);
-      }
-    }
-
-    function removeSelectedFile() {
-      const input = document.getElementById('order-proof-file');
-      input.value = "";
-      document.getElementById('proof-preview-img').src = "";
-      document.getElementById('proof-preview-container').classList.add('hidden');
-    }
-
-    function copySuccessOrderId() {
-      const text = document.getElementById('success-order-id-display').innerText.replace('#', '').trim();
-      navigator.clipboard.writeText(text);
-      alert(currentLang === 'en' ? `Order ID #${text} copied to clipboard!` : `অর্ডার আইডি #${text} কপি করা হয়েছে!`);
-    }
-
-    // INITIAL DATA SYNC WITH FIREBASE
+    // INITIALIZATION & REALTIME LISTENERS
     document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('app-header-logo').src = appLogo;
       initPaymentRadios();
       setupProfileData();
       applyTranslations();
       renderCoins();
+      renderMetaProducts();
+      renderDepositMethods();
       renderUserPaymentOptions();
       renderApks();
       renderVideos();
@@ -1076,7 +1347,7 @@
       renderHistory();
       renderSavedNumbers();
 
-      // Listen for Config changes
+      // Config Listener
       db.ref('appConfig').on('value', snapshot => {
         const val = snapshot.val();
         if (val) {
@@ -1099,10 +1370,76 @@
             demoAdminPass = val.demoAdminPass;
             document.getElementById('display-demo-pass').innerText = demoAdminPass;
           }
+          if (val.usdRate) {
+            usdExchangeRate = parseFloat(val.usdRate) || 130;
+            localStorage.setItem('cache_usdRate', usdExchangeRate);
+            document.getElementById('adm-usd-rate-input').value = usdExchangeRate;
+            document.getElementById('binance-usd-rate-text').innerText = `1 USD = ${usdExchangeRate} BDT`;
+          }
+          if (val.metaAbove2000Charge) {
+            metaAbove2000Charge = parseFloat(val.metaAbove2000Charge) || 25;
+          }
         }
       });
 
-      // Listen for Coins
+      // User Wallet Listener
+      db.ref('wallets/' + tgUser.id).on('value', snapshot => {
+        const val = snapshot.val();
+        if (val) {
+          userWallet = {
+            balance: parseFloat(val.balance) || 0,
+            totalDeposit: parseFloat(val.totalDeposit) || 0,
+            totalSpent: parseFloat(val.totalSpent) || 0,
+            metaPurchasesCount: parseInt(val.metaPurchasesCount) || 0
+          };
+        } else {
+          db.ref('wallets/' + tgUser.id).set(userWallet);
+        }
+        updateWalletUi();
+      });
+
+      // Deposit Methods Listener
+      db.ref('depositMethods').on('value', snapshot => {
+        const val = snapshot.val();
+        if (val && Array.isArray(val)) {
+          depositMethodsData = val;
+          localStorage.setItem('cache_depositMethods', JSON.stringify(depositMethodsData));
+        } else if (!val) {
+          db.ref('depositMethods').set(depositMethodsData);
+        }
+        renderDepositMethods();
+        renderAdmDepositMethods();
+      });
+
+      // Meta Products Listener
+      db.ref('metaProducts').on('value', snapshot => {
+        const val = snapshot.val();
+        if (val && Array.isArray(val)) {
+          metaProductsData = val;
+          localStorage.setItem('cache_metaProducts', JSON.stringify(metaProductsData));
+        } else if (!val) {
+          db.ref('metaProducts').set(metaProductsData);
+        }
+        renderMetaProducts();
+        renderAdmMetaProducts();
+      });
+
+      // Deposits Listener
+      db.ref('deposits').on('value', snapshot => {
+        allDepositsData = snapshot.val() || {};
+        renderDepositHistory();
+        renderAdmDepositRequests();
+      });
+
+      // Meta Orders Listener
+      db.ref('metaBuyOrders').on('value', snapshot => {
+        allMetaOrdersData = snapshot.val() || {};
+        renderMetaHistory();
+        renderAdmMetaOrders();
+        updateWalletUi();
+      });
+
+      // Coins Listener
       db.ref('coinsData').on('value', snapshot => {
         const val = snapshot.val();
         if (val && Array.isArray(val)) {
@@ -1115,7 +1452,7 @@
         renderAdminCoins();
       });
 
-      // Listen for Payment Methods
+      // Payment Methods Listener (Coins)
       db.ref('paymentMethodsData').on('value', snapshot => {
         const val = snapshot.val();
         if (val && Array.isArray(val)) {
@@ -1129,7 +1466,7 @@
         renderAdminPaymentMethods();
       });
 
-      // Listen for APKs
+      // APKs, Videos, Channels Listeners
       db.ref('apksData').on('value', snapshot => {
         apksData = snapshot.val() || [];
         localStorage.setItem('cache_apksData', JSON.stringify(apksData));
@@ -1137,7 +1474,6 @@
         renderAdminApks();
       });
 
-      // Listen for Videos
       db.ref('videosData').on('value', snapshot => {
         videosData = snapshot.val() || [];
         localStorage.setItem('cache_videosData', JSON.stringify(videosData));
@@ -1145,7 +1481,6 @@
         renderAdminVideos();
       });
 
-      // Listen for Channels
       db.ref('channelsData').on('value', snapshot => {
         const val = snapshot.val();
         if (val && Array.isArray(val)) {
@@ -1158,14 +1493,38 @@
         renderAdminChannels();
       });
 
-      // Listen for Orders
+      // Orders Listener
       db.ref('orders').on('value', snapshot => {
         allOrdersData = snapshot.val() || {};
         localStorage.setItem('cache_ordersData', JSON.stringify(allOrdersData));
         renderHistory();
         setupProfileData();
+        updateWalletUi();
       });
     });
+
+    function updateWalletUi() {
+      const bFormatted = '৳ ' + (userWallet.balance || 0).toFixed(2);
+      document.getElementById('header-balance-display').innerText = bFormatted;
+      document.getElementById('menu-balance-badge').innerText = bFormatted;
+      document.getElementById('wallet-balance-amount').innerText = bFormatted;
+      document.getElementById('wallet-stat-total-deposit').innerText = '৳ ' + (userWallet.totalDeposit || 0).toFixed(2);
+      document.getElementById('wallet-stat-total-spent').innerText = '৳ ' + (userWallet.totalSpent || 0).toFixed(2);
+      document.getElementById('wallet-stat-meta-purchases').innerText = (userWallet.metaPurchasesCount || 0) + ' Pcs';
+      document.getElementById('profile-stat-balance').innerText = bFormatted;
+      document.getElementById('meta-user-balance-check').innerText = bFormatted;
+
+      const myOrders = Object.values(allOrdersData).filter(o => String(o.userId) === String(tgUser.id) && o.status === 'APPROVED');
+      let totalCoinSold = 0;
+      myOrders.forEach(o => {
+        const num = parseFloat((o.total || '').replace(/[^0.0-9.]/g, '')) || 0;
+        totalCoinSold += num;
+      });
+      document.getElementById('wallet-stat-coin-sold').innerText = '৳ ' + totalCoinSold.toFixed(2);
+
+      const myMetaOrders = Object.values(allMetaOrdersData).filter(o => String(o.userId) === String(tgUser.id));
+      document.getElementById('stat-total-meta').innerText = myMetaOrders.length;
+    }
 
     function setupProfileData() {
       document.getElementById('profile-user-name').innerText = tgUser.first_name || "Telegram User";
@@ -1175,8 +1534,6 @@
 
       const userOrders = getUserOrders();
       document.getElementById('stat-total-orders').innerText = userOrders.length;
-      document.getElementById('stat-approved-orders').innerText = userOrders.filter(o => o.status === 'APPROVED').length;
-      document.getElementById('stat-rejected-orders').innerText = userOrders.filter(o => o.status === 'CANCELLED').length;
     }
 
     function getUserOrders() {
@@ -1184,11 +1541,17 @@
       return list.filter(o => String(o.userId) === String(tgUser.id)).sort((a,b) => (b.timestamp || 0) - (a.timestamp || 0));
     }
 
+    // NAVIGATION
     function navigate(view) {
-      const views = ['home', 'profile', 'coin-store', 'coin-submit', 'order-success', 'payment-settings', 'apks', 'methods', 'channels', 'history', 'admin'];
+      const views = [
+        'home', 'profile', 'coin-store', 'coin-submit', 'order-success', 'payment-settings',
+        'apks', 'methods', 'channels', 'history', 'admin', 'wallet', 'deposit',
+        'deposit-success', 'deposit-history', 'meta-buy', 'meta-purchase', 'meta-success', 'meta-history'
+      ];
       views.forEach(v => document.getElementById('view-' + v)?.classList.add('hidden'));
       document.getElementById('view-' + view)?.classList.remove('hidden');
       if (view === 'profile') setupProfileData();
+      if (view === 'wallet') updateWalletUi();
       window.scrollTo(0, 0);
       closeMenu();
     }
@@ -1214,30 +1577,6 @@
       closeMenu();
     }
     function closeAboutModal() { document.getElementById('modal-about-us-overlay').classList.add('hidden'); }
-
-    function saveAboutUs() {
-      aboutUsContent = document.getElementById('admin-about-us-input').value.trim();
-      db.ref('appConfig/aboutUsContent').set(aboutUsContent);
-      localStorage.setItem('cache_aboutUs', aboutUsContent);
-      alert("About Us saved to cloud!");
-    }
-    function clearAboutUs() {
-      if(confirm("Clear About Us message?")) {
-        document.getElementById('admin-about-us-input').value = "";
-        aboutUsContent = "";
-        db.ref('appConfig/aboutUsContent').set("");
-        localStorage.setItem('cache_aboutUs', "");
-      }
-    }
-
-    function saveAdminSupportUsername() {
-      const val = document.getElementById('admin-support-user-input').value.trim().replace('@', '');
-      if(!val) return alert("Enter valid username!");
-      adminSupportUsername = val;
-      db.ref('appConfig/adminSupportUsername').set(val);
-      localStorage.setItem('cache_adminSupport', val);
-      alert("Support Admin Username saved to cloud!");
-    }
 
     // 5-TAP ADMIN TRIGGER
     let adminClickCount = 0, adminClickTimer;
@@ -1291,6 +1630,40 @@
       alert("Admin Demo Password updated in cloud!");
     }
 
+    function saveAboutUs() {
+      aboutUsContent = document.getElementById('admin-about-us-input').value.trim();
+      db.ref('appConfig/aboutUsContent').set(aboutUsContent);
+      localStorage.setItem('cache_aboutUs', aboutUsContent);
+      alert("About Us saved to cloud!");
+    }
+    function clearAboutUs() {
+      if(confirm("Clear About Us message?")) {
+        document.getElementById('admin-about-us-input').value = "";
+        aboutUsContent = "";
+        db.ref('appConfig/aboutUsContent').set("");
+        localStorage.setItem('cache_aboutUs', "");
+      }
+    }
+
+    function saveAdminSupportUsername() {
+      const val = document.getElementById('admin-support-user-input').value.trim().replace('@', '');
+      if(!val) return alert("Enter valid username!");
+      adminSupportUsername = val;
+      db.ref('appConfig/adminSupportUsername').set(val);
+      localStorage.setItem('cache_adminSupport', val);
+      alert("Support Admin Username saved to cloud!");
+    }
+
+    function saveUsdRate() {
+      const val = parseFloat(document.getElementById('adm-usd-rate-input').value);
+      if(!val || val <= 0) return alert("Enter valid USD rate!");
+      usdExchangeRate = val;
+      db.ref('appConfig/usdRate').set(val);
+      localStorage.setItem('cache_usdRate', val);
+      document.getElementById('binance-usd-rate-text').innerText = `1 USD = ${val} BDT`;
+      alert("USD exchange rate updated!");
+    }
+
     async function uploadAppLogo() {
       const file = document.getElementById('admin-app-logo-file').files[0];
       if (!file) return alert("Please select an image!");
@@ -1312,7 +1685,803 @@
       }
     }
 
-    // COINS RENDERING & SUBMIT
+    // META BUY STORE & PURCHASE
+    function renderMetaProducts() {
+      const el = document.getElementById('meta-products-list');
+      el.innerHTML = '';
+      if (!metaProductsData.length) {
+        el.innerHTML = `<p class="text-xs text-indigo-300/60 text-center py-5">No Meta products configured yet.</p>`;
+        return;
+      }
+      metaProductsData.forEach(prod => {
+        el.innerHTML += `
+          <div class="glass-card rounded-2xl p-4 flex items-center justify-between shadow-lg hover:border-cyan-400/50 transition">
+            <div class="flex items-center gap-3">
+              <img src="${prod.logo}" class="w-12 h-12 rounded-xl object-cover border border-cyan-400/40 bg-[#090e24]">
+              <div>
+                <h4 class="text-sm font-bold text-white">${prod.name}</h4>
+                <p class="text-xs text-cyan-300 font-bold font-mono">৳${prod.unitPrice} <span class="text-[10px] text-indigo-200 font-normal">/ Account</span></p>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${t('stock_count')} ${prod.stock}</span>
+              </div>
+            </div>
+            <button onclick="openMetaPurchase('${prod.id}')" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow active:scale-95 transition">BUY NOW</button>
+          </div>
+        `;
+      });
+    }
+
+    function openMetaPurchase(prodId) {
+      currentSelectedMetaProduct = metaProductsData.find(p => p.id === prodId);
+      if (!currentSelectedMetaProduct) return;
+
+      document.getElementById('meta-purchase-title').innerText = currentSelectedMetaProduct.name;
+      document.getElementById('meta-purchase-logo').src = currentSelectedMetaProduct.logo;
+      document.getElementById('meta-purchase-name').innerText = currentSelectedMetaProduct.name;
+      document.getElementById('meta-purchase-unit-price').innerText = `৳${currentSelectedMetaProduct.unitPrice} / Account`;
+      document.getElementById('meta-purchase-stock-badge').innerText = `Stock: ${currentSelectedMetaProduct.stock}`;
+      document.getElementById('meta-purchase-desc').innerText = currentSelectedMetaProduct.desc || "Verified high quality accounts with instant delivery.";
+
+      const qtyInput = document.getElementById('input-meta-qty');
+      qtyInput.value = '';
+      qtyInput.max = currentSelectedMetaProduct.stock;
+      document.getElementById('meta-stock-error').classList.add('hidden');
+
+      calculateMetaPurchase();
+      navigate('meta-purchase');
+    }
+
+    function calculateMetaPurchase() {
+      if (!currentSelectedMetaProduct) return;
+      const qtyInput = document.getElementById('input-meta-qty');
+      const errElem = document.getElementById('meta-stock-error');
+      const qty = parseInt(qtyInput.value) || 0;
+      const stock = currentSelectedMetaProduct.stock || 0;
+      const unit = currentSelectedMetaProduct.unitPrice || 0;
+
+      if (qty > stock) {
+        errElem.innerText = `Insufficient stock! Maximum available is ${stock}`;
+        errElem.classList.remove('hidden');
+      } else {
+        errElem.classList.add('hidden');
+      }
+
+      const gross = qty * unit;
+      let chargeDeduction = 0;
+      if (gross > 0) {
+        if (gross <= 500) chargeDeduction = 5;
+        else if (gross <= 1000) chargeDeduction = 10;
+        else if (gross <= 2000) chargeDeduction = 20;
+        else chargeDeduction = metaAbove2000Charge;
+      }
+
+      let finalTotal = gross - chargeDeduction;
+      if (finalTotal < 0) finalTotal = 0;
+
+      document.getElementById('meta-calc-unit').innerText = `৳ ${unit.toFixed(2)}`;
+      document.getElementById('meta-calc-qty').innerText = qty;
+      document.getElementById('meta-calc-gross').innerText = `৳ ${gross.toFixed(2)}`;
+      document.getElementById('meta-calc-charge').innerText = `-৳ ${chargeDeduction.toFixed(2)}`;
+      document.getElementById('meta-calc-final').innerText = `৳ ${finalTotal.toFixed(2)}`;
+    }
+
+    async function executeMetaPurchase() {
+      if (!currentSelectedMetaProduct) return;
+      const qty = parseInt(document.getElementById('input-meta-qty').value);
+      if (!qty || qty <= 0) return alert("Please enter valid account quantity!");
+
+      const stock = currentSelectedMetaProduct.stock || 0;
+      if (qty > stock) return alert(`Requested quantity exceeds available stock (${stock})!`);
+
+      const unit = currentSelectedMetaProduct.unitPrice || 0;
+      const gross = qty * unit;
+      let chargeDeduction = 0;
+      if (gross <= 500) chargeDeduction = 5;
+      else if (gross <= 1000) chargeDeduction = 10;
+      else if (gross <= 2000) chargeDeduction = 20;
+      else chargeDeduction = metaAbove2000Charge;
+
+      const finalTotal = Math.max(0, gross - chargeDeduction);
+
+      if (userWallet.balance < finalTotal) {
+        if (confirm("Insufficient Balance in your wallet! Do you want to deposit money now?")) {
+          navigate('deposit');
+        }
+        return;
+      }
+
+      const btn = document.getElementById('btn-submit-meta-buy');
+      btn.innerText = "Processing Purchase...";
+      btn.disabled = true;
+
+      try {
+        const orderId = "MB-" + Math.random().toString(36).substring(2, 9).toUpperCase();
+
+        // Atomic Wallet Balance Deduction
+        const walletRef = db.ref('wallets/' + tgUser.id + '/balance');
+        const txResult = await walletRef.transaction(currentBal => {
+          if ((currentBal || 0) < finalTotal) return;
+          return (currentBal || 0) - finalTotal;
+        });
+
+        if (!txResult.committed) {
+          throw new Error("Balance verification failed or insufficient funds!");
+        }
+
+        // Deduct Stock
+        const prodIndex = metaProductsData.findIndex(p => p.id === currentSelectedMetaProduct.id);
+        if (prodIndex !== -1) {
+          metaProductsData[prodIndex].stock = Math.max(0, metaProductsData[prodIndex].stock - qty);
+          await db.ref('metaProducts').set(metaProductsData);
+        }
+
+        await db.ref('wallets/' + tgUser.id + '/totalSpent').transaction(s => (s || 0) + finalTotal);
+        await db.ref('wallets/' + tgUser.id + '/metaPurchasesCount').transaction(c => (c || 0) + qty);
+
+        const metaOrderData = {
+          id: orderId,
+          userId: tgUser.id,
+          username: tgUser.username || "N/A",
+          firstName: tgUser.first_name || "User",
+          productId: currentSelectedMetaProduct.id,
+          productName: currentSelectedMetaProduct.name,
+          quantity: qty,
+          unitPrice: unit,
+          subtotal: gross,
+          charge: chargeDeduction,
+          total: finalTotal,
+          status: "PENDING",
+          createdAt: Date.now(),
+          date: new Date().toLocaleString()
+        };
+        await db.ref('metaBuyOrders/' + orderId).set(metaOrderData);
+
+        const auditId = "TX-" + Date.now();
+        await db.ref('balanceTransactions/' + auditId).set({
+          userId: tgUser.id,
+          type: "META_BUY",
+          amount: -finalTotal,
+          reason: `Meta Buy: ${currentSelectedMetaProduct.name} (${qty} Pcs)`,
+          referenceId: orderId,
+          timestamp: Date.now()
+        });
+
+        // Telegram Notification
+        const safeOrderId = escapeHtml(orderId);
+        const safeUser = escapeHtml(tgUser.username || 'N/A');
+        const safeUserId = escapeHtml(tgUser.id);
+        const safeProd = escapeHtml(currentSelectedMetaProduct.name);
+        const currentRemBal = (userWallet.balance - finalTotal).toFixed(2);
+
+        const captionText = `📦 <b>New Meta Buy Order!</b>\n\n` +
+                            `🆔 <b>Order ID:</b> <code>#${safeOrderId}</code>\n` +
+                            `👤 <b>User:</b> @${safeUser} (ID: <code>${safeUserId}</code>)\n` +
+                            `🛍️ <b>Product:</b> ${safeProd}\n` +
+                            `🔢 <b>Quantity:</b> ${qty} Accounts\n` +
+                            `💵 <b>Unit Price:</b> ৳${unit}\n` +
+                            `📊 <b>Subtotal:</b> ৳${gross}\n` +
+                            `🎁 <b>Deduction:</b> -৳${chargeDeduction}\n` +
+                            `💰 <b>Total Paid:</b> ৳${finalTotal}\n` +
+                            `💳 <b>Remaining Balance:</b> ৳${currentRemBal}\n` +
+                            `📅 <b>Date:</b> ${new Date().toLocaleString()}`;
+
+        ADMIN_IDS.forEach(async (chatId) => {
+          try {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: captionText,
+                parse_mode: "HTML"
+              })
+            });
+          } catch(e){}
+        });
+
+        document.getElementById('success-meta-id-display').innerText = '#' + orderId;
+        navigate('meta-success');
+      } catch(err) {
+        alert("Purchase error: " + err.message);
+      } finally {
+        btn.innerText = t('btn_buy_now');
+        btn.disabled = false;
+      }
+    }
+
+    function copyMetaOrderId() {
+      const text = document.getElementById('success-meta-id-display').innerText.replace('#', '').trim();
+      navigator.clipboard.writeText(text);
+      alert(`Meta Order ID #${text} copied to clipboard!`);
+    }
+
+    // DEPOSIT SYSTEM
+    function renderDepositMethods() {
+      const container = document.getElementById('deposit-methods-selection-container');
+      container.innerHTML = '';
+      if (!depositMethodsData.length) return;
+
+      depositMethodsData.forEach((dm, idx) => {
+        container.innerHTML += `
+          <label class="flex items-center gap-2 p-2.5 bg-[#090e24] rounded-xl border border-indigo-500/30 cursor-pointer hover:border-emerald-400 transition">
+            <input type="radio" name="deposit-method-choice" value="${dm.id}" ${idx===0?'checked':''} onchange="selectDepositMethod('${dm.id}')">
+            <img src="${dm.logo}" class="w-6 h-6 rounded-full object-cover">
+            <span class="font-bold text-white text-xs">${dm.name}</span>
+          </label>
+        `;
+      });
+      selectDepositMethod(depositMethodsData[0].id);
+    }
+
+    function selectDepositMethod(methodId) {
+      currentSelectedDepositMethod = depositMethodsData.find(m => m.id === methodId);
+      if (!currentSelectedDepositMethod) return;
+
+      document.getElementById('deposit-receiver-display').innerText = currentSelectedDepositMethod.number;
+      const isBinance = currentSelectedDepositMethod.name.toLowerCase().includes('binance');
+      document.getElementById('binance-rate-box').classList.toggle('hidden', !isBinance);
+      document.getElementById('deposit-number-heading').innerText = isBinance ? "Send Binance USD To:" : "Send Money To:";
+      calculateDepositUsd();
+    }
+
+    function calculateDepositUsd() {
+      if (!currentSelectedDepositMethod) return;
+      const amount = parseFloat(document.getElementById('input-deposit-amount').value) || 0;
+      const isBinance = currentSelectedDepositMethod.name.toLowerCase().includes('binance');
+      if (isBinance && usdExchangeRate > 0) {
+        const usd = (amount / usdExchangeRate).toFixed(2);
+        document.getElementById('binance-calculated-usd').innerText = `$${usd}`;
+      }
+    }
+
+    function copyDepositReceiver() {
+      const text = document.getElementById('deposit-receiver-display').innerText.trim();
+      navigator.clipboard.writeText(text);
+      alert(t('alert_copied'));
+    }
+
+    async function submitDepositOrder() {
+      const amount = parseFloat(document.getElementById('input-deposit-amount').value);
+      const trxId = document.getElementById('input-deposit-trx').value.trim();
+
+      if (!amount || amount <= 0) return alert("Please enter a valid deposit amount!");
+      if (amount < 100) return alert("Minimum deposit amount is ৳100!");
+      if (!trxId) return alert("Please enter Transaction ID!");
+      if (!currentSelectedDepositMethod) return alert("Select a deposit method!");
+
+      const btn = document.getElementById('btn-submit-deposit-elem');
+      btn.innerText = "Submitting Deposit...";
+      btn.disabled = true;
+
+      try {
+        const depositId = "DEP-" + Math.random().toString(36).substring(2, 9).toUpperCase();
+        const isBinance = currentSelectedDepositMethod.name.toLowerCase().includes('binance');
+        const usdVal = isBinance ? (amount / usdExchangeRate).toFixed(2) : 0;
+
+        const depData = {
+          id: depositId,
+          userId: tgUser.id,
+          username: tgUser.username || "N/A",
+          firstName: tgUser.first_name || "User",
+          method: currentSelectedDepositMethod.name,
+          paymentNumber: currentSelectedDepositMethod.number,
+          amount: amount,
+          usdAmount: usdVal,
+          rate: usdExchangeRate,
+          trxId: trxId,
+          status: "PENDING",
+          createdAt: Date.now(),
+          date: new Date().toLocaleString()
+        };
+
+        await db.ref('deposits/' + depositId).set(depData);
+
+        const safeDepId = escapeHtml(depositId);
+        const safeUser = escapeHtml(tgUser.username || 'N/A');
+        const safeUserId = escapeHtml(tgUser.id);
+        const safeMethod = escapeHtml(currentSelectedDepositMethod.name);
+        const safeTrx = escapeHtml(trxId);
+
+        let depMsg = `💳 <b>New Deposit Request!</b>\n\n` +
+                     `🆔 <b>Deposit ID:</b> <code>#${safeDepId}</code>\n` +
+                     `👤 <b>User:</b> @${safeUser} (ID: <code>${safeUserId}</code>)\n` +
+                     `🏦 <b>Method:</b> ${safeMethod}\n` +
+                     `💰 <b>Amount:</b> ৳${amount}\n`;
+        if (isBinance) {
+          depMsg += `💵 <b>USD Equivalent:</b> $${usdVal} (Rate: ৳${usdExchangeRate})\n`;
+        }
+        depMsg += `🔖 <b>TrxID:</b> <code>${safeTrx}</code>\n` +
+                  `📅 <b>Date:</b> ${new Date().toLocaleString()}`;
+
+        const inlineKeyboard = JSON.stringify({
+          inline_keyboard: [
+            [
+              { text: "✅ Approve Deposit", callback_data: `appr_dep_${depositId}` },
+              { text: "❌ Reject", callback_data: `rej_dep_${depositId}` }
+            ]
+          ]
+        });
+
+        ADMIN_IDS.forEach(async (chatId) => {
+          try {
+            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                chat_id: chatId,
+                text: depMsg,
+                parse_mode: "HTML",
+                reply_markup: JSON.parse(inlineKeyboard)
+              })
+            });
+          } catch(e){}
+        });
+
+        document.getElementById('success-deposit-id-display').innerText = depositId;
+        document.getElementById('input-deposit-amount').value = '';
+        document.getElementById('input-deposit-trx').value = '';
+        navigate('deposit-success');
+      } catch(e) {
+        alert("Deposit error: " + e.message);
+      } finally {
+        btn.innerText = t('btn_confirm_deposit');
+        btn.disabled = false;
+      }
+    }
+
+    function copyDepositSuccessId() {
+      const text = document.getElementById('success-deposit-id-display').innerText.trim();
+      navigator.clipboard.writeText(text);
+      alert(`Deposit ID ${text} copied to clipboard!`);
+    }
+
+    // DEPOSIT & META HISTORIES
+    function switchDepositHistoryTab(tab) {
+      currentDepositTab = tab;
+      document.getElementById('tab-dep-all').className = tab === 'all' ? "flex-1 py-2 font-bold tab-active" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
+      document.getElementById('tab-dep-approved').className = tab === 'approved' ? "flex-1 py-2 font-bold tab-active" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
+      document.getElementById('tab-dep-pending').className = tab === 'pending' ? "flex-1 py-2 font-bold tab-active" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
+      filterDepositHistory();
+    }
+
+    function filterDepositHistory() {
+      const query = document.getElementById('deposit-history-search').value.toLowerCase().trim();
+      const el = document.getElementById('deposit-history-list');
+      el.innerHTML = '';
+
+      let list = Object.values(allDepositsData).filter(d => String(d.userId) === String(tgUser.id));
+      list.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      if (currentDepositTab === 'approved') list = list.filter(d => d.status === 'APPROVED');
+      if (currentDepositTab === 'pending') list = list.filter(d => d.status === 'PENDING');
+      if (query) list = list.filter(d => (d.id || '').toLowerCase().includes(query) || (d.trxId || '').toLowerCase().includes(query));
+
+      if (!list.length) {
+        el.innerHTML = `<p class="text-xs text-indigo-300/50 text-center py-4">No deposit records found.</p>`;
+        return;
+      }
+
+      list.forEach(dep => {
+        let badgeColor = 'bg-yellow-500/20 text-yellow-300';
+        if (dep.status === 'APPROVED') badgeColor = 'bg-emerald-500/20 text-emerald-300';
+        else if (dep.status === 'REJECTED') badgeColor = 'bg-rose-500/20 text-rose-300';
+
+        el.innerHTML += `
+          <div class="glass-card p-3.5 rounded-2xl space-y-1.5 text-xs shadow">
+            <div class="flex justify-between items-center font-mono font-bold">
+              <span class="text-cyan-300">${dep.id}</span>
+              <span class="text-[10px] ${badgeColor} px-2.5 py-0.5 rounded-full font-bold">${dep.status}</span>
+            </div>
+            <div class="text-slate-100 font-semibold">${dep.method} - ৳${dep.amount} ${dep.usdAmount > 0 ? `($${dep.usdAmount})` : ''}</div>
+            <div class="text-indigo-200 text-[11px] font-mono">TrxID: <span class="text-white">${dep.trxId}</span></div>
+            <div class="flex justify-between text-indigo-300/80 text-[10px] pt-1.5 border-t border-indigo-500/20">
+              <span>Account: ${dep.paymentNumber}</span>
+              <span>${dep.date}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+    function renderDepositHistory() { filterDepositHistory(); }
+
+    function filterMetaHistory() {
+      const query = document.getElementById('meta-history-search').value.toLowerCase().trim();
+      const el = document.getElementById('meta-history-list');
+      el.innerHTML = '';
+
+      let list = Object.values(allMetaOrdersData).filter(m => String(m.userId) === String(tgUser.id));
+      list.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      if (query) list = list.filter(m => (m.id || '').toLowerCase().includes(query) || (m.productName || '').toLowerCase().includes(query));
+
+      if (!list.length) {
+        el.innerHTML = `<p class="text-xs text-indigo-300/50 text-center py-4">No Meta purchases found.</p>`;
+        return;
+      }
+
+      list.forEach(ord => {
+        let badgeColor = 'bg-cyan-500/20 text-cyan-300';
+        if (ord.status === 'DELIVERED') badgeColor = 'bg-emerald-500/20 text-emerald-300';
+        el.innerHTML += `
+          <div class="glass-card p-3.5 rounded-2xl space-y-1.5 text-xs shadow">
+            <div class="flex justify-between items-center font-mono font-bold">
+              <span class="text-cyan-300">#${ord.id}</span>
+              <span class="text-[10px] ${badgeColor} px-2.5 py-0.5 rounded-full font-bold">${ord.status}</span>
+            </div>
+            <div class="text-slate-100 font-semibold">${ord.productName} (${ord.quantity} Accounts)</div>
+            <div class="flex justify-between text-indigo-300/80 text-[11px] pt-1.5 border-t border-indigo-500/20">
+              <span class="font-bold text-cyan-300">Total: ৳${ord.total}</span>
+              <span>${ord.date}</span>
+            </div>
+          </div>
+        `;
+      });
+    }
+    function renderMetaHistory() { filterMetaHistory(); }
+
+    // ADMIN TAB SWITCHER
+    function switchAdminSection(sec) {
+      ['users', 'deposits', 'meta', 'paymethods', 'coins', 'settings'].forEach(s => {
+        document.getElementById('adm-sec-' + s)?.classList.add('hidden');
+        document.getElementById('adm-tab-btn-' + s)?.classList.remove('bg-indigo-600', 'text-white');
+        document.getElementById('adm-tab-btn-' + s)?.classList.add('text-indigo-200');
+      });
+      document.getElementById('adm-sec-' + sec)?.classList.remove('hidden');
+      document.getElementById('adm-tab-btn-' + sec)?.classList.add('bg-indigo-600', 'text-white');
+      document.getElementById('adm-tab-btn-' + sec)?.classList.remove('text-indigo-200');
+    }
+
+    // ADMIN USER ACCOUNT SEARCH & BALANCE
+    async function admSearchUser() {
+      const q = document.getElementById('adm-search-user-input').value.trim();
+      if (!q) return alert("Enter Telegram User ID or Username!");
+
+      const cleanQ = q.replace('@', '').toLowerCase();
+      const card = document.getElementById('adm-user-result-card');
+
+      const snapshot = await db.ref('wallets').once('value');
+      const wallets = snapshot.val() || {};
+      
+      let targetUserId = null;
+      let targetWallet = null;
+
+      if (wallets[cleanQ]) {
+        targetUserId = cleanQ;
+        targetWallet = wallets[cleanQ];
+      } else {
+        const allOrders = Object.values(allOrdersData);
+        const match = allOrders.find(o => (o.userHandle || '').toLowerCase() === cleanQ || String(o.userId) === cleanQ);
+        if (match) {
+          targetUserId = match.userId;
+          targetWallet = wallets[targetUserId] || { balance: 0, totalDeposit: 0, totalSpent: 0 };
+        }
+      }
+
+      if (!targetUserId) {
+        targetUserId = cleanQ;
+        targetWallet = { balance: 0, totalDeposit: 0, totalSpent: 0 };
+      }
+
+      admSelectedUserObj = {
+        userId: targetUserId,
+        wallet: targetWallet
+      };
+
+      document.getElementById('adm-found-username').innerText = `Telegram ID: ${targetUserId}`;
+      document.getElementById('adm-found-userid').innerText = `User ID: ${targetUserId}`;
+      document.getElementById('adm-found-balance').innerText = `৳ ${(targetWallet.balance || 0).toFixed(2)}`;
+      document.getElementById('adm-found-dep').innerText = `৳ ${(targetWallet.totalDeposit || 0).toFixed(2)}`;
+      document.getElementById('adm-found-spent').innerText = `৳ ${(targetWallet.totalSpent || 0).toFixed(2)}`;
+      card.classList.remove('hidden');
+    }
+
+    function admOpenBalanceModal(type) {
+      admBalanceActionType = type;
+      document.getElementById('adm-balance-modal-title').innerText = type === 'ADD' ? "Add Balance to User" : "Deduct Balance from User";
+      document.getElementById('adm-adjust-amount-input').value = '';
+      document.getElementById('adm-adjust-reason-input').value = '';
+      document.getElementById('modal-balance-adjust-overlay').classList.remove('hidden');
+    }
+    function closeBalanceAdjustModal() { document.getElementById('modal-balance-adjust-overlay').classList.add('hidden'); }
+
+    async function confirmAdminBalanceAdjust() {
+      if (!admSelectedUserObj) return;
+      const amt = parseFloat(document.getElementById('adm-adjust-amount-input').value);
+      const reason = document.getElementById('adm-adjust-reason-input').value.trim() || "Manual adjustment";
+
+      if (!amt || amt <= 0) return alert("Enter valid amount!");
+
+      const delta = admBalanceActionType === 'ADD' ? amt : -amt;
+      const walletRef = db.ref('wallets/' + admSelectedUserObj.userId + '/balance');
+
+      await walletRef.transaction(curr => Math.max(0, (curr || 0) + delta));
+
+      const auditId = "LOG-" + Date.now();
+      await db.ref('balanceTransactions/' + auditId).set({
+        userId: admSelectedUserObj.userId,
+        type: admBalanceActionType === 'ADD' ? "ADMIN_CREDIT" : "ADMIN_DEBIT",
+        amount: delta,
+        reason: reason,
+        adminId: tgUser.id,
+        timestamp: Date.now()
+      });
+
+      closeBalanceAdjustModal();
+      alert("Balance adjusted successfully!");
+      admSearchUser();
+    }
+
+    // ADMIN DEPOSITS
+    function renderAdmDepositRequests() {
+      const el = document.getElementById('adm-deposit-requests-list');
+      el.innerHTML = '';
+      const list = Object.values(allDepositsData).sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+      const pendingCount = list.filter(d => d.status === 'PENDING').length;
+      document.getElementById('adm-deposit-count-badge').innerText = `${pendingCount} Pending`;
+
+      if (!list.length) {
+        el.innerHTML = `<p class="text-xs text-indigo-300/60">No deposit records.</p>`;
+        return;
+      }
+
+      list.forEach(dep => {
+        el.innerHTML += `
+          <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 space-y-1.5 text-xs">
+            <div class="flex justify-between items-center font-mono">
+              <span class="text-cyan-300 font-bold">${dep.id}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded font-bold ${dep.status==='APPROVED'?'bg-emerald-500/20 text-emerald-300':dep.status==='REJECTED'?'bg-rose-500/20 text-rose-300':'bg-yellow-500/20 text-yellow-300'}">${dep.status}</span>
+            </div>
+            <div class="text-white font-semibold">User: @${dep.username} (ID: ${dep.userId})</div>
+            <div class="text-emerald-400 font-bold">Amount: ৳${dep.amount} ${dep.usdAmount>0?`($${dep.usdAmount})`:''}</div>
+            <div class="text-indigo-200 text-[11px] font-mono">TrxID: ${dep.trxId} (${dep.method})</div>
+            ${dep.status === 'PENDING' ? `
+              <div class="flex gap-2 pt-2 border-t border-indigo-500/20">
+                <button onclick="admApproveDeposit('${dep.id}')" class="w-1/2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1.5 rounded-lg text-xs">Approve & Credit</button>
+                <button onclick="admRejectDeposit('${dep.id}')" class="w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-1.5 rounded-lg text-xs">Reject</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+    }
+
+    async function admApproveDeposit(depId) {
+      const dep = allDepositsData[depId];
+      if (!dep || dep.status !== 'PENDING') return alert("Deposit already processed!");
+
+      if (confirm(`Approve deposit of ৳${dep.amount} for user ID ${dep.userId}?`)) {
+        await db.ref('deposits/' + depId + '/status').set('APPROVED');
+        await db.ref('deposits/' + depId + '/updatedAt').set(Date.now());
+
+        await db.ref('wallets/' + dep.userId + '/balance').transaction(curr => (curr || 0) + dep.amount);
+        await db.ref('wallets/' + dep.userId + '/totalDeposit').transaction(curr => (curr || 0) + dep.amount);
+
+        try {
+          await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              chat_id: dep.userId,
+              text: `✅ <b>Deposit Approved!</b>\n\nYour deposit of <b>৳${dep.amount}</b> (#${dep.id}) has been verified and added to your wallet balance.`,
+              parse_mode: "HTML"
+            })
+          });
+        } catch(e){}
+
+        alert("Deposit approved and balance credited!");
+      }
+    }
+
+    async function admRejectDeposit(depId) {
+      if (confirm("Reject this deposit request?")) {
+        await db.ref('deposits/' + depId + '/status').set('REJECTED');
+        await db.ref('deposits/' + depId + '/updatedAt').set(Date.now());
+        alert("Deposit rejected.");
+      }
+    }
+
+    // ADMIN META PRODUCTS & ORDERS
+    function renderAdmMetaProducts() {
+      const el = document.getElementById('adm-meta-products-list');
+      el.innerHTML = '';
+      metaProductsData.forEach((p, idx) => {
+        el.innerHTML += `
+          <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs">
+            <div class="flex items-center gap-2">
+              <img src="${p.logo}" class="w-7 h-7 rounded-lg object-cover">
+              <div>
+                <p class="font-bold text-white">${p.name}</p>
+                <p class="text-[10px] text-cyan-300 font-mono">৳${p.unitPrice} | Stock: ${p.stock}</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="openMetaProductModal('${p.id}')" class="text-indigo-300 bg-indigo-600/20 px-2.5 py-1 rounded-lg">Edit</button>
+              <button onclick="deleteMetaProduct(${idx})" class="text-rose-400 bg-rose-500/20 px-2.5 py-1 rounded-lg">Delete</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    let editingMetaId = null;
+    function openMetaProductModal(id = null) {
+      editingMetaId = id;
+      document.getElementById('modal-meta-name').value = '';
+      document.getElementById('modal-meta-price').value = '';
+      document.getElementById('modal-meta-stock').value = '';
+      document.getElementById('modal-meta-desc').value = '';
+      document.getElementById('modal-meta-file').value = '';
+
+      if (id) {
+        const prod = metaProductsData.find(p => p.id === id);
+        if (prod) {
+          document.getElementById('modal-meta-name').value = prod.name;
+          document.getElementById('modal-meta-price').value = prod.unitPrice;
+          document.getElementById('modal-meta-stock').value = prod.stock;
+          document.getElementById('modal-meta-desc').value = prod.desc || '';
+        }
+      }
+      openCustomModal('modal-meta-product');
+    }
+
+    async function saveMetaProductFromModal() {
+      const name = document.getElementById('modal-meta-name').value.trim();
+      const price = parseFloat(document.getElementById('modal-meta-price').value);
+      const stock = parseInt(document.getElementById('modal-meta-stock').value);
+      const desc = document.getElementById('modal-meta-desc').value.trim();
+      const file = document.getElementById('modal-meta-file').files[0];
+
+      if (!name || isNaN(price) || isNaN(stock)) return alert("Please fill all required product fields!");
+
+      let logo = "https://api.dicebear.com/7.x/identicon/svg?seed=" + name;
+      if (editingMetaId) {
+        const exist = metaProductsData.find(p => p.id === editingMetaId);
+        if (exist) logo = exist.logo;
+      }
+      if (file) {
+        try { logo = await fileToBase64(file); } catch(e){}
+      }
+
+      if (editingMetaId) {
+        const idx = metaProductsData.findIndex(p => p.id === editingMetaId);
+        metaProductsData[idx] = { ...metaProductsData[idx], name, unitPrice: price, stock, desc, logo };
+      } else {
+        metaProductsData.push({ id: "meta-" + Date.now(), name, unitPrice: price, stock, desc, logo, active: true });
+      }
+
+      await db.ref('metaProducts').set(metaProductsData);
+      closeCustomModal();
+    }
+
+    async function deleteMetaProduct(idx) {
+      if (confirm("Delete this Meta product?")) {
+        metaProductsData.splice(idx, 1);
+        await db.ref('metaProducts').set(metaProductsData);
+      }
+    }
+
+    function renderAdmMetaOrders(filter = 'all') {
+      const el = document.getElementById('adm-meta-orders-list');
+      el.innerHTML = '';
+      let list = Object.values(allMetaOrdersData).sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      const now = new Date();
+      if (filter === 'today') {
+        const todayStr = now.toLocaleDateString();
+        list = list.filter(o => new Date(o.createdAt || 0).toLocaleDateString() === todayStr);
+      } else if (filter === 'yesterday') {
+        const y = new Date(); y.setDate(now.getDate() - 1);
+        const yStr = y.toLocaleDateString();
+        list = list.filter(o => new Date(o.createdAt || 0).toLocaleDateString() === yStr);
+      }
+
+      if (!list.length) {
+        el.innerHTML = `<p class="text-xs text-indigo-300/60">No Meta orders found for this range.</p>`;
+        return;
+      }
+
+      list.forEach(ord => {
+        el.innerHTML += `
+          <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 space-y-1 text-xs">
+            <div class="flex justify-between items-center font-mono">
+              <span class="text-cyan-300 font-bold">#${ord.id}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded font-bold ${ord.status==='DELIVERED'?'bg-emerald-500/20 text-emerald-300':'bg-yellow-500/20 text-yellow-300'}">${ord.status}</span>
+            </div>
+            <p class="text-white font-semibold">${ord.productName} (${ord.quantity} Accounts)</p>
+            <p class="text-indigo-200 text-[11px]">User: @${ord.username} (ID: ${ord.userId})</p>
+            <div class="flex justify-between text-indigo-300/80 text-[10px] pt-1 border-t border-indigo-500/20">
+              <span class="font-bold text-cyan-300">Paid: ৳${ord.total}</span>
+              <span>${ord.date}</span>
+            </div>
+            ${ord.status !== 'DELIVERED' ? `
+              <button onclick="admMarkMetaDelivered('${ord.id}')" class="w-full mt-1.5 bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-200 border border-cyan-400/40 py-1.5 rounded-lg text-xs font-bold">Mark as Delivered</button>
+            ` : ''}
+          </div>
+        `;
+      });
+    }
+
+    function filterAdmMetaOrders(type) { renderAdmMetaOrders(type); }
+
+    async function admMarkMetaDelivered(ordId) {
+      await db.ref('metaBuyOrders/' + ordId + '/status').set('DELIVERED');
+      alert("Order marked as DELIVERED!");
+    }
+
+    // ADMIN DEPOSIT RECEIVING METHODS & CUSTOM LOGOS
+    function renderAdmDepositMethods() {
+      const el = document.getElementById('adm-deposit-methods-list');
+      el.innerHTML = '';
+      depositMethodsData.forEach((m, idx) => {
+        el.innerHTML += `
+          <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs">
+            <div class="flex items-center gap-2.5">
+              <img src="${m.logo}" class="w-7 h-7 rounded-full object-cover">
+              <div>
+                <p class="font-bold text-white">${m.name}</p>
+                <p class="text-[10px] text-cyan-300 font-mono">${m.number}</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="openDepositMethodModal('${m.id}')" class="text-indigo-300 bg-indigo-600/20 px-2.5 py-1 rounded-lg">Edit</button>
+              <button onclick="deleteDepositMethod(${idx})" class="text-rose-400 bg-rose-500/20 px-2.5 py-1 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    let editingDepMethodId = null;
+    function openDepositMethodModal(id = null) {
+      editingDepMethodId = id;
+      document.getElementById('modal-dep-name').value = '';
+      document.getElementById('modal-dep-number').value = '';
+      document.getElementById('modal-dep-file').value = '';
+
+      if (id) {
+        const method = depositMethodsData.find(m => m.id === id);
+        if (method) {
+          document.getElementById('modal-dep-name').value = method.name;
+          document.getElementById('modal-dep-number').value = method.number;
+        }
+      }
+      openCustomModal('modal-deposit-method');
+    }
+
+    async function saveDepositMethodFromModal() {
+      const name = document.getElementById('modal-dep-name').value.trim();
+      const number = document.getElementById('modal-dep-number').value.trim();
+      const file = document.getElementById('modal-dep-file').files[0];
+
+      if (!name || !number) return alert("Method Name and Number are required!");
+
+      let logo = "https://api.dicebear.com/7.x/identicon/svg?seed=" + name;
+      if (editingDepMethodId) {
+        const exist = depositMethodsData.find(m => m.id === editingDepMethodId);
+        if (exist) logo = exist.logo;
+      }
+      if (file) {
+        try { logo = await fileToBase64(file); } catch(e){}
+      }
+
+      if (editingDepMethodId) {
+        const idx = depositMethodsData.findIndex(p => p.id === editingDepMethodId);
+        depositMethodsData[idx] = { ...depositMethodsData[idx], name, number, logo };
+      } else {
+        depositMethodsData.push({ id: "dep-" + Date.now(), name, number, logo });
+      }
+
+      await db.ref('depositMethods').set(depositMethodsData);
+      closeCustomModal();
+    }
+
+    async function deleteDepositMethod(idx) {
+      if (confirm("Delete this deposit receiver?")) {
+        depositMethodsData.splice(idx, 1);
+        await db.ref('depositMethods').set(depositMethodsData);
+      }
+    }
+
+    // COIN SELL LOGIC
     function renderCoins() {
       const el = document.getElementById('coins-list');
       el.innerHTML = '';
@@ -1395,7 +2564,6 @@
       }
       const total = match ? (amountK * match.rate) : 0;
 
-      // Payment charge logic: bKash/Nagad/Rocket only — <=500 flat 5৳, >500 = 2% of total
       let finalPayout = total;
       const selectedPaymentRadio = document.querySelector('input[name="order-selected-payment"]:checked');
       if (selectedPaymentRadio && total > 0) {
@@ -1414,7 +2582,32 @@
       alert(t('alert_copied'));
     }
 
-    // সাবমিট অর্ডার (জিরো টাইমআউট - সরাসরি টেলিগ্রামে সিঙ্গেল নোটিফিকেশন)
+    function previewProofImage(input) {
+      const previewContainer = document.getElementById('proof-preview-container');
+      const previewImg = document.getElementById('proof-preview-img');
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+          previewContainer.classList.remove('hidden');
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function removeSelectedFile() {
+      const input = document.getElementById('order-proof-file');
+      input.value = "";
+      document.getElementById('proof-preview-img').src = "";
+      document.getElementById('proof-preview-container').classList.add('hidden');
+    }
+
+    function copySuccessOrderId() {
+      const text = document.getElementById('success-order-id-display').innerText.replace('#', '').trim();
+      navigator.clipboard.writeText(text);
+      alert(currentLang === 'en' ? `Order ID #${text} copied to clipboard!` : `অর্ডার আইডি #${text} কপি করা হয়েছে!`);
+    }
+
     async function submitOrderToAdmin() {
       const amountK = parseFloat(document.getElementById('input-coin-amount').value);
       const paymentRadio = document.querySelector('input[name="order-selected-payment"]:checked');
@@ -1422,14 +2615,8 @@
       const proofFile = proofFileInput.files[0];
 
       if (!amountK || amountK <= 0) return alert(t('alert_amount'));
-      
-      if (amountK < currentCoinMin) {
-        return alert(currentLang === 'en' ? `Minimum sell limit is ${currentCoinMin}K coins!` : `সর্বনিম্ন ${currentCoinMin}K কয়েন সেল দিতে হবে!`);
-      }
-      if (amountK > currentCoinMax) {
-        return alert(currentLang === 'en' ? `Maximum sell limit is ${currentCoinMax}K coins!` : `সর্বোচ্চ সীমা ${currentCoinMax}K এর বেশি সেল দেওয়া যাবে না!`);
-      }
-
+      if (amountK < currentCoinMin) return alert(`Minimum sell limit is ${currentCoinMin}K coins!`);
+      if (amountK > currentCoinMax) return alert(`Maximum sell limit is ${currentCoinMax}K coins!`);
       if (!paymentRadio) return alert(t('alert_payment'));
       if (!proofFile) return alert(t('alert_proof'));
 
@@ -1438,7 +2625,6 @@
       submitBtn.disabled = true;
 
       try {
-        // স্ক্রিনশট সাইজ দ্রুত হালকা করে নেওয়া
         const compressedProof = await compressImage(proofFile, 850, 0.45);
         const orderId = "CS-" + Math.random().toString(36).substring(2, 8).toUpperCase();
         const payoutText = document.getElementById('calculated-payout-text').innerText;
@@ -1474,7 +2660,6 @@
         const safePayMethod = escapeHtml(payMethod);
         const safePayNumber = escapeHtml(payNumber);
 
-        // আগের সুন্দর নোটিফিকেশন ক্যাপশন
         const captionText = `🔔 <b>New Coin Order! / নতুন অর্ডার!</b>\n\n` +
                             `🆔 <b>Order ID:</b> <code>#${safeOrderId}</code>\n` +
                             `👤 <b>User:</b> @${safeUsername} (ID: <code>${safeUserId}</code>)\n` +
@@ -1494,8 +2679,7 @@
           ]
         });
 
-        // সরাসরি টেলিগ্রামের নিজস্ব সার্ভারে ফাইল পোস্ট (উপরে ছবি + নিচে ডাটা + বাটন)
-        const sendPromises = ADMIN_IDS.map(async (chatId) => {
+        ADMIN_IDS.forEach(async (chatId) => {
           try {
             const formData = new FormData();
             formData.append("chat_id", chatId);
@@ -1509,8 +2693,6 @@
               body: formData
             });
             const data = await res.json();
-            
-            // যদি কোনো কারণে ছবি পাঠাতে বাধা আসে, তবে তৎক্ষণাৎ টেক্সট মেসেজে অর্ডার নিশ্চিত করবে
             if (!data.ok) {
               await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: "POST",
@@ -1523,24 +2705,20 @@
                 })
               });
             }
-          } catch (e) {
-            console.error("Direct telegram delivery exception:", e);
-          }
+          } catch(e){}
         });
-
-        await Promise.all(sendPromises);
 
         document.getElementById('success-order-id-display').innerText = '#' + orderId;
         navigate('order-success');
       } catch(err) {
-        alert("Submission error: " + err.message + "\nঅনুগ্রহ করে ইন্টারনেট চেক করে আবার চেষ্টা করুন।");
+        alert("Submission error: " + err.message);
       } finally {
         submitBtn.innerText = t('btn_submit_order');
         submitBtn.disabled = false;
       }
     }
 
-    // PAYMENT SETTINGS
+    // PAYMENT SETTINGS & NUMBERS
     function initPaymentRadios() {
       const container = document.getElementById('payment-method-radios');
       container.innerHTML = '';
@@ -1613,11 +2791,11 @@
       });
     }
 
-    // ORDER HISTORY
+    // ORDER HISTORY (COINS)
     function switchHistoryTab(tab) {
       currentHistoryTab = tab;
-      document.getElementById('tab-btn-all').className = tab === 'all' ? "flex-1 py-2 font-bold text-indigo-300 border-b-2 border-indigo-500" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
-      document.getElementById('tab-btn-approved').className = tab === 'approved' ? "flex-1 py-2 font-bold text-indigo-300 border-b-2 border-indigo-500" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
+      document.getElementById('tab-btn-all').className = tab === 'all' ? "flex-1 py-2 font-bold tab-active" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
+      document.getElementById('tab-btn-approved').className = tab === 'approved' ? "flex-1 py-2 font-bold tab-active" : "flex-1 py-2 font-bold text-indigo-200/60 hover:text-white";
       filterHistory();
     }
 
@@ -1646,7 +2824,6 @@
           statusText = 'CANCELLED ❌';
         }
 
-        const paymentAccLabel = currentLang === 'en' ? 'Payment Account:' : 'পেমেন্ট একাউন্ট:';
         el.innerHTML += `
           <div class="glass-card p-4 rounded-2xl space-y-2 text-xs shadow">
             <div class="flex justify-between items-center font-mono font-bold">
@@ -1654,7 +2831,7 @@
               <span class="text-[10px] ${badgeColor} px-2.5 py-0.5 rounded-full font-bold">${statusText}</span>
             </div>
             <div class="text-slate-100 font-semibold">${ord.coin} (${ord.amount})</div>
-            <div class="text-indigo-200 text-[11px]">${paymentAccLabel} <span class="text-slate-100 font-mono">${ord.paymentInfo || 'N/A'}</span></div>
+            <div class="text-indigo-200 text-[11px]">Payment: <span class="text-slate-100 font-mono">${ord.paymentInfo || 'N/A'}</span></div>
             ${ord.trxId ? `<div class="text-emerald-400 font-mono text-[11px] font-bold">Trx ID: ${ord.trxId}</div>` : ''}
             <div class="flex justify-between text-indigo-300/80 text-[11px] pt-2 border-t border-indigo-500/20">
               <span class="font-bold text-cyan-300">Total: ${ord.total}</span>
@@ -1715,8 +2892,7 @@
       });
     }
 
-    // ADMIN CLOUD MODALS
-    let editingCoinId = null;
+    // MODAL HANDLERS
     function openCustomModal(modalId) {
       document.getElementById('custom-modal-overlay').classList.remove('hidden');
       document.querySelectorAll('#custom-modal-overlay > div').forEach(d => d.classList.add('hidden'));
@@ -1741,6 +2917,7 @@
       });
     }
 
+    let editingCoinId = null;
     function openCoinModal(id = null) {
       editingCoinId = id;
       document.getElementById('modal-coin-name').value = '';
@@ -1772,19 +2949,13 @@
       const fileInput = document.getElementById('modal-coin-file');
       if (!name || !receiver) return alert("Coin Name and Receiver required!");
 
-      const saveBtn = document.getElementById('btn-save-coin');
-      saveBtn.innerText = "Saving...";
-      saveBtn.disabled = true;
-
       let logo = "https://api.dicebear.com/7.x/bottts/svg?seed=" + name;
       if (editingCoinId) {
         const exist = coinsData.find(c => c.id === editingCoinId);
         if (exist) logo = exist.logo;
       }
       if (fileInput.files.length > 0) {
-        try { 
-          logo = await fileToBase64(fileInput.files[0]);
-        } catch(e){}
+        try { logo = await fileToBase64(fileInput.files[0]); } catch(e){}
       }
 
       const tiers = [];
@@ -1796,11 +2967,7 @@
           tiers.push({ minK: min, maxK: max, rate: rate });
         }
       }
-      if (tiers.length === 0) {
-        saveBtn.innerText = "Save Coin";
-        saveBtn.disabled = false;
-        return alert("Please set at least one rate tier!");
-      }
+      if (tiers.length === 0) return alert("Please set at least one rate tier!");
 
       if (editingCoinId) {
         const idx = coinsData.findIndex(c => c.id === editingCoinId);
@@ -1810,9 +2977,6 @@
       }
 
       await db.ref('coinsData').set(coinsData);
-      localStorage.setItem('cache_coinsData', JSON.stringify(coinsData));
-      saveBtn.innerText = "Save Coin";
-      saveBtn.disabled = false;
       closeCustomModal();
     }
 
@@ -1820,7 +2984,6 @@
       if(confirm("Delete coin?")) {
         coinsData.splice(idx, 1);
         await db.ref('coinsData').set(coinsData);
-        localStorage.setItem('cache_coinsData', JSON.stringify(coinsData));
       }
     }
 
@@ -1846,29 +3009,19 @@
       const fileInput = document.getElementById('modal-apk-file');
       if(!name || !url) return alert("Name and URL required!");
 
-      const saveBtn = document.getElementById('btn-save-apk');
-      saveBtn.innerText = "Saving...";
-      saveBtn.disabled = true;
-
       let logo = "https://api.dicebear.com/7.x/bottts/svg?seed=" + name;
       if (fileInput.files.length > 0) {
-        try { 
-          logo = await fileToBase64(fileInput.files[0]);
-        } catch(e){}
+        try { logo = await fileToBase64(fileInput.files[0]); } catch(e){}
       }
 
       apksData.push({ name, url, logo });
       await db.ref('apksData').set(apksData);
-      localStorage.setItem('cache_apksData', JSON.stringify(apksData));
-      saveBtn.innerText = "Save APK";
-      saveBtn.disabled = false;
       closeCustomModal();
     }
 
     async function deleteApk(idx) {
       apksData.splice(idx, 1);
       await db.ref('apksData').set(apksData);
-      localStorage.setItem('cache_apksData', JSON.stringify(apksData));
     }
 
     // ADMIN VIDEOS
@@ -1893,29 +3046,19 @@
       const fileInput = document.getElementById('modal-video-thumb-file');
       if (!title || !url) return alert("Title and URL required!");
 
-      const saveBtn = document.getElementById('btn-save-video');
-      saveBtn.innerText = "Saving...";
-      saveBtn.disabled = true;
-
       let thumb = "https://placehold.co/600x400/0d163a/818cf8?text=Tutorial";
       if (fileInput.files.length > 0) {
-        try { 
-          thumb = await fileToBase64(fileInput.files[0]);
-        } catch(e){}
+        try { thumb = await fileToBase64(fileInput.files[0]); } catch(e){}
       }
 
       videosData.push({ title, url, thumb });
       await db.ref('videosData').set(videosData);
-      localStorage.setItem('cache_videosData', JSON.stringify(videosData));
-      saveBtn.innerText = "Save Video";
-      saveBtn.disabled = false;
       closeCustomModal();
     }
 
     async function deleteVideo(idx) {
       videosData.splice(idx, 1);
       await db.ref('videosData').set(videosData);
-      localStorage.setItem('cache_videosData', JSON.stringify(videosData));
     }
 
     // ADMIN CHANNELS
@@ -1940,32 +3083,22 @@
       const fileInput = document.getElementById('modal-channel-file');
       if (!name || !url) return alert("Channel name and URL required!");
 
-      const saveBtn = document.getElementById('btn-save-channel');
-      saveBtn.innerText = "Saving...";
-      saveBtn.disabled = true;
-
       let logo = "https://api.dicebear.com/7.x/identicon/svg?seed=" + name;
       if (fileInput.files.length > 0) {
-        try { 
-          logo = await fileToBase64(fileInput.files[0]);
-        } catch(e){}
+        try { logo = await fileToBase64(fileInput.files[0]); } catch(e){}
       }
 
       channelsData.push({ name, url, logo });
       await db.ref('channelsData').set(channelsData);
-      localStorage.setItem('cache_channelsData', JSON.stringify(channelsData));
-      saveBtn.innerText = "Save Channel";
-      saveBtn.disabled = false;
       closeCustomModal();
     }
 
     async function deleteChannel(idx) {
       channelsData.splice(idx, 1);
       await db.ref('channelsData').set(channelsData);
-      localStorage.setItem('cache_channelsData', JSON.stringify(channelsData));
     }
 
-    // ADMIN PAYMENT METHODS
+    // ADMIN PAYMENT METHODS (COIN SELL)
     function renderAdminPaymentMethods() {
       const el = document.getElementById('admin-payment-methods-list');
       el.innerHTML = '';
@@ -1993,22 +3126,13 @@
       const fileInput = document.getElementById('modal-pm-file');
       if (!name) return alert("Method name required!");
 
-      const saveBtn = document.getElementById('btn-save-pm');
-      saveBtn.innerText = "Saving...";
-      saveBtn.disabled = true;
-
       let logo = "https://api.dicebear.com/7.x/identicon/svg?seed=" + name;
       if (fileInput.files.length > 0) {
-        try { 
-          logo = await fileToBase64(fileInput.files[0]);
-        } catch(e){}
+        try { logo = await fileToBase64(fileInput.files[0]); } catch(e){}
       }
 
       paymentMethodsData.push({ name, logo });
       await db.ref('paymentMethodsData').set(paymentMethodsData);
-      localStorage.setItem('cache_paymentMethods', JSON.stringify(paymentMethodsData));
-      saveBtn.innerText = "Save Method";
-      saveBtn.disabled = false;
       closeCustomModal();
     }
 
@@ -2016,14 +3140,10 @@
       if (paymentMethodsData.length <= 1) return alert("At least one method required!");
       paymentMethodsData.splice(idx, 1);
       await db.ref('paymentMethodsData').set(paymentMethodsData);
-      localStorage.setItem('cache_paymentMethods', JSON.stringify(paymentMethodsData));
     }
   </script>
 
-  <!-- ===================================================================== -->
-  <!-- LIVE 3D BACKGROUND ANIMATION (new addition — pure background visual,   -->
-  <!-- does not touch/alter any existing UI, text, logic or functionality)   -->
-  <!-- ===================================================================== -->
+  <!-- LIVE 3D BACKGROUND ANIMATION SCRIPT -->
   <script>
     (function initBg3DAnimation() {
       const canvas = document.getElementById('bg-3d-canvas');
@@ -2040,7 +3160,6 @@
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
 
-      // ---- Icosahedron vertices (golden-ratio construction) ----
       const phi = (1 + Math.sqrt(5)) / 2;
       const rawVerts = [
         [-1, phi, 0], [1, phi, 0], [-1, -phi, 0], [1, -phi, 0],
@@ -2050,7 +3169,6 @@
       const vLen = Math.sqrt(1 + phi * phi);
       const verts = rawVerts.map(v => [v[0] / vLen, v[1] / vLen, v[2] / vLen]);
 
-      // Build edges = pairs whose distance matches the minimum edge length
       const edges = [];
       let minDist = Infinity;
       for (let i = 0; i < verts.length; i++) {
@@ -2072,7 +3190,6 @@
         }
       }
 
-      // Background drifting particles (matches subtle dotted stars in reference)
       const particles = [];
       const particleCount = Math.min(70, Math.floor((window.innerWidth * window.innerHeight) / 14000));
       for (let i = 0; i < particleCount; i++) {
@@ -2091,11 +3208,9 @@
       let frame = 0;
 
       function project(p, sphereR, distance) {
-        // rotate around Y axis
         let x = p[0] * Math.cos(angleY) - p[2] * Math.sin(angleY);
         let z = p[0] * Math.sin(angleY) + p[2] * Math.cos(angleY);
         let y = p[1];
-        // rotate around X axis (gentle wobble)
         let y2 = y * Math.cos(angleX) - z * Math.sin(angleX);
         let z2 = y * Math.sin(angleX) + z * Math.cos(angleX);
 
@@ -2111,7 +3226,6 @@
         frame++;
         ctx.clearRect(0, 0, W, H);
 
-        // subtle drifting background particles
         for (const p of particles) {
           p.y -= p.speedY;
           if (p.y < -5) { p.y = H + 5; p.x = Math.random() * W; }
@@ -2128,7 +3242,6 @@
 
         const projected = verts.map(v => project(v, sphereR, distance));
 
-        // two large orbiting halo rings (like the reference image's outer arcs)
         ctx.save();
         ctx.translate(CX, CY);
         for (let ring = 0; ring < 2; ring++) {
@@ -2143,7 +3256,6 @@
         }
         ctx.restore();
 
-        // central glow (bright core, like reference image)
         const glowGrad = ctx.createRadialGradient(CX, CY, 0, CX, CY, sphereR * 1.3);
         glowGrad.addColorStop(0, 'rgba(224, 242, 254, 0.95)');
         glowGrad.addColorStop(0.15, 'rgba(125, 211, 252, 0.55)');
@@ -2154,7 +3266,6 @@
         ctx.arc(CX, CY, sphereR * 1.3, 0, Math.PI * 2);
         ctx.fill();
 
-        // wireframe edges
         edges.forEach(([i, j]) => {
           const a = projected[i];
           const b = projected[j];
@@ -2171,7 +3282,6 @@
         });
         ctx.shadowBlur = 0;
 
-        // node points at vertices
         projected.forEach(p => {
           const alpha = Math.max(0.15, Math.min(1, (p.depth - 0.55) * 1.8));
           ctx.beginPath();
