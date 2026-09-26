@@ -1331,6 +1331,8 @@
     let currentMetaIdempotencyKey = null;
     let metaPurchaseInFlight = false;
     let metaStockAvailability = {}; // { [productId]: liveAvailableCount } — real metaStock counts
+    let metaStockRaw = {}; // last raw snapshot of metaStock/{productId}/{itemId}, cached so it can be
+                            // recomputed whenever metaBuyOrders changes too (see computeMetaStockAvailability)
     let currentSelectedDepositMethod = null;
     let admSelectedUserObj = null;
     let admBalanceActionType = 'ADD';
@@ -1595,21 +1597,23 @@
       // product from metaStock/{productId}/{itemId}.status, so the storefront
       // shows the same number the backend's /meta-buy will actually honor,
       // instead of the product's manually-typed "stock" display field.
+      //
+      // A raw item being marked "RESERVED" does NOT necessarily mean the
+      // backend still considers it unavailable: the backend (/meta-buy)
+      // only ever keeps a RESERVED item off-limits while it is traceable to
+      // a genuinely active order (PROCESSING / PENDING / NEEDS_MANUAL_REVIEW).
+      // The moment a reservation's order is missing or already terminal
+      // (DELIVERED / DELIVERY_FAILED / REJECTED / CANCELLED), the backend
+      // treats that account as usable again the next time stock is needed.
+      // So the website counts it the same way here — using the existing
+      // metaBuyOrders data it already listens to below — instead of trusting
+      // the raw "AVAILABLE" item count alone, which can lag behind reality
+      // whenever a batch of reservations is sitting on stale/orphaned orders.
+      // This mirrors the backend's own decision logic; it does not invent a
+      // second, competing stock authority.
       db.ref('metaStock').on('value', snapshot => {
-        const val = snapshot.val() || {};
-        const counts = {};
-        Object.keys(val).forEach(productId => {
-          const items = val[productId] || {};
-          counts[productId] = Object.values(items).filter(it => it && it.status === 'AVAILABLE').length;
-        });
-        metaStockAvailability = counts;
-        renderMetaProducts();
-        if (currentSelectedMetaProduct && metaStockAvailability[currentSelectedMetaProduct.id] !== undefined) {
-          currentSelectedMetaProduct.stock = metaStockAvailability[currentSelectedMetaProduct.id];
-          const badge = document.getElementById('meta-purchase-stock-badge');
-          if (badge) badge.innerText = `Stock: ${currentSelectedMetaProduct.stock}`;
-          calculateMetaPurchase();
-        }
+        metaStockRaw = snapshot.val() || {};
+        refreshMetaStockAvailability();
       });
 
       // Deposits Listener
@@ -1625,6 +1629,11 @@
         renderMetaHistory();
         renderAdmMetaOrders();
         updateWalletUi();
+        // An order transitioning to/from an active status (e.g. a stuck
+        // PROCESSING order finally being marked DELIVERED/REJECTED) changes
+        // which RESERVED stock items now count as genuinely available —
+        // recompute the storefront's stock display to match.
+        refreshMetaStockAvailability();
       });
 
       // Coins Listener
@@ -1882,6 +1891,56 @@
     // ==========================================
     // META BUY STORE & PURCHASE (PURE ENGLISH & PLUS CHARGE)
     // ==========================================
+
+    // Same "active order" rule the backend (/meta-buy) uses to decide
+    // whether a RESERVED stock item is still genuinely off-limits. Kept in
+    // sync with the worker's ACTIVE_ORDER_STATUSES set.
+    const META_ACTIVE_ORDER_STATUSES = new Set(['PROCESSING', 'PENDING', 'NEEDS_MANUAL_REVIEW']);
+
+    // Computes, per product, the count of stock items the backend would
+    // currently treat as purchasable: items already AVAILABLE, plus RESERVED
+    // items whose reservation is stale/orphaned (order missing, or already
+    // terminal) rather than tied to a genuinely active order. This is a
+    // read-only mirror of the backend's own reconciliation rule — it never
+    // writes to the database and never overrides a real insufficient_stock
+    // response from /meta-buy, it only makes the displayed number agree
+    // with what the backend already considers real, purchasable stock.
+    function computeMetaStockAvailability() {
+      const counts = {};
+      Object.keys(metaStockRaw || {}).forEach(productId => {
+        const items = metaStockRaw[productId] || {};
+        let available = 0;
+        Object.values(items).forEach(it => {
+          if (!it) return;
+          if (it.status === 'AVAILABLE') {
+            available++;
+          } else if (it.status === 'RESERVED') {
+            const orderId = it.orderId || '';
+            const order = orderId ? (allMetaOrdersData || {})[orderId] : null;
+            const isActive = !!order && META_ACTIVE_ORDER_STATUSES.has(order.status);
+            if (!isActive) available++; // stale/orphaned reservation — backend would free it too
+          }
+        });
+        counts[productId] = available;
+      });
+      return counts;
+    }
+
+    // Recomputes metaStockAvailability and refreshes every UI element that
+    // displays it (store list, open purchase screen's badge + validation).
+    // Called whenever either metaStock or metaBuyOrders changes, since both
+    // feed into the computation above.
+    function refreshMetaStockAvailability() {
+      metaStockAvailability = computeMetaStockAvailability();
+      renderMetaProducts();
+      if (currentSelectedMetaProduct && metaStockAvailability[currentSelectedMetaProduct.id] !== undefined) {
+        currentSelectedMetaProduct.stock = metaStockAvailability[currentSelectedMetaProduct.id];
+        const badge = document.getElementById('meta-purchase-stock-badge');
+        if (badge) badge.innerText = `Stock: ${currentSelectedMetaProduct.stock}`;
+        calculateMetaPurchase();
+      }
+    }
+
     function renderMetaProducts() {
       const el = document.getElementById('meta-products-list');
       el.innerHTML = '';
