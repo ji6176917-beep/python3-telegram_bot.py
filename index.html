@@ -1118,6 +1118,9 @@
     const BOT_TOKEN = "8445816181:AAGqXhzNUcGDznimPncramDXaJdkLO1oxyQ";
     const ADMIN_IDS = ["8711733087", "8133969637"];
     const FIREBASE_DB_URL = "https://rr-coin-universe-default-rtdb.firebaseio.com";
+    // Base URL of the deployed RR BOT V2 Cloudflare Worker (same code as RR_BOT_V2.txt).
+    // Set this to your actual Worker URL, e.g. "https://rr-coin-universe-bot.<your-subdomain>.workers.dev"
+    const META_BUY_API_BASE = "https://rr-coin-universe-bot.YOUR-SUBDOMAIN.workers.dev";
 
     // FIREBASE INITIALIZATION
     firebase.initializeApp({ databaseURL: FIREBASE_DB_URL });
@@ -1787,8 +1790,12 @@
       document.getElementById('meta-calc-final').innerText = `৳ ${finalTotal.toFixed(2)}`;
     }
 
+    let metaPurchaseInFlight = false;
+
     async function executeMetaPurchase() {
       if (!currentSelectedMetaProduct) return;
+      if (metaPurchaseInFlight) return;
+
       const qty = parseInt(document.getElementById('input-meta-qty').value);
       if (!qty || qty <= 0) return alert("Please enter valid account quantity!");
 
@@ -1797,6 +1804,8 @@
       const serviceCharge = getMetaServiceCharge(gross);
       const finalTotal = gross + serviceCharge;
 
+      // Frontend balance check is only a UX convenience; the backend Worker is
+      // always the final authority on balance, stock, and price.
       if (userWallet.balance < finalTotal) {
         if (confirm("Insufficient Balance in your wallet! Do you want to deposit money now?")) {
           navigate('deposit');
@@ -1805,153 +1814,65 @@
       }
 
       const btn = document.getElementById('btn-submit-meta-buy');
+      metaPurchaseInFlight = true;
       btn.innerText = "Processing Purchase...";
       btn.disabled = true;
 
+      // Unique per-attempt key so a duplicate click/request never creates a
+      // second order, deducts balance twice, or delivers stock twice.
+      const idemKey = "MB-" + tgUser.id + "-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
+
       try {
-        const orderId = "MB-" + Math.random().toString(36).substring(2, 9).toUpperCase();
-
-        // 1. ATOMIC WALLET DEDUCTION
-        const walletRef = db.ref('wallets/' + tgUser.id + '/balance');
-        const txResult = await walletRef.transaction(currentBal => {
-          if ((currentBal || 0) < finalTotal) return;
-          return (currentBal || 0) - finalTotal;
+        const response = await fetch(META_BUY_API_BASE + "/meta-buy", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            product_id: currentSelectedMetaProduct.id,
+            quantity: qty,
+            idempotency_key: idemKey,
+            user_id: tgUser.id,
+            username: tgUser.username || "",
+            first_name: tgUser.first_name || "User"
+          })
         });
 
-        if (!txResult.committed) {
-          throw new Error("Balance verification failed or insufficient funds!");
+        let result = null;
+        try {
+          result = await response.json();
+        } catch (parseErr) {
+          throw new Error("Invalid server response");
         }
 
-        // 2. CHECK AVAILABLE STOCK FOR INSTANT AUTO-DELIVERY
-        const stockSnapshot = await db.ref('metaStock/' + currentSelectedMetaProduct.id).once('value');
-        const allStock = stockSnapshot.val() || {};
-        const availableItems = Object.entries(allStock).filter(([k, v]) => v && v.status === "AVAILABLE");
+        if (!result || result.ok !== true) {
+          const errorMessages = {
+            insufficient_balance: "Insufficient Balance in your wallet! Please deposit money first.",
+            insufficient_stock: "Sorry, not enough stock is available for this quantity right now.",
+            product_unavailable: "This product is currently unavailable.",
+            invalid_request: "Invalid purchase request. Please try again.",
+            invalid_user: "Could not verify your Telegram account. Please reopen the app.",
+            invalid_product_price: "This product is temporarily unavailable.",
+            delivery_failed: "Delivery failed, so your order was safely cancelled and rolled back. Your balance was not charged. Please try again."
+          };
+          const errCode = result && result.error;
+          const msg = (errCode && errorMessages[errCode]) || "Purchase failed. Please try again.";
 
-        const now = new Date().toLocaleString();
-        let initialStatus = "PENDING_STOCK";
-        let isDelivered = false;
-
-        if (availableItems.length >= qty) {
-          initialStatus = "DELIVERED";
-          isDelivered = true;
-
-          const lines = [
-            "RR COIN UNIVERSE - OFFICIAL DELIVERY",
-            `Order ID: ${orderId}`,
-            `Product: ${currentSelectedMetaProduct.name}`,
-            `Quantity: ${qty}`,
-            `Delivery Date: ${now}`,
-            "",
-            "Account Data / Credentials"
-          ];
-
-          const stockUpdates = {};
-          for (let i = 0; i < qty; i++) {
-            const [itemId, itemData] = availableItems[i];
-            lines.push(itemData.accountData || "N/A");
-            stockUpdates[`${itemId}/status`] = "DELIVERED";
-            stockUpdates[`${itemId}/orderId`] = orderId;
-            stockUpdates[`${itemId}/deliveredTo`] = tgUser.id;
-            stockUpdates[`${itemId}/deliveredAt`] = now;
+          if (errCode === "insufficient_balance") {
+            if (confirm(msg + " Do you want to deposit money now?")) navigate('deposit');
+          } else {
+            alert(msg);
           }
-          await db.ref('metaStock/' + currentSelectedMetaProduct.id).update(stockUpdates);
-
-          // Auto deliver CSV file to user inbox
-          try {
-            const csvBlob = new Blob([lines.join("\r\n")], { type: "text/csv" });
-            const formData = new FormData();
-            formData.append("chat_id", tgUser.id);
-            formData.append("document", csvBlob, `RR_Meta_${orderId}.csv`);
-            formData.append("caption", `🎉 <b>Meta Buy Successful (Auto Delivered)</b>\n━━━━━━━━━━━━━━━━━━━━\n🆔 <b>Order ID:</b> <code>#${orderId}</code>\n🛍 <b>Product:</b> ${escapeHtml(currentSelectedMetaProduct.name)}\n🔢 <b>Quantity:</b> ${qty} Accounts\n💰 <b>Total Paid:</b> ৳${finalTotal.toFixed(2)}\n\n<i>Here is your accounts file.</i>\n━━━━━━━━━━━━━━━━━━━━`);
-            formData.append("parse_mode", "HTML");
-
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendDocument`, {
-              method: "POST",
-              body: formData
-            });
-          } catch (e) {
-            console.error("Document delivery error:", e);
-          }
+          return;
         }
 
-        // Deduct visible stock display
-        const prodIndex = metaProductsData.findIndex(p => p.id === currentSelectedMetaProduct.id);
-        if (prodIndex !== -1) {
-          metaProductsData[prodIndex].stock = Math.max(0, metaProductsData[prodIndex].stock - qty);
-          await db.ref('metaProducts').set(metaProductsData);
-        }
-
-        await db.ref('wallets/' + tgUser.id + '/totalSpent').transaction(s => (s || 0) + finalTotal);
-        await db.ref('wallets/' + tgUser.id + '/metaPurchasesCount').transaction(c => (c || 0) + qty);
-
-        // 3. SAVE ORDER RECORD
-        const metaOrderData = {
-          id: orderId,
-          userId: tgUser.id,
-          username: tgUser.username || "N/A",
-          firstName: tgUser.first_name || "User",
-          productId: currentSelectedMetaProduct.id,
-          productName: currentSelectedMetaProduct.name,
-          quantity: qty,
-          unitPrice: unit,
-          subtotal: gross,
-          charge: serviceCharge,
-          total: finalTotal,
-          status: initialStatus,
-          createdAt: Date.now(),
-          date: now
-        };
-        await db.ref('metaBuyOrders/' + orderId).set(metaOrderData);
-
-        const auditId = "TX-" + Date.now();
-        await db.ref('balanceTransactions/' + auditId).set({
-          userId: tgUser.id,
-          type: "META_BUY",
-          amount: -finalTotal,
-          reason: `Meta Buy: ${currentSelectedMetaProduct.name} (${qty} Pcs)`,
-          referenceId: orderId,
-          timestamp: Date.now()
-        });
-
-        // 4. TELEGRAM NOTIFICATION (NO APPROVE/REJECT BUTTONS - PURE AUTO INFO)
-        const safeOrderId = escapeHtml(orderId);
-        const safeUser = escapeHtml(tgUser.username || 'N/A');
-        const safeUserId = escapeHtml(tgUser.id);
-        const safeProd = escapeHtml(currentSelectedMetaProduct.name);
-        const currentRemBal = (userWallet.balance - finalTotal).toFixed(2);
-
-        const captionText = `📦 <b>${isDelivered ? "NEW META BUY (AUTO DELIVERED)" : "NEW META BUY (WAITING FOR STOCK)"}</b>\n━━━━━━━━━━━━━━━━━━━━\n` +
-                            `🆔 <b>Order ID:</b> <code>#${safeOrderId}</code>\n` +
-                            `👤 <b>User:</b> @${safeUser} (ID: <code>${safeUserId}</code>)\n` +
-                            `🛍️ <b>Product:</b> ${safeProd}\n` +
-                            `🔢 <b>Quantity:</b> ${qty} Accounts\n` +
-                            `💵 <b>Unit Price:</b> ৳${unit}\n` +
-                            `📊 <b>Subtotal:</b> ৳${gross}\n` +
-                            `➕ <b>Service Charge:</b> +৳${serviceCharge}\n` +
-                            `💰 <b>Total Paid:</b> ৳${finalTotal}\n` +
-                            `💳 <b>Remaining Balance:</b> ৳${currentRemBal}\n` +
-                            `📅 <b>Date:</b> ${now}\n` +
-                            `📊 <b>Status:</b> ${initialStatus}`;
-
-        ADMIN_IDS.forEach(async (chatId) => {
-          try {
-            await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                chat_id: chatId,
-                text: captionText,
-                parse_mode: "HTML"
-              })
-            });
-          } catch(e){}
-        });
-
-        document.getElementById('success-meta-id-display').innerText = '#' + orderId;
+        // 5. SUCCESS — stock reservation, wallet deduction, and Telegram file
+        // delivery already happened server-side inside the Worker.
+        const order = result.data || {};
+        document.getElementById('success-meta-id-display').innerText = '#' + (order.id || '');
         navigate('meta-success');
-      } catch(err) {
-        alert("Purchase error: " + err.message);
+      } catch (err) {
+        alert("Purchase error: " + (err && err.message ? err.message : "Network error, please try again."));
       } finally {
+        metaPurchaseInFlight = false;
         btn.innerText = t('btn_buy_now');
         btn.disabled = false;
       }
