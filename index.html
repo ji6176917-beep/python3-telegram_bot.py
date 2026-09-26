@@ -1198,6 +1198,7 @@
     let currentSelectedMetaProduct = null;
     let currentMetaIdempotencyKey = null;
     let metaPurchaseInFlight = false;
+    let metaStockAvailability = {}; // { [productId]: liveAvailableCount } — real metaStock counts
     let currentSelectedDepositMethod = null;
     let admSelectedUserObj = null;
     let admBalanceActionType = 'ADD';
@@ -1456,6 +1457,27 @@
         }
         renderMetaProducts();
         renderAdmMetaProducts();
+      });
+
+      // Meta Stock Listener — computes the REAL available-item count per
+      // product from metaStock/{productId}/{itemId}.status, so the storefront
+      // shows the same number the backend's /meta-buy will actually honor,
+      // instead of the product's manually-typed "stock" display field.
+      db.ref('metaStock').on('value', snapshot => {
+        const val = snapshot.val() || {};
+        const counts = {};
+        Object.keys(val).forEach(productId => {
+          const items = val[productId] || {};
+          counts[productId] = Object.values(items).filter(it => it && it.status === 'AVAILABLE').length;
+        });
+        metaStockAvailability = counts;
+        renderMetaProducts();
+        if (currentSelectedMetaProduct && metaStockAvailability[currentSelectedMetaProduct.id] !== undefined) {
+          currentSelectedMetaProduct.stock = metaStockAvailability[currentSelectedMetaProduct.id];
+          const badge = document.getElementById('meta-purchase-stock-badge');
+          if (badge) badge.innerText = `Stock: ${currentSelectedMetaProduct.stock}`;
+          calculateMetaPurchase();
+        }
       });
 
       // Deposits Listener
@@ -1731,6 +1753,8 @@
         return;
       }
       entries.forEach(([id, prod]) => {
+        const liveStock = metaStockAvailability[id];
+        const stockDisplay = (liveStock !== undefined) ? liveStock : (prod.stock ?? '—');
         el.innerHTML += `
           <div class="glass-card rounded-2xl p-4 flex items-center justify-between shadow-lg hover:border-cyan-400/50 transition">
             <div class="flex items-center gap-3">
@@ -1738,7 +1762,7 @@
               <div>
                 <h4 class="text-sm font-bold text-white">${prod.name}</h4>
                 <p class="text-xs text-cyan-300 font-bold font-mono">৳${prod.unitPrice} <span class="text-[10px] text-indigo-200 font-normal">/ Account</span></p>
-                <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${t('stock_count')} ${prod.stock ?? '—'}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${t('stock_count')} ${stockDisplay}</span>
               </div>
             </div>
             <button onclick="openMetaPurchase('${id}')" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow active:scale-95 transition">BUY NOW</button>
@@ -1750,7 +1774,8 @@
     function openMetaPurchase(prodId) {
       const prod = metaProductsData[prodId];
       if (!prod) return;
-      currentSelectedMetaProduct = { ...prod, id: prodId };
+      const liveStock = metaStockAvailability[prodId];
+      currentSelectedMetaProduct = { ...prod, id: prodId, stock: (liveStock !== undefined ? liveStock : prod.stock) };
 
       document.getElementById('meta-purchase-title').innerText = currentSelectedMetaProduct.name;
       document.getElementById('meta-purchase-logo').src = currentSelectedMetaProduct.logo;
