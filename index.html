@@ -1160,11 +1160,13 @@
       { id: "dep-binance", name: "Binance", number: "738291039 (Binance Pay ID)", logo: DEFAULT_METHOD_SVGS.binance }
     ];
 
-    // META PRODUCTS DATA
-    let metaProductsData = JSON.parse(localStorage.getItem('cache_metaProducts')) || [
-      { id: "meta-fb-aged", name: "Meta Facebook Account (2018-2022)", unitPrice: 85, stock: 4500, logo: "https://api.dicebear.com/7.x/identicon/svg?seed=meta1", desc: "Aged 2FA Active, Full Fresh Cookies + Mail Included", active: true },
-      { id: "meta-bm-verified", name: "Meta Verified BM (250$ Limit)", unitPrice: 350, stock: 850, logo: "https://api.dicebear.com/7.x/identicon/svg?seed=metabm", desc: "Reinstated High Limit Green BM with Document Verification", active: true }
-    ];
+    // META PRODUCTS DATA (Object/Key-Value keyed by Firebase product ID — matches
+    // the backend's `metaProducts/{id}` schema so the exact key is always sent
+    // as product_id to the /meta-buy API)
+    let metaProductsData = JSON.parse(localStorage.getItem('cache_metaProducts')) || {
+      "meta-fb-aged": { id: "meta-fb-aged", name: "Meta Facebook Account (2018-2022)", unitPrice: 85, stock: 4500, logo: "https://api.dicebear.com/7.x/identicon/svg?seed=meta1", desc: "Aged 2FA Active, Full Fresh Cookies + Mail Included", active: true },
+      "meta-bm-verified": { id: "meta-bm-verified", name: "Meta Verified BM (250$ Limit)", unitPrice: 350, stock: 850, logo: "https://api.dicebear.com/7.x/identicon/svg?seed=metabm", desc: "Reinstated High Limit Green BM with Document Verification", active: true }
+    };
 
     // COIN SELL PAYMENT METHODS
     let paymentMethodsData = JSON.parse(localStorage.getItem('cache_paymentMethods')) || [
@@ -1434,10 +1436,19 @@
         renderAdmDepositMethods();
       });
 
-      // Meta Products Listener
+      // Meta Products Listener (Object/Key-Value keyed by product ID — matches backend schema)
       db.ref('metaProducts').on('value', snapshot => {
         const val = snapshot.val();
         if (val && Array.isArray(val)) {
+          // Legacy array format from an older version of this app — migrate it
+          // in place to the keyed object schema the backend (metaProducts/{id})
+          // actually reads from, so product_id lookups line up correctly.
+          const migrated = {};
+          val.forEach(p => { if (p && p.id) migrated[p.id] = p; });
+          metaProductsData = migrated;
+          localStorage.setItem('cache_metaProducts', JSON.stringify(metaProductsData));
+          db.ref('metaProducts').set(metaProductsData);
+        } else if (val && typeof val === 'object') {
           metaProductsData = val;
           localStorage.setItem('cache_metaProducts', JSON.stringify(metaProductsData));
         } else if (!val) {
@@ -1714,11 +1725,12 @@
     function renderMetaProducts() {
       const el = document.getElementById('meta-products-list');
       el.innerHTML = '';
-      if (!metaProductsData.length) {
+      const entries = Object.entries(metaProductsData || {}).filter(([, p]) => p && p.active !== false);
+      if (!entries.length) {
         el.innerHTML = `<p class="text-xs text-indigo-300/60 text-center py-5">No Meta products configured yet.</p>`;
         return;
       }
-      metaProductsData.forEach(prod => {
+      entries.forEach(([id, prod]) => {
         el.innerHTML += `
           <div class="glass-card rounded-2xl p-4 flex items-center justify-between shadow-lg hover:border-cyan-400/50 transition">
             <div class="flex items-center gap-3">
@@ -1726,18 +1738,19 @@
               <div>
                 <h4 class="text-sm font-bold text-white">${prod.name}</h4>
                 <p class="text-xs text-cyan-300 font-bold font-mono">৳${prod.unitPrice} <span class="text-[10px] text-indigo-200 font-normal">/ Account</span></p>
-                <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${t('stock_count')} ${prod.stock}</span>
+                <span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">${t('stock_count')} ${prod.stock ?? '—'}</span>
               </div>
             </div>
-            <button onclick="openMetaPurchase('${prod.id}')" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow active:scale-95 transition">BUY NOW</button>
+            <button onclick="openMetaPurchase('${id}')" class="bg-gradient-to-r from-cyan-600 to-indigo-600 hover:brightness-110 text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow active:scale-95 transition">BUY NOW</button>
           </div>
         `;
       });
     }
 
     function openMetaPurchase(prodId) {
-      currentSelectedMetaProduct = metaProductsData.find(p => p.id === prodId);
-      if (!currentSelectedMetaProduct) return;
+      const prod = metaProductsData[prodId];
+      if (!prod) return;
+      currentSelectedMetaProduct = { ...prod, id: prodId };
 
       document.getElementById('meta-purchase-title').innerText = currentSelectedMetaProduct.name;
       document.getElementById('meta-purchase-logo').src = currentSelectedMetaProduct.logo;
@@ -2292,19 +2305,19 @@
     function renderAdmMetaProducts() {
       const el = document.getElementById('adm-meta-products-list');
       el.innerHTML = '';
-      metaProductsData.forEach((p, idx) => {
+      Object.entries(metaProductsData || {}).forEach(([id, p]) => {
         el.innerHTML += `
           <div class="bg-[#090e24] p-3 rounded-xl border border-indigo-500/30 flex justify-between items-center text-xs">
             <div class="flex items-center gap-2">
               <img src="${p.logo}" onerror="this.onerror=null; this.src='https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(p.name)}'" class="w-7 h-7 rounded-lg object-cover">
               <div>
                 <p class="font-bold text-white">${p.name}</p>
-                <p class="text-[10px] text-cyan-300 font-mono">৳${p.unitPrice} | Stock: ${p.stock}</p>
+                <p class="text-[10px] text-cyan-300 font-mono">৳${p.unitPrice} | Stock: ${p.stock ?? '—'}</p>
               </div>
             </div>
             <div class="flex gap-2">
-              <button onclick="openMetaProductModal('${p.id}')" class="text-indigo-300 bg-indigo-600/20 px-2.5 py-1 rounded-lg">Edit</button>
-              <button onclick="deleteMetaProduct(${idx})" class="text-rose-400 bg-rose-500/20 px-2.5 py-1 rounded-lg">Delete</button>
+              <button onclick="openMetaProductModal('${id}')" class="text-indigo-300 bg-indigo-600/20 px-2.5 py-1 rounded-lg">Edit</button>
+              <button onclick="deleteMetaProduct('${id}')" class="text-rose-400 bg-rose-500/20 px-2.5 py-1 rounded-lg">Delete</button>
             </div>
           </div>
         `;
@@ -2321,7 +2334,7 @@
       document.getElementById('modal-meta-file').value = '';
 
       if (id) {
-        const prod = metaProductsData.find(p => p.id === id);
+        const prod = metaProductsData[id];
         if (prod) {
           document.getElementById('modal-meta-name').value = prod.name;
           document.getElementById('modal-meta-price').value = prod.unitPrice;
@@ -2341,30 +2354,36 @@
 
       if (!name || isNaN(price) || isNaN(stock)) return alert("Please fill all required product fields!");
 
+      const existing = editingMetaId ? metaProductsData[editingMetaId] : null;
+
       let logo = "https://api.dicebear.com/7.x/identicon/svg?seed=" + name;
-      if (editingMetaId) {
-        const exist = metaProductsData.find(p => p.id === editingMetaId);
-        if (exist) logo = exist.logo;
-      }
+      if (existing) logo = existing.logo;
       if (file) {
         try { logo = await fileToBase64(file); } catch(e){}
       }
 
-      if (editingMetaId) {
-        const idx = metaProductsData.findIndex(p => p.id === editingMetaId);
-        metaProductsData[idx] = { ...metaProductsData[idx], name, unitPrice: price, stock, desc, logo };
-      } else {
-        metaProductsData.push({ id: "meta-" + Date.now(), name, unitPrice: price, stock, desc, logo, active: true });
-      }
+      const id = editingMetaId || ("meta-" + Date.now());
+      const product = {
+        id,
+        name,
+        unitPrice: price,
+        stock,
+        desc,
+        logo,
+        active: existing ? (existing.active !== false) : true
+      };
 
-      await db.ref('metaProducts').set(metaProductsData);
+      metaProductsData[id] = product;
+      // Write only this product's key so concurrent admin edits or backend
+      // writes to metaProducts/{id} never clobber each other.
+      await db.ref('metaProducts/' + id).set(product);
       closeCustomModal();
     }
 
-    async function deleteMetaProduct(idx) {
+    async function deleteMetaProduct(id) {
       if (confirm("Delete this Meta product?")) {
-        metaProductsData.splice(idx, 1);
-        await db.ref('metaProducts').set(metaProductsData);
+        delete metaProductsData[id];
+        await db.ref('metaProducts/' + id).remove();
       }
     }
 
