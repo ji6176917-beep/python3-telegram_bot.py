@@ -1118,9 +1118,8 @@
     const BOT_TOKEN = "8445816181:AAGqXhzNUcGDznimPncramDXaJdkLO1oxyQ";
     const ADMIN_IDS = ["8711733087", "8133969637"];
     const FIREBASE_DB_URL = "https://rr-coin-universe-default-rtdb.firebaseio.com";
-    // Base URL of the deployed RR BOT V2 Cloudflare Worker (same code as RR_BOT_V2.txt).
-    // Set this to your actual Worker URL, e.g. "https://rr-coin-universe-bot.<your-subdomain>.workers.dev"
-    const META_BUY_API_BASE = "https://rr-coin-universe-bot.YOUR-SUBDOMAIN.workers.dev";
+    // Cloudflare Worker backend base URL (authoritative Meta Buy purchase API)
+    const META_BUY_API_BASE = "https://rr-coin-bot.ji6176917.workers.dev";
 
     // FIREBASE INITIALIZATION
     firebase.initializeApp({ databaseURL: FIREBASE_DB_URL });
@@ -1195,6 +1194,8 @@
     let currentHistoryTab = 'all';
     let currentDepositTab = 'all';
     let currentSelectedMetaProduct = null;
+    let currentMetaIdempotencyKey = null;
+    let metaPurchaseInFlight = false;
     let currentSelectedDepositMethod = null;
     let admSelectedUserObj = null;
     let admBalanceActionType = 'ADD';
@@ -1751,6 +1752,7 @@
       const qtyInput = document.getElementById('input-meta-qty');
       qtyInput.value = '';
       document.getElementById('meta-stock-error').classList.add('hidden');
+      currentMetaIdempotencyKey = null;
 
       calculateMetaPurchase();
       navigate('meta-purchase');
@@ -1790,8 +1792,6 @@
       document.getElementById('meta-calc-final').innerText = `৳ ${finalTotal.toFixed(2)}`;
     }
 
-    let metaPurchaseInFlight = false;
-
     async function executeMetaPurchase() {
       if (!currentSelectedMetaProduct) return;
       if (metaPurchaseInFlight) return;
@@ -1804,8 +1804,9 @@
       const serviceCharge = getMetaServiceCharge(gross);
       const finalTotal = gross + serviceCharge;
 
-      // Frontend balance check is only a UX convenience; the backend Worker is
-      // always the final authority on balance, stock, and price.
+      // Frontend balance check is a convenience only — the backend re-validates
+      // wallet balance, product price, quantity and stock availability itself
+      // and is the sole authority on whether a purchase actually goes through.
       if (userWallet.balance < finalTotal) {
         if (confirm("Insufficient Balance in your wallet! Do you want to deposit money now?")) {
           navigate('deposit');
@@ -1813,64 +1814,73 @@
         return;
       }
 
+      if (!currentMetaIdempotencyKey) {
+        currentMetaIdempotencyKey = "MBC-" + tgUser.id + "-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
+      }
+
       const btn = document.getElementById('btn-submit-meta-buy');
       metaPurchaseInFlight = true;
       btn.innerText = "Processing Purchase...";
       btn.disabled = true;
 
-      // Unique per-attempt key so a duplicate click/request never creates a
-      // second order, deducts balance twice, or delivers stock twice.
-      const idemKey = "MB-" + tgUser.id + "-" + Date.now() + "-" + Math.random().toString(36).substring(2, 10);
-
       try {
-        const response = await fetch(META_BUY_API_BASE + "/meta-buy", {
+        // Single authoritative call: the Cloudflare Worker backend validates the
+        // user, product, price, balance and stock, reserves the exact quantity,
+        // deducts the wallet, delivers the file server-side via Telegram, and
+        // rolls back stock/balance automatically if anything fails.
+        const res = await fetch(`${META_BUY_API_BASE}/meta-buy`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             product_id: currentSelectedMetaProduct.id,
             quantity: qty,
-            idempotency_key: idemKey,
+            idempotency_key: currentMetaIdempotencyKey,
             user_id: tgUser.id,
             username: tgUser.username || "",
-            first_name: tgUser.first_name || "User"
+            first_name: tgUser.first_name || "User",
+            init_data: (tg && tg.initData) || ""
           })
         });
 
         let result = null;
         try {
-          result = await response.json();
+          result = await res.json();
         } catch (parseErr) {
-          throw new Error("Invalid server response");
+          throw new Error("Server returned an unexpected response. Please try again.");
         }
 
-        if (!result || result.ok !== true) {
+        if (!result || result.ok !== true || !result.data) {
           const errorMessages = {
-            insufficient_balance: "Insufficient Balance in your wallet! Please deposit money first.",
-            insufficient_stock: "Sorry, not enough stock is available for this quantity right now.",
+            invalid_user: "Could not verify your Telegram account. Please reopen the app and try again.",
+            invalid_request: "Invalid purchase request. Please check the quantity and try again.",
             product_unavailable: "This product is currently unavailable.",
-            invalid_request: "Invalid purchase request. Please try again.",
-            invalid_user: "Could not verify your Telegram account. Please reopen the app.",
-            invalid_product_price: "This product is temporarily unavailable.",
-            delivery_failed: "Delivery failed, so your order was safely cancelled and rolled back. Your balance was not charged. Please try again."
+            invalid_product_price: "This product has an invalid price. Please contact support.",
+            insufficient_balance: "Insufficient balance in your wallet. Please deposit money first.",
+            insufficient_stock: "Not enough stock available right now. Please try a smaller quantity.",
+            delivery_failed: "Delivery could not be completed. Your balance has been refunded automatically. Please try again."
           };
-          const errCode = result && result.error;
-          const msg = (errCode && errorMessages[errCode]) || "Purchase failed. Please try again.";
+          const errKey = result && result.error;
+          const message = errorMessages[errKey] || "Purchase could not be completed. Please try again.";
 
-          if (errCode === "insufficient_balance") {
-            if (confirm(msg + " Do you want to deposit money now?")) navigate('deposit');
+          if (errKey === "insufficient_balance") {
+            if (confirm(message + "\n\nDo you want to deposit money now?")) {
+              navigate('deposit');
+            }
           } else {
-            alert(msg);
+            alert(message);
           }
+          // Allow a fresh attempt with a new idempotency key since this request
+          // did not result in a successful order.
+          currentMetaIdempotencyKey = null;
           return;
         }
 
-        // 5. SUCCESS — stock reservation, wallet deduction, and Telegram file
-        // delivery already happened server-side inside the Worker.
-        const order = result.data || {};
-        document.getElementById('success-meta-id-display').innerText = '#' + (order.id || '');
+        const orderId = result.data.id;
+        document.getElementById('success-meta-id-display').innerText = '#' + orderId;
+        currentMetaIdempotencyKey = null;
         navigate('meta-success');
       } catch (err) {
-        alert("Purchase error: " + (err && err.message ? err.message : "Network error, please try again."));
+        alert("Purchase error: " + err.message);
       } finally {
         metaPurchaseInFlight = false;
         btn.innerText = t('btn_buy_now');
