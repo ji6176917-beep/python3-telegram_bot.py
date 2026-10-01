@@ -378,7 +378,8 @@
 
         <div>
           <label class="block text-xs text-slate-200 font-medium mb-1" data-i18n="label_deposit_amount">Deposit Amount (in BDT)</label>
-          <input type="number" id="input-deposit-amount" oninput="calculateDepositUsd()" placeholder="Enter Amount" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm focus:border-indigo-400 focus:outline-none transition">
+          <input type="number" id="input-deposit-amount" oninput="calculateDepositUsd()" placeholder="Enter Amount" min="20" class="w-full bg-[#090e24] border border-indigo-500/30 rounded-xl px-3 py-2.5 text-white text-sm focus:border-indigo-400 focus:outline-none transition">
+          <p id="deposit-min-helper" class="text-[10px] text-indigo-300/70 mt-1">Minimum deposit: ৳20</p>
         </div>
 
         <div>
@@ -874,6 +875,14 @@
           </div>
         </div>
 
+        <div class="glass-card p-4 rounded-xl space-y-2">
+          <h3 class="text-xs font-bold text-white flex items-center gap-1.5"><i class="fa-solid fa-wallet text-emerald-400"></i> Minimum Deposit Limit (BDT)</h3>
+          <div class="flex gap-2">
+            <input type="number" id="adm-min-deposit-input" placeholder="20" class="w-32 bg-[#090e24] border border-indigo-500/30 rounded-lg p-2 text-white text-xs focus:border-indigo-400 focus:outline-none font-mono">
+            <button onclick="saveMinDeposit()" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:brightness-110 text-white font-bold px-3 py-1.5 rounded-lg text-xs">Save Min Deposit</button>
+          </div>
+        </div>
+
         <div class="bg-gradient-to-r from-indigo-900/60 to-purple-900/60 border border-indigo-500/30 p-4 rounded-xl shadow-lg flex justify-between items-center">
           <div>
             <span class="text-[10px] uppercase font-bold text-indigo-200 tracking-wider block">Admin Demo Password:</span>
@@ -1275,6 +1284,7 @@
     let appLogo = localStorage.getItem('cache_appLogo') || "https://api.dicebear.com/7.x/identicon/svg?seed=rrcoinuniverse";
     let usdExchangeRate = parseFloat(localStorage.getItem('cache_usdRate')) || 130;
     let metaAbove2000Charge = 25;
+    let minDepositAmount = 20;
 
     // INTERNAL WALLET STATE
     let userWallet = {
@@ -1402,6 +1412,13 @@
     let currentLang = localStorage.getItem('appLang') || 'en';
     function t(key) { return (translations[currentLang] && translations[currentLang][key]) || translations['en'][key] || key; }
 
+    function updateMinDepositUI() {
+      const inp = document.getElementById('input-deposit-amount');
+      const helper = document.getElementById('deposit-min-helper');
+      if (inp) inp.min = minDepositAmount;
+      if (helper) helper.innerText = currentLang === 'en' ? `Minimum deposit: ৳${minDepositAmount}` : `সর্বনিম্ন ডিপোজিট: ৳${minDepositAmount}`;
+    }
+
     function applyTranslations() {
       document.querySelectorAll('[data-i18n]').forEach(el => el.innerText = t(el.getAttribute('data-i18n')));
       document.getElementById('current-lang-badge').innerText = currentLang === 'en' ? 'English' : 'বাংলা';
@@ -1411,6 +1428,7 @@
       document.getElementById('input-coin-amount').placeholder = currentLang === 'en' ? 'Example: 20' : 'উদাহরণ: 20';
       document.getElementById('input-deposit-amount').placeholder = currentLang === 'en' ? 'Enter Amount' : 'টাকার পরিমাণ লিখুন';
       document.getElementById('history-search-input').placeholder = currentLang === 'en' ? 'Search Order ID (#CS-...)' : 'অর্ডার আইডি সার্চ (#CS-...)';
+      updateMinDepositUI();
     }
 
     function openLanguageModal() { document.getElementById('modal-language-overlay').classList.remove('hidden'); closeMenu(); }
@@ -1539,6 +1557,17 @@
           if (val.metaAbove2000Charge) {
             metaAbove2000Charge = parseFloat(val.metaAbove2000Charge) || 25;
           }
+          if (val.minDepositAmount || val.min_deposit) {
+            applyMinDeposit(val.minDepositAmount || val.min_deposit || 20);
+          }
+        }
+      });
+
+      // Bot settings listener (min deposit mirror)
+      db.ref('bot_settings').on('value', snapshot => {
+        const bs = snapshot.val();
+        if (bs && (bs.minDepositAmount || bs.min_deposit)) {
+          applyMinDeposit(bs.minDepositAmount || bs.min_deposit || 20);
         }
       });
 
@@ -1859,6 +1888,27 @@
       localStorage.setItem('cache_usdRate', val);
       document.getElementById('binance-usd-rate-text').innerText = `1 USD = ${val} BDT`;
       alert("USD exchange rate updated!");
+    }
+
+    function applyMinDeposit(v) {
+      minDepositAmount = parseFloat(v) || 20;
+      const admInp = document.getElementById('adm-min-deposit-input');
+      if (admInp && document.activeElement !== admInp) admInp.value = minDepositAmount;
+      updateMinDepositUI();
+    }
+
+    async function saveMinDeposit() {
+      const val = parseFloat(document.getElementById('adm-min-deposit-input').value);
+      if (!val || val <= 0) return alert("Enter a valid minimum deposit amount!");
+      try {
+        await db.ref('appConfig/minDepositAmount').set(val);
+        await db.ref('bot_settings/min_deposit').set(val);
+      } catch (e) {
+        return alert("Failed to save: " + e.message);
+      }
+      minDepositAmount = val;
+      updateMinDepositUI();
+      alert("Minimum deposit updated successfully!");
     }
 
     async function uploadAppLogo() {
@@ -2194,6 +2244,7 @@
       const trxId = document.getElementById('input-deposit-trx').value.trim();
 
       if (!amount || amount <= 0) return alert(currentLang === 'en' ? "Please enter a valid deposit amount!" : "সঠিক জমার পরিমাণ লিখুন!");
+      if (amount < minDepositAmount) return alert(currentLang === 'en' ? "Minimum deposit amount is ৳" + minDepositAmount : "সর্বনিম্ন ডিপোজিট ৳" + minDepositAmount + " টাকা!");
       if (!trxId) return alert(currentLang === 'en' ? "Please enter Transaction ID!" : "ট্রানজেকশন আইডি দিন!");
       if (!currentSelectedDepositMethod) return alert("Select a deposit method!");
 
@@ -2353,17 +2404,22 @@
         let badgeColor = 'bg-cyan-500/20 text-cyan-300';
         if (ord.status === 'DELIVERED') badgeColor = 'bg-emerald-500/20 text-emerald-300';
         else if (ord.status === 'PENDING_STOCK') badgeColor = 'bg-yellow-500/20 text-yellow-300';
+        let statusLabel = ord.status;
+        if (ord.status === 'DELIVERY_FAILED' || ord.status === 'REJECTED' || ord.status === 'CANCELLED') {
+          badgeColor = 'bg-rose-500/20 text-rose-300';
+          statusLabel = 'FAILED / REFUNDED';
+        }
         
         el.innerHTML += `
           <div class="glass-card p-3.5 rounded-2xl space-y-1.5 text-xs shadow">
             <div class="flex justify-between items-center font-mono font-bold">
               <span class="text-cyan-300">#${ord.id}</span>
-              <span class="text-[10px] ${badgeColor} px-2.5 py-0.5 rounded-full font-bold">${ord.status}</span>
+              <span class="text-[10px] ${badgeColor} px-2.5 py-0.5 rounded-full font-bold">${statusLabel}</span>
             </div>
             <div class="text-slate-100 font-semibold">${ord.productName} (${ord.quantity} Accounts)</div>
             <div class="flex justify-between text-indigo-300/80 text-[11px] pt-1.5 border-t border-indigo-500/20">
               <span class="font-bold text-cyan-300">Total: ৳${ord.total}</span>
-              <span>${ord.date}</span>
+              <span>${ord.date || ord.createdAt || 'N/A'}</span>
             </div>
           </div>
         `;
