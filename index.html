@@ -1778,6 +1778,7 @@
       document.getElementById('view-' + view)?.classList.remove('hidden');
       if (view === 'profile') setupProfileData();
       if (view === 'wallet') updateWalletUi();
+      if (view === 'meta-history') renderMetaHistory();
       window.scrollTo(0, 0);
       closeMenu();
     }
@@ -2166,6 +2167,15 @@
         }
 
         const orderId = result.data.id;
+        // Instant local update so Meta Buy History never waits for the Firebase sync.
+        try {
+          if (!allMetaOrdersData || typeof allMetaOrdersData !== 'object') allMetaOrdersData = {};
+          allMetaOrdersData[orderId] = result.data;
+          if (allMetaOrdersData[orderId].userId == null && allMetaOrdersData[orderId].user_id == null) {
+            allMetaOrdersData[orderId].userId = tgUser.id;
+          }
+          renderMetaHistory();
+        } catch (localErr) { console.warn('Local Meta order insert failed:', localErr); }
         const mbElapsed = Date.now() - mbAnimStart;
         if (mbElapsed < MB_MIN_VISIBLE_MS) await mbSleep(MB_MIN_VISIBLE_MS - mbElapsed);
         btn.classList.remove('mb-anim-active');
@@ -2386,12 +2396,20 @@
     function renderDepositHistory() { filterDepositHistory(); }
 
     function filterMetaHistory() {
-      const query = document.getElementById('meta-history-search').value.toLowerCase().trim();
+      const searchEl = document.getElementById('meta-history-search');
       const el = document.getElementById('meta-history-list');
+      if (!el) return;
+      const query = ((searchEl && searchEl.value) || '').toLowerCase().trim();
       el.innerHTML = '';
 
-      let list = Object.values(allMetaOrdersData).filter(m => String(m.userId) === String(tgUser.id));
-      list.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0));
+      const myId = String((tgUser && tgUser.id) != null ? tgUser.id : '').trim();
+      let list = Object.values(allMetaOrdersData || {}).filter(m =>
+        m && typeof m === 'object' &&
+        (String(m.userId != null ? m.userId : '').trim() === myId || String(m.user_id != null ? m.user_id : '').trim() === myId)
+      );
+      // Newest first; unparseable dates fall back to 0 so the sort never yields NaN.
+      const orderTs = o => { const v = new Date(o.createdAt || o.date || 0).getTime(); return isNaN(v) ? 0 : v; };
+      list.sort((a, b) => orderTs(b) - orderTs(a));
 
       if (query) list = list.filter(m => (m.id || '').toLowerCase().includes(query) || (m.productName || '').toLowerCase().includes(query));
 
@@ -2401,25 +2419,35 @@
       }
 
       list.forEach(ord => {
+        const st = String(ord.status || '').toUpperCase();
         let badgeColor = 'bg-cyan-500/20 text-cyan-300';
-        if (ord.status === 'DELIVERED') badgeColor = 'bg-emerald-500/20 text-emerald-300';
-        else if (ord.status === 'PENDING_STOCK') badgeColor = 'bg-yellow-500/20 text-yellow-300';
-        let statusLabel = ord.status;
-        if (ord.status === 'DELIVERY_FAILED' || ord.status === 'REJECTED' || ord.status === 'CANCELLED') {
+        let statusLabel = ord.status || 'UNKNOWN';
+        if (st === 'DELIVERED') {
+          badgeColor = 'bg-emerald-500/20 text-emerald-300';
+          statusLabel = 'DELIVERED';
+        } else if (st === 'DELIVERY_FAILED' || st === 'REJECTED' || st === 'CANCELLED') {
           badgeColor = 'bg-rose-500/20 text-rose-300';
           statusLabel = 'FAILED / REFUNDED';
+        } else if (st === 'PROCESSING' || st === 'PENDING' || st === 'PENDING_STOCK') {
+          badgeColor = 'bg-yellow-500/20 text-yellow-300';
+          statusLabel = 'PENDING';
         }
-        
+        const idText = ord.id || '—';
+        const nameText = ord.productName || ord.product_name || 'Meta Accounts';
+        const qtyText = ord.quantity != null ? ord.quantity : (ord.qty != null ? ord.qty : '?');
+        const totalText = ord.total != null ? ord.total : '0';
+        const dateText = ord.date || ord.createdAt || 'N/A';
+
         el.innerHTML += `
           <div class="glass-card p-3.5 rounded-2xl space-y-1.5 text-xs shadow">
             <div class="flex justify-between items-center font-mono font-bold">
-              <span class="text-cyan-300">#${ord.id}</span>
+              <span class="text-cyan-300">#${idText}</span>
               <span class="text-[10px] ${badgeColor} px-2.5 py-0.5 rounded-full font-bold">${statusLabel}</span>
             </div>
-            <div class="text-slate-100 font-semibold">${ord.productName} (${ord.quantity} Accounts)</div>
-            <div class="flex justify-between text-indigo-300/80 text-[11px] pt-1.5 border-t border-indigo-500/20">
-              <span class="font-bold text-cyan-300">Total: ৳${ord.total}</span>
-              <span>${ord.date || ord.createdAt || 'N/A'}</span>
+            <div class="text-slate-100 font-semibold">${nameText} (${qtyText} Accounts)</div>
+            <div class="flex justify-between items-center text-indigo-300/80 text-[11px] pt-1.5 border-t border-indigo-500/20">
+              <span class="font-bold text-cyan-300">Total: ৳${totalText}</span>
+              <span class="text-right">${dateText}</span>
             </div>
           </div>
         `;
